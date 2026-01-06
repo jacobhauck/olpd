@@ -1,0 +1,33 @@
+model:
+  name: operatorlearning.modules.fno.FNO
+  d_model: 64
+
+  lift_config:
+    name: MLP
+    d_in: 1
+    hidden_layers:
+      - 128
+    d_out: 64
+    activation:
+      name: GELU
+
+  num_fourier_layers: 3
+  fourier_layer_config:
+    conv_config:  # Use 8 modes in each direction for spectral conv
+      n_modes: [ 8 ]
+    nonlinearity:
+      name: GELU
+    mlp_config:
+      hidden_layers:
+        - 32
+      activation:
+        name: GELU
+
+  project_config:
+    name: MLP
+    d_in: 64
+    hidden_layers:
+      - 128
+    d_out: 1
+    activation:
+      name: GELU

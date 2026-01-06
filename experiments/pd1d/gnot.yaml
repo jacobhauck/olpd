@@ -1,0 +1,34 @@
+model:
+  name: operatorlearning.modules.gnot.GNOT
+  d_model: &d_model 64
+  v_d_in: 1
+  v_d_out: 1
+  query_mlp_config:
+    hidden_layers:
+      - 128
+      - 128
+    activation:
+      name: GELU
+  output_mlp_config:
+    hidden_layers:
+      - 256
+    activation:
+      name: GELU
+  input_encoders:
+    - name: operatorlearning.modules.gnot.SampledFunctionEncoder
+      f_d_in: 1
+      f_d_out: 1
+      d_model: *d_model
+      mlp_config:
+        hidden_layers:
+          - 128
+          - 128
+        activation:
+          name: GELU
+  num_layers: 3
+  layer_config:
+    d_model: *d_model
+    d_hidden: 128
+    num_heads: 8
+    activation:
+      name: GELU
