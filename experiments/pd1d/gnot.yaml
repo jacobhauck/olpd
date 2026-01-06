@@ -1,5 +1,5 @@
 model:
-  name: operatorlearning.modules.gnot.GNOT
+  name: gnot.GNOT
   d_model: &d_model 64
   v_d_in: 1
   v_d_out: 1
@@ -15,7 +15,7 @@ model:
     activation:
       name: GELU
   input_encoders:
-    - name: operatorlearning.modules.gnot.SampledFunctionEncoder
+    - name: gnot.SampledFunctionEncoder
       f_d_in: 1
       f_d_out: 1
       d_model: *d_model
