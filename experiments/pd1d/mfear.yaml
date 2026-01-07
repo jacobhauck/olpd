@@ -7,7 +7,7 @@ model:
     name: mfear.CompactMLPBasis
     d_in: 1
     d_out: 1
-    p: &p 16
+    p: &p 32
     mlp:
       hidden_layers:
         - 64
@@ -27,7 +27,7 @@ model:
     name: mfear.CompactMLPBasis
     d_in: 1
     d_out: 1
-    p: &q 32
+    p: &q 64
     mlp:
       hidden_layers:
         - 64

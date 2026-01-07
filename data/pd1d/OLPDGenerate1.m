@@ -3,18 +3,18 @@
 % ===== Configuration =====
 
 % Output file
-fileName = "test2.ol.h5";
+fileName = "test3.ol.h5";
 
 % Whether to show an example before generating the dataset
 showExample = false;
 
 % Size of dataset
-numSamples = 500;
+numSamples = 10;
 
 % Spatial interval
 x0 = 0;
 xn = 1;
-numCells = 512;
+numCells = 256;
 
 % Temporal interval
 t0 = 0;
@@ -28,9 +28,9 @@ omegaOrder = 0;
 delta = 0.02;
 
 % Input GRF parameters
-grfNumModes = 64;
+grfNumModes = 32;
 grfMean = 0;
-grfGamma = 1;
+grfGamma = 1.4;
 grfTau = 1;
 grfSigma= 0.2;
 grfType = "neumann";

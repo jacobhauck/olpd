@@ -1,8 +1,12 @@
 # Large ML files
 weights/
-.checkpoints/
+checkpoints/
 results/
 datasets/
+
+# slurm generated files
+*.out
+*.err
 
 # W & B
 wandb/

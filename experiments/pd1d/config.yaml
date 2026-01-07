@@ -1,17 +1,17 @@
 data:
   train:
-    file_name: data/pd1d/train1.ol.h5
+    file_name: data/pd1d/train2.ol.h5
     stream_uv: false
   test:
-    file_name: data/pd1d/test1.ol.h5
+    file_name: data/pd1d/test2.ol.h5
     stream_uv: false
 
 optim:
   name: Adam
-  lr: 0.00005
+  lr: 0.001
 
 training:
   loss_fn:
     name: RelativeL2Loss
-  batch_size: 16
+  batch_size: 8
   epochs: 200
