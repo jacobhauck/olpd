@@ -3,10 +3,13 @@
 % ===== Configuration =====
 
 % Output file
-fileName = "test2.ol.h5";
+fileName = "test3.ol.h5";
 
 % Whether to show an example before generating the dataset
 showExample = false;
+
+% Whether to print progress to terminal or show a bar
+useBar = true;
 
 % Size of dataset
 numSamples = 500;
@@ -14,7 +17,7 @@ numSamples = 500;
 % Spatial interval
 x0 = 0;
 xn = 1;
-numCells = 512;
+numCells = 256;
 
 % Temporal interval
 t0 = 0;
@@ -30,7 +33,7 @@ delta = 0.02;
 % Input GRF parameters
 grfNumModes = 64;
 grfMean = 0;
-grfGamma = 1;
+grfGamma = 1.4;
 grfTau = 1;
 grfSigma= 0.2;
 grfType = "neumann";
@@ -74,15 +77,32 @@ if showExample
 end
 
 % Generate dataset
-prog = waitbar(0, "Starting dataset generation");
+if useBar
+    prog = waitbar(0, "Starting dataset generation");
+else
+    fprintf("Starting dataset generation\n");
+end
+
 for i = 1:numSamples
     u0ref = GRF(grfNumModes, grfMean, grfGamma, grfTau, grfSigma, grfType);
     problem.u0 = @(x) u0ref((x - x0) / (xn - x0));
     saver.activeSample = i;
     solver.solve(@saver.stepCallback);
-    waitbar(i / numSamples, prog, sprintf("Generated %d / %d", i, numSamples));
+    if useBar
+        waitbar(i / numSamples, prog, sprintf("Generated %d / %d", i, numSamples));
+    else
+        fprintf("Generated %d / %d\n", i, numSamples);
+    end
 end
 
-waitbar(1.0, prog, "Saving...");
+if useBar
+    waitbar(1.0, prog, "Saving...");
+else
+    fprintf("Saving...\n");
+end
+
 saver.writeDataset(fileName);
-close(prog);
+
+if useBar
+    close(prog);
+end

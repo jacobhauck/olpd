@@ -1,6 +1,6 @@
 # Large ML files
 weights/
-.checkpoints/
+checkpoints/
 results/
 datasets/
 

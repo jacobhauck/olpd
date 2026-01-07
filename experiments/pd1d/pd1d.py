@@ -42,7 +42,12 @@ class PD1DTrainer(mlx.training.BaseTrainer):
 class PD1DTraining(mlx.WandBExperiment):
     def wandb_run(self, config, run):
         save_interval = config['training'].get('save_interval', 600)
-        trainer = PD1DTrainer(config, run, save_interval=save_interval)
+        log_interval = config['training'].get('log_interval', 3)
+        trainer = PD1DTrainer(
+            config, run,
+            save_interval=save_interval,
+            log_interval=log_interval
+        )
 
         # Handle model interface compatibility
         if 'fno' in config['model']['name'].lower():
