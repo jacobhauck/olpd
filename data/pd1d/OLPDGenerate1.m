@@ -3,16 +3,16 @@
 % ===== Configuration =====
 
 % Output file
-fileName = "test3.ol.h5";
+fileName = "test4.ol.h5";
 
 % Whether to show an example before generating the dataset
-showExample = false;
+showExample = true;
 
 % Whether to print progress to terminal or show a bar
 useBar = true;
 
 % Size of dataset
-numSamples = 10;
+numSamples = 1;
 
 % Spatial interval
 x0 = 0;

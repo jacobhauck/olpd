@@ -12,6 +12,8 @@ class VisualizePD1DDataset(mlx.Experiment):
         os.makedirs(output_dir, exist_ok=True)
 
         for i, (u, x, v, y) in enumerate(dataset):
+            if i >= config.get('max_plots', float('inf')):
+                break
             fig, axes = plt.subplots(1, 2, sharey=True, figsize=(16, 6))
             axes[0].plot(x, u)
             axes[0].set_title(f'Initial displacement ({i})')
@@ -29,5 +31,7 @@ class VisualizePD1DDataset(mlx.Experiment):
 
             if config['show']:
                 plt.show()
+
+            plt.close(fig)
 
         print(f'Generated {len(dataset)} visualizations in {output_dir}')

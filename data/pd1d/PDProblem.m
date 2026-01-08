@@ -23,6 +23,10 @@ classdef PDProblem < handle
 
         % Influence function (as callable)
         omega = @(r) ones(size(r))
+
+        % Influence function integral against r (used for micromodulus
+        % constant), omegaInt = \int_0^1 omega(r/delta) r dr.
+        omegaInt = 0.5;
         
         % Initial displacement field; callable with signature (x) -> (u),
         % where x and u are column vectors of the same dimension
@@ -43,8 +47,8 @@ classdef PDProblem < handle
         % Cross-sectional area
         area = 0.05
 
-        % Micromodulus constant
-        c = 1.25e5;
+        % Young's modulus
+        K = 1.0;
     end
 
     methods
@@ -116,16 +120,22 @@ classdef PDProblem < handle
             
             if order == 0
                 self.omega = @(r) ones(size(r));
+                self.omegaInt = 0.5;
             elseif order == 0.5
                 self.omega = @(r) 1.0 * (r <= d);
+                self.omegaInt = 0.5;
             elseif order == 1
                 self.omega = @(r) (1.0 - r/d) * (r <= d);
+                self.omegaInt = 1/6;
             elseif order == 3
                 self.omega = @(r) (1.0 - 3 * (r/d).^2 + 2 * (r/d).^3);
+                self.omegaInt = 3/20;
             elseif order == 5
                 self.omega = @(r) (1.0 - 10 * (r/d).^3 + 15 * (r/d).^4 - 6 * (r/d).^5);
+                self.omegaInt = 1/7;
             elseif order == 7
                 self.omega = @(r) (1.0 - 35 * (r/d).^4 + 84 * (r/d).^5 - 70 * (r/d).^6 + 20 * (r/d) .^ 7);
+                self.omegaInt = 5/36;
             else
                 error("Invalid influence function order. Choose from 0, 0.5, 1, 3, 5 or 7.");
             end
@@ -168,6 +178,16 @@ classdef PDProblem < handle
             %     indicated by k = 1)
 
             dt = self.t(k + 1) - self.t(k);
+        end
+
+        function c = getMicromodulusConstant(self)
+            % Calculates the micromodulus constant from the Young's
+            % modulus, peridynamic horizon, and influence function
+            %
+            % Outputs
+            % -------
+            % c: Micromodulus constant
+            c = self.K / (self.area * self.delta^2 * self.omegaInt);
         end
     end
 end

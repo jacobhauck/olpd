@@ -1,2 +1,3 @@
-dataset: data/pd1d/test.ol.h5
+dataset: data/pd1d/test3.ol.h5
 show: false
+max_plots: 20

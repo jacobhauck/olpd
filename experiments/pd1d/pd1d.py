@@ -9,8 +9,6 @@ class PD1DTrainer(mlx.training.BaseTrainer):
     def load_datasets(self, config):
         self.loss_fn = mlx.create_module(config['training']['loss_fn'])
 
-        config['data']['train']['device'] = config['device']
-        config['data']['test']['device'] = config['device']
         train_dataset = OLDataset(**config['data']['train'])
         test_dataset = OLDataset(**config['data']['test'])
 
@@ -34,6 +32,8 @@ class PD1DTrainer(mlx.training.BaseTrainer):
 
     def loss(self, data):
         u, x, v, y = data
+        d = self.config['device']
+        u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
         v_pred = self.apply_model(u, x, y)
         loss = self.loss_fn(v_pred, v)
         return v_pred, {'objective': loss}

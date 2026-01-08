@@ -165,11 +165,12 @@ classdef PDSolver < handle
 
             stretch = (abs(curDist) - absDist) ./ absDist;
             
-            bondForces = self.problem.c * (sign(curDist) .* self.neighborInfluences .* stretch);
+            c = self.problem.getMicromodulusConstant();
+            bondForces = c * (sign(curDist) .* self.neighborInfluences .* stretch);
             forceDensity = a * sum(bondForces .* self.neighborWeights, 2);
             
             % Calculate macroelastic energy density w
-            bondEnergies = (self.problem.c/2) * (self.neighborInfluences .* stretch.^2 .* absDist);
+            bondEnergies = (c/2) * (self.neighborInfluences .* stretch.^2 .* absDist);
             energyDensity = (a/2) * sum(bondEnergies .* self.neighborWeights, 2);
         end
 
