@@ -12,6 +12,7 @@ class PlotResults(mlx.Experiment):
         prefix = mlx.wandb_config['entity'] + '/' + mlx.wandb_config['project']
         run = api.run(prefix + '/' + config['run_id'])
         run.step = run.lastHistoryStep - 1
+        run.config['device'] = 'cpu'
         trainer = PD1DTrainer(run.config, run)
 
         data_loader = torch.utils.data.DataLoader(
@@ -24,16 +25,15 @@ class PlotResults(mlx.Experiment):
         os.makedirs(output_dir, exist_ok=True)
         rel_l2 = mlx.modules.RelativeL2Loss()
 
+        trainer.model.train(False)
         for i, (u, x, v, y) in enumerate(data_loader):
             if i >= config['max_plots']:
                 break
 
-            trainer.model.train(False)
-            trainer.model.to('cpu')
             with torch.no_grad():
                 v_pred = trainer.apply_model(u, x, y)
-            u, x, v, y, v_pred = u[0], x[0], v[0], y[0], v_pred[0]
             error = rel_l2(v, v_pred)
+            u, x, v, y, v_pred = u[0], x[0], v[0], y[0], v_pred[0]
 
             fig, axes = plt.subplots(1, 2, figsize=(16, 6))
             axes[0].plot(x[:, 0], u[:, 0])
