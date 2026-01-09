@@ -42,7 +42,7 @@ class PlotResults(mlx.Experiment):
             axes[0].set_ylabel('$u(x, 0)$')
             axes[1].plot(y[:, 0], v[:, 0], label='True')
             axes[1].plot(y[:, 0], v_pred[:, 0], label='Pred')
-            axes[1].set_title(f'Final displacement ({i}); error = {error.item():.02f}%')
+            axes[1].set_title(f'Final displacement ({i}); error = {100*error.item():.02f}%')
             axes[1].set_xlabel('$x$')
             axes[1].set_ylabel('$u(x, T)$')
             axes[1].legend()
