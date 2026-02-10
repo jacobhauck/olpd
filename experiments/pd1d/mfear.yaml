@@ -49,8 +49,12 @@ model:
     d_out: *q
     hidden_layers:
       - 128
-      - 256
-      - 256
+      - 128
+      - 128
+      - 128
+      - 128
+      - 128
+      - 128
       - 128
     activation:
-      name: ReLU
+      name: SELU

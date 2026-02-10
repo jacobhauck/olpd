@@ -3,7 +3,7 @@
 #SBATCH --output=experiments/pd1d/pd1d.out
 #SBATCH --error=experiments/pd1d/pd1d.err
 #SBATCH --gpus=1
-#SBATCH --time=25
-#SBATCH --mem=2000
+#SBATCH --time=40
+#SBATCH --mem=3000
 
-python -m mlx.run pd1d mfear
+python -m mlx.run pd1d mfear 

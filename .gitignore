@@ -4,6 +4,9 @@ checkpoints/
 results/
 datasets/
 
+# Data generation
+data/pd1d/chebfun/
+
 # slurm generated files
 *.out
 *.err
