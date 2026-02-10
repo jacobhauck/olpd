@@ -1,9 +1,9 @@
 data:
   train:
-    file_name: data/pd1d/train4.ol.h5
+    file_name: data/pd2d/train1.ol.h5
     stream_uv: true
   test:
-    file_name: data/pd1d/test4.ol.h5
+    file_name: data/pd1d/test1.ol.h5
     stream_uv: true
 
 optim:

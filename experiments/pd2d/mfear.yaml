@@ -1,0 +1,56 @@
+model:
+  name: MFEAR
+  integrator:
+    name: mfear.TrapezoidIntegrator
+
+  encoder_net:
+    name: mfear.CompactMLPBasis
+    d_in: 2
+    d_out: 2
+    p: &p 32
+    mlp:
+      hidden_layers:
+        - 64
+        - 64
+        - 64
+      activation:
+        name: ReLU
+    feat_expansion:
+      name: deeponet.FourierFeatureExpansion
+      origin: [ 0, 0 ]  # These depend on the dataset being used
+      scale: [ 5, 5 ]
+      mode: random
+      features: 64
+      learnable: true
+
+  reconstructor_net:
+    name: mfear.CompactMLPBasis
+    d_in: 2
+    d_out: 2
+    p: &q 64
+    mlp:
+      hidden_layers:
+        - 64
+        - 64
+        - 64
+      activation:
+        name: ReLU
+    feat_expansion:
+      name: deeponet.FourierFeatureExpansion
+      origin: [ 0, 0 ]  # These depend on the dataset being used
+      scale: [ 5, 5 ]
+      mode: random
+      features: 128
+      learnable: true
+
+  approximator_net:
+    name: MLP
+    d_in: *p
+    d_out: *q
+    hidden_layers:
+      - 128
+      - 256
+      - 256
+      - 128
+    activation:
+      name: ReLU
