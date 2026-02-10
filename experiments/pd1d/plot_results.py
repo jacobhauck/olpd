@@ -13,6 +13,12 @@ class PlotResults(mlx.Experiment):
         run = api.run(prefix + '/' + config['run_id'])
         run.step = run.lastHistoryStep - 1
         trainer = PD1DTrainer(run.config, run)
+        
+        # Handle model interface compatibility
+        if 'fno' in run.config['model']['name'].lower():
+            trainer.apply_model = lambda u, x, y: trainer.model(u)
+        elif 'gnot' in run.config['model']['name'].lower():
+            trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
 
         data_loader = torch.utils.data.DataLoader(
             trainer.datasets['test'],
