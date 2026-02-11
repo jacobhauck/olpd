@@ -20,29 +20,31 @@ class VisualizePD1DDataset(mlx.Experiment):
             im_kwargs = {
                 'vmin': v_min,
                 'vmax': v_max,
-                'cmap': 'seismic'
+                'cmap': 'seismic',
+                'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
+                'origin': 'lower'
             }
 
             fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0][0].imshow(x[:, :, 0], **im_kwargs)
+            axes[0][0].imshow(x[:, :, 0].T, **im_kwargs)
             axes[0][0].set_title(f'Initial $x$ displacement ({i})')
             axes[0][0].set_xlabel('$x$')
             axes[0][0].set_ylabel('$y$')
             axes[0][0].set_aspect('equal')
 
-            axes[0][1].imshow(u[:, :, 1], **im_kwargs)
+            axes[0][1].imshow(x[:, :, 1].T, **im_kwargs)
             axes[0][1].set_title(f'Initial $y$ displacement ({i})')
             axes[0][1].set_xlabel('$x$')
             axes[0][1].set_ylabel('$y$')
             axes[0][1].set_aspect('equal')
 
-            axes[1][0].imshow(v[:, :, 0], **im_kwargs)
+            axes[1][0].imshow(v[:, :, 0].T, **im_kwargs)
             axes[1][0].set_title(f'Final $x$ displacement ({i})')
             axes[1][0].set_xlabel('$x$')
             axes[1][0].set_ylabel('$y$')
             axes[1][0].set_aspect('equal')
 
-            last = axes[1][1].imshow(v[:, :, 1], **im_kwargs)
+            last = axes[1][1].imshow(v[:, :, 1].T, **im_kwargs)
             axes[1][1].set_title(f'Final $y$ displacement ({i})')
             axes[1][1].set_xlabel('$x$')
             axes[1][1].set_ylabel('$y$')
