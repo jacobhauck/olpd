@@ -1,4 +1,4 @@
-import numpy as np
+import torch
 from operatorlearning.data import OLDataset
 
 
@@ -10,8 +10,8 @@ def pd2d_to_tensor_grid(t, nx, ny):
     :return: (B, nx, ny, 2) version of tensor conforming to
         operatorlearning.GridFunction tensor grid conventions
     """
-    t = t.reshape(-1, nx, ny, 2).transpose(0, 2, 1, 3)
-    return np.flip(t, 2)
+    t = t.reshape(-1, nx, ny, 2).permute(0, 2, 1, 3)
+    return torch.flip(t, (2,))
 
 
 def pd2d_import_dataset(dataset_in, dataset_out, nx, ny):
