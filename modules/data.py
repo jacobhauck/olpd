@@ -29,5 +29,5 @@ def pd2d_import_dataset(dataset_in, dataset_out, nx, ny):
     x = pd2d_to_tensor_grid(data_in.x[1][None], nx, ny)[0]  # (nx, ny, 2)
     y = pd2d_to_tensor_grid(data_in.y[1][None], nx, ny)[0]  # (nx, ny, 2)
 
-    disc = [0] * len(u)
+    disc = torch.zeros(len(u), dtype=torch.long)
     OLDataset.write(u, [x], v, [y], dataset_out, u_disc=disc, v_disc=disc)
