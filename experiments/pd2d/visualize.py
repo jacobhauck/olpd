@@ -26,13 +26,13 @@ class VisualizePD1DDataset(mlx.Experiment):
             }
 
             fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0][0].imshow(x[:, :, 0].T, **im_kwargs)
+            axes[0][0].imshow(u[:, :, 0].T, **im_kwargs)
             axes[0][0].set_title(f'Initial $x$ displacement ({i})')
             axes[0][0].set_xlabel('$x$')
             axes[0][0].set_ylabel('$y$')
             axes[0][0].set_aspect('equal')
 
-            axes[0][1].imshow(x[:, :, 1].T, **im_kwargs)
+            axes[0][1].imshow(u[:, :, 1].T, **im_kwargs)
             axes[0][1].set_title(f'Initial $y$ displacement ({i})')
             axes[0][1].set_xlabel('$x$')
             axes[0][1].set_ylabel('$y$')
