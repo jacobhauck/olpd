@@ -17,33 +17,32 @@ class VisualizePD1DDataset(mlx.Experiment):
 
             v_min = min(float(u.min()), float(v.min()))
             v_max = max(float(u.max()), float(v.max()))
-            contour_kwargs = {
+            im_kwargs = {
                 'vmin': v_min,
                 'vmax': v_max,
-                'cmap': 'seismic',
-                'levels': 15,
+                'cmap': 'seismic'
             }
 
             fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0][0].tricontourf(x[..., 0], x[..., 1], u[..., 0], **contour_kwargs)
+            axes[0][0].imshow(x[:, :, 0], **im_kwargs)
             axes[0][0].set_title(f'Initial $x$ displacement ({i})')
             axes[0][0].set_xlabel('$x$')
             axes[0][0].set_ylabel('$y$')
             axes[0][0].set_aspect('equal')
 
-            axes[0][1].tricontourf(x[..., 0], x[..., 1], u[..., 1], **contour_kwargs)
+            axes[0][1].imshow(u[:, :, 1], **im_kwargs)
             axes[0][1].set_title(f'Initial $y$ displacement ({i})')
             axes[0][1].set_xlabel('$x$')
             axes[0][1].set_ylabel('$y$')
             axes[0][1].set_aspect('equal')
 
-            axes[1][0].tricontourf(y[..., 0], y[..., 1], v[..., 0], **contour_kwargs)
+            axes[1][0].imshow(v[:, :, 0], **im_kwargs)
             axes[1][0].set_title(f'Final $x$ displacement ({i})')
             axes[1][0].set_xlabel('$x$')
             axes[1][0].set_ylabel('$y$')
             axes[1][0].set_aspect('equal')
 
-            last = axes[1][1].tricontourf(y[..., 0], y[..., 1], v[..., 1], **contour_kwargs)
+            last = axes[1][1].imshow(v[:, :, 1], **im_kwargs)
             axes[1][1].set_title(f'Final $y$ displacement ({i})')
             axes[1][1].set_xlabel('$x$')
             axes[1][1].set_ylabel('$y$')
