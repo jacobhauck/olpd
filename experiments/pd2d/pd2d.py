@@ -5,9 +5,11 @@ import torch.utils.data
 
 class PD2DTrainer(mlx.training.BaseTrainer):
     loss_fn = None
+    metrics_fns = {}
 
     def load_datasets(self, config):
         self.loss_fn = mlx.create_module(config['training']['loss_fn'])
+        self.metrics_fns = {conf['name']: mlx.create_module(conf) for conf in config.get('metrics', ())}
 
         train_dataset = OLDataset(**config['data']['train'])
         test_dataset = OLDataset(**config['data']['test'])
@@ -38,8 +40,11 @@ class PD2DTrainer(mlx.training.BaseTrainer):
         loss = self.loss_fn(v_pred, v)
         return v_pred, {'objective': loss}
 
+    def metrics(self, prediction, data):
+        return {name: fn(prediction, data) for name, fn in self.metrics_fns.items()}
 
-class PD1DTraining(mlx.WandBExperiment):
+
+class PD2DTraining(mlx.WandBExperiment):
     def wandb_run(self, config, run):
         save_interval = config['training'].get('save_interval', 600)
         log_interval = config['training'].get('log_interval', 3)
