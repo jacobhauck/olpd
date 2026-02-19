@@ -56,11 +56,22 @@ class PD2DTraining(mlx.WandBExperiment):
             log_interval=log_interval
         )
 
+        # Fit PCA bases if necessary
+        if 'pcanet' in config['model']['name'].lower():
+            # sample = (u, x, v, y)
+            # noinspection PyTypeChecker
+            uv_map = map(lambda sample: (sample[0], sample[2]), trainer.datasets['train'])
+            _, _x, _, _y = trainer.datasets['train'][0]
+            print('Fitting PCA bases')
+            trainer.model.fit_pca(uv_map, _x, _y)
+
         # Handle model interface compatibility
         if 'fno' in config['model']['name'].lower():
             trainer.apply_model = lambda u, x, y: trainer.model(u)
         elif 'gnot' in config['model']['name'].lower():
             trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
+        elif 'pcanet' in config['model']['name'].lower():
+            trainer.apply_model = lambda u, x, y: trainer.model(u)
 
         trainer.train(epochs=config['training']['epochs'])
         losses, _ = trainer.evaluate(('train', 'test'))
