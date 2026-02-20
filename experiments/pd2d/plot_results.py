@@ -83,7 +83,7 @@ class PlotResults(mlx.Experiment):
             fig.colorbar(last, cax=cbar_ax, label='Displacement')
 
             plt.savefig(
-                os.path.join(output_dir, str(i) + '.png'),
+                os.path.join(output_dir, config.get('from_dataset', 'test') + '_pred_' + str(i) + '.png'),
                 bbox_inches='tight'
             )
 
@@ -109,7 +109,7 @@ class PlotResults(mlx.Experiment):
             fig.colorbar(last, cax=cbar_ax, label=f'Displacement error ($RL^2 = $ {100*error:.02f}%)')
 
             plt.savefig(
-                os.path.join(output_dir, str(i) + '.png'),
+                os.path.join(output_dir, config.get('from_dataset', 'test') + '_error_' + str(i) + '.png'),
                 bbox_inches='tight'
             )
 
