@@ -3,3 +3,8 @@ max_plots: 20
 show: false
 random: true
 from_dataset: test
+
+xo: 0.0
+yo: 0.0
+xn: 5.0
+yn: 5.0

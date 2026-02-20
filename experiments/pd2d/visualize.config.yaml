@@ -1,3 +1,7 @@
 dataset: data/pd2d/test1.ol.h5
 show: false
 max_plots: 20
+xo: 0.0
+yo: 0.0
+xn: 5.0
+yn: 5.0
