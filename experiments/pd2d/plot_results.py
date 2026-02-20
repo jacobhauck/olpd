@@ -45,10 +45,18 @@ class PlotResults(mlx.Experiment):
             u, x, v, y, v_pred = u[0], x[0], v[0], y[0], v_pred[0]
             v_min = min(float(u.min()), float(v.min()))
             v_max = max(float(u.max()), float(v.max()))
+            err_fn = (v - v_pred).abs()
             im_kwargs = {
                 'vmin': v_min,
                 'vmax': v_max,
                 'cmap': 'seismic',
+                'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
+                'origin': 'lower'
+            }
+            err_kwargs = {
+                'vmin': float(err_fn.min()),
+                'vmax': float(err_fn.max()),
+                'cmap': 'plasma',
                 'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
                 'origin': 'lower'
             }
@@ -93,13 +101,13 @@ class PlotResults(mlx.Experiment):
             plt.close(fig)
 
             fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0].imshow((v - v_pred).abs()[:, :, 0].T, **im_kwargs)
+            axes[0].imshow((v - v_pred).abs()[:, :, 0].T, **err_kwargs)
             axes[0].set_title(f'Error $x$ displacement ({i})')
             axes[0].set_xlabel('$x$')
             axes[0].set_ylabel('$y$')
             axes[0].set_aspect('equal')
 
-            axes[1].imshow((v - v_pred).abs()[:, :, 1].T, **im_kwargs)
+            last = axes[1].imshow((v - v_pred).abs()[:, :, 1].T, **err_kwargs)
             axes[1].set_title(f'Error $y$ displacement ({i})')
             axes[1].set_xlabel('$x$')
             axes[1].set_ylabel('$y$')
