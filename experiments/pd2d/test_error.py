@@ -14,8 +14,8 @@ class TestErrorExperiment(mlx.Experiment):
         run.step = run.lastHistoryStep
         trainer = PD2DTrainer(run.config, run)
 
-        for metric, definition in config.get('additional_metrics', {}).items():
-            trainer.metrics_fns[metric] = mlx.create_module(definition)
+        for metric in config.get('additional_metrics', ()):
+            trainer.metrics_fns[metric['name']] = mlx.create_module(metric)
 
         # Handle model interface compatibility
         if 'fno' in run.config['model']['name'].lower():
