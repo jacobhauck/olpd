@@ -1,10 +1,11 @@
 run_id: ctb4pcj3
 additional_metrics:
-  name: SmoothRelativeL2Loss
-  bandwidth: 5.0
-  x_min:
-    - 0.0
-    - 0.0
-  x_max:
-    - 5.0
-    - 5.0
+  -
+    name: SmoothRelativeL2Loss
+    bandwidth: 5.0
+    x_min:
+      - 0.0
+      - 0.0
+    x_max:
+      - 5.0
+      - 5.0
