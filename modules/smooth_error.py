@@ -17,7 +17,8 @@ def rfftfreqn(shape):
     :param shape: (s_1, s_2, ..., s_n) tuple of sizes
     :return: (s_1, s_2, ..., s_n, n) array of sample frequencies
     """
-    freq1d = [torch.fft.rfftfreq(s) for s in shape]
+    freq1d = [torch.fft.fftfreq(s) for s in shape[:-1]]
+    freq1d.append(torch.fft.rfftfreq(shape[-1]))
     return torch.stack(torch.meshgrid(*freq1d, indexing='ij'), dim=-1)
 
 
@@ -51,10 +52,10 @@ class SmoothRelativeL2Loss(torch.nn.Module):
         assert len(target.shape) == d + 2, 'target has invalid shape'
 
         f = rfftfreqn(target.shape[1:-1]) / (self.x_max - self.x_min)
-        f *= torch.tensor(target.shape[1:-1])[None, ..., None]
+        f *= torch.tensor(target.shape[1:-1])
         mask = (f < self.bandwidth).to(target.dtype).to(target.device)
 
-        dims = tuple(range(-d - 1, -1, -1))
+        dims = tuple(range(-d - 1, -1))
         prediction_fft = torch.fft.rfftn(prediction, dim=dims)
         target_fft = torch.fft.rfftn(target, dim=dims)
 

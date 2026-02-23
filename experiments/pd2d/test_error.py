@@ -34,6 +34,9 @@ class TestErrorExperiment(mlx.Experiment):
                 print(f'    Mean: {loss.mean().item():.05f}')
                 print(f'    Median: {loss.median().item():.05f}')
                 print(f'    Std.: {loss.std().item():.05f}')
+                print()
+            print()
+        print()
 
         for dataset, dataset_metrics in metrics.items():
             print(f'===== Metric for dataset: "{dataset}" =====')
@@ -42,3 +45,5 @@ class TestErrorExperiment(mlx.Experiment):
                 print(f'    Mean: {metric.mean().item():.05f}')
                 print(f'    Median: {metric.median().item():.05f}')
                 print(f'    Std.: {metric.std().item():.05f}')
+                print()
+            print()
