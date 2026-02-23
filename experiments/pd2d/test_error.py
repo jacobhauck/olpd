@@ -12,7 +12,6 @@ class TestErrorExperiment(mlx.Experiment):
         prefix = mlx.wandb_config['entity'] + '/' + mlx.wandb_config['project']
         run = api.run(prefix + '/' + config['run_id'])
         run.step = run.lastHistoryStep
-        run.config['device'] = 'cpu'
         trainer = PD2DTrainer(run.config, run)
 
         for metric, definition in config.get('additional_metrics', {}).items():
