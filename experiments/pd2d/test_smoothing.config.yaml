@@ -1,0 +1,15 @@
+dataset: data/pd2d/test_tg1.ol.h5
+show: false
+max_plots: 20
+xo: &xo 0.0
+xn: &xn 5.0
+yo: &yo 0.0
+yn: &yn 5.0
+
+smoothing_operator:
+  name: GaussianSmoothing2d
+  kernel_sigma: 0.1
+  x_min: [*xo, *yo]
+  x_max: [*xn, *yn]
+  n: [200, 200]
+  extend: constant
