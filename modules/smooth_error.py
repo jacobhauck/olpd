@@ -114,7 +114,7 @@ class GaussianSmoothing2d(torch.nn.Module):
         # Move output components to batch dimension to apply convolution
         # component-wise, and add dummy channel dimension for compliance with
         # torch.nn.functional.conv2d interface
-        u = torch.permute(u, (0, 3, 1, 2)).view(-1, 1, *u.shape[1:3])
+        u = torch.permute(u, (0, 3, 1, 2)).reshape(-1, 1, *u.shape[1:3])
         # (B*v_d_out, 1, N0, N1)
 
         if self.extend == 'zero':
@@ -139,4 +139,4 @@ class GaussianSmoothing2d(torch.nn.Module):
             u1 = torch.nn.functional.conv2d(u0, self.weight1)
 
         # Go back to standard shape/ordering
-        return torch.permute(u1.view(batch_size, v_d_out, *u1.shape[2:]), (0, 2, 3, 1))
+        return torch.permute(u1.reshape(batch_size, v_d_out, *u1.shape[2:]), (0, 2, 3, 1))
