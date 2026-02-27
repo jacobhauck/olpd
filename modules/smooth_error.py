@@ -74,9 +74,6 @@ class GaussianSmoothing2d(torch.nn.Module):
         self.register_buffer('weight1', w1)
         self.extend = extend
 
-    def __repr__(self):
-        return f'GaussianSmoothing2d(sigma={self.kernel_sigma})'
-
     def _build_weights(self):
         # Calculate cell size
         dx = (self.x_max - self.x_min) / self.n.to(torch.float)
