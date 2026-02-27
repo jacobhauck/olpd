@@ -37,6 +37,9 @@ class SmoothRelativeL2Loss(torch.nn.Module):
         self.x_max = torch.tensor(x_max, dtype=torch.float)
         self.squared = squared
 
+    def __repr__(self):
+        return f'SmoothRelativeL2Loss(bandwidth={self.bandwidth:.02f}, squared={self.squared})'
+
     def forward(self, prediction, target):
         """
         Functions must be sampled on a regular grid with minimum point
