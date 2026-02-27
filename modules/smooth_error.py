@@ -35,6 +35,9 @@ class SmoothedLoss(torch.nn.Module):
         self.base_loss = mlx.create_module(base_loss)
         self.smoothing_operator = mlx.create_module(smoothing_operator)
 
+    def __repr__(self):
+        return f'SmoothedLoss(base={self.base_loss}, op={self.smoothing_operator})'
+
     def forward(self, prediction, target):
         """
         :param prediction: (B, *shape, v_d_out) predicted function values
@@ -70,6 +73,9 @@ class GaussianSmoothing2d(torch.nn.Module):
         self.register_buffer('weight0', w0)
         self.register_buffer('weight1', w1)
         self.extend = extend
+
+    def __repr__(self):
+        return f'GaussianSmoothing2d(sigma={self.kernel_sigma})'
 
     def _build_weights(self):
         # Calculate cell size
