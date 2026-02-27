@@ -4,9 +4,11 @@ import matplotlib.pyplot as plt
 import os
 
 
-class VisualizePD2DDataset(mlx.Experiment):
+class VisualizeSmooth(mlx.Experiment):
     def run(self, config, name, group=None):
         dataset = OLDataset(config['dataset'], stream_uv=True)
+
+        smoothing = mlx.create_module(config['smoothing_operator'])
 
         output_dir = os.path.join('results', name)
         os.makedirs(output_dir, exist_ok=True)
@@ -25,27 +27,29 @@ class VisualizePD2DDataset(mlx.Experiment):
                 'origin': 'lower'
             }
 
+            v_smooth = smoothing(v[None])[0]
+
             fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0][0].imshow(u[:, :, 0].T, **im_kwargs)
-            axes[0][0].set_title(f'Initial $x$ displacement ({i})')
+            axes[0][0].imshow(v[:, :, 0].T, **im_kwargs)
+            axes[0][0].set_title(f'Final $x$ displacement ({i})')
             axes[0][0].set_xlabel('$x$')
             axes[0][0].set_ylabel('$y$')
             axes[0][0].set_aspect('equal')
 
-            axes[0][1].imshow(u[:, :, 1].T, **im_kwargs)
-            axes[0][1].set_title(f'Initial $y$ displacement ({i})')
+            axes[0][1].imshow(v[:, :, 1].T, **im_kwargs)
+            axes[0][1].set_title(f'Final $y$ displacement ({i})')
             axes[0][1].set_xlabel('$x$')
             axes[0][1].set_ylabel('$y$')
             axes[0][1].set_aspect('equal')
 
-            axes[1][0].imshow(v[:, :, 0].T, **im_kwargs)
-            axes[1][0].set_title(f'Final $x$ displacement ({i})')
+            axes[1][0].imshow(v_smooth[:, :, 0].T, **im_kwargs)
+            axes[1][0].set_title(f'Smooth final $x$ displacement ({i})')
             axes[1][0].set_xlabel('$x$')
             axes[1][0].set_ylabel('$y$')
             axes[1][0].set_aspect('equal')
 
-            last = axes[1][1].imshow(v[:, :, 1].T, **im_kwargs)
-            axes[1][1].set_title(f'Final $y$ displacement ({i})')
+            last = axes[1][1].imshow(v_smooth[:, :, 1].T, **im_kwargs)
+            axes[1][1].set_title(f'Smooth final $y$ displacement ({i})')
             axes[1][1].set_xlabel('$x$')
             axes[1][1].set_ylabel('$y$')
             axes[1][1].set_aspect('equal')

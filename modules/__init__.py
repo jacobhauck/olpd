@@ -1,1 +1,1 @@
-from .smooth_error import SmoothRelativeL2Loss
+from .smooth_error import SmoothedLoss, GaussianSmoothing2d
