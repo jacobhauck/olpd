@@ -8,10 +8,22 @@ data:
 
 optim:
   name: Adam
-  lr: 0.001
+  lr: 0.003
+  
+lr_scheduler:
+  name: ExponentialLRScheduler
+  gamma: 0.99
+
+metrics:
+  rel_l2:
+    name: FunctionalL2Loss
+    relative: true
+    squared: false
 
 training:
   loss_fn:
-    name: RelativeL2Loss
-  batch_size: 64
+    name: FunctionalL1Loss
+    relative: false
+  batch_size: 16
   epochs: 200
+
