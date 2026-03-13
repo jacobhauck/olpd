@@ -1,6 +1,6 @@
-dataset: data/pd2d/test_tg1.ol.h5
+dataset: data/pd2d/train_tg5.ol.h5
 show: false
-max_plots: 20
+max_plots: 1
 xo: 0.0
 xn: 5.0
 yo: 0.0
