@@ -47,7 +47,7 @@ class PD2DTrainer(mlx.training.BaseTrainer):
     def metrics(self, prediction, data):
         _, _, v, _ = data
         v = v.to(self.config['device'])
-        return {name: fn(prediction, v) for fn, name in self.metrics_fns.items()}
+        return {name: fn(prediction, v) for name, fn in self.metrics_fns.items()}
 
 
 class PD2DTraining(mlx.WandBExperiment):
