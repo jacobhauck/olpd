@@ -10,10 +10,10 @@ class PD2DTrainer(mlx.training.BaseTrainer):
     def load_datasets(self, config):
         self.loss_fn = mlx.create_module(config['training']['loss_fn'])
         self.loss_fn.to(config['device'])
-        self.metrics_fns = [
-            mlx.create_module(conf).to(config['device'])
-            for conf in config.get('metrics', ())
-        ]
+        self.metrics_fns = {
+            name: mlx.create_module(conf).to(config['device'])
+            for name, conf in config.get('metrics', {}).items()
+        }
 
         train_dataset = OLDataset(**config['data']['train'])
         test_dataset = OLDataset(**config['data']['test'])
@@ -47,7 +47,7 @@ class PD2DTrainer(mlx.training.BaseTrainer):
     def metrics(self, prediction, data):
         _, _, v, _ = data
         v = v.to(self.config['device'])
-        return {repr(fn): fn(prediction, v) for fn in self.metrics_fns}
+        return {name: fn(prediction, v) for fn, name in self.metrics_fns.items()}
 
 
 class PD2DTraining(mlx.WandBExperiment):
