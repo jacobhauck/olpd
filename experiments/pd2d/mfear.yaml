@@ -1,7 +1,7 @@
 model:
   name: MFEAR
   integrator:
-    name: mfear.TrapezoidIntegrator
+    name: TrapezoidIntegrator
 
   encoder_net:
     name: mfear.CompactMLPBasis

@@ -11,7 +11,7 @@ optim:
   lr: 0.003
   
 lr_scheduler:
-  name: ExponentialLRScheduler
+  name: ExponentialLR
   gamma: 0.99
 
 metrics:
