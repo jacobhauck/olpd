@@ -1,0 +1,24 @@
+data:
+  train:
+    file_name: data/pd2d/train_tg3.ol.h5
+    stream_uv: false
+  test:
+    file_name: data/pd2d/test_tg3.ol.h5
+    stream_uv: false
+
+optim:
+  name: Adam
+  lr: 0.0005
+
+metrics:
+  -
+    name: RelativeL2Loss
+    squared: false
+  
+training:
+  loss_fn:
+    name: RelativeL2Loss
+    squared: false
+  batch_size: 64
+  epochs: 1000
+
