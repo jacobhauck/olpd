@@ -7,34 +7,36 @@ model:
     name: mfear.CompactMLPBasis
     d_in: 2
     d_out: 2
-    p: &p 32
+    p: &p 96
     mlp:
       hidden_layers:
-        - 64
-        - 64
-        - 64
+        - 128
+        - 128
+        - 128
       activation:
-        name: ReLU
+        name: LeakyReLU
+        negative_slope: 0.03
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 64
+      features: 128
       learnable: true
 
   reconstructor_net:
     name: mfear.CompactMLPBasis
     d_in: 2
     d_out: 2
-    p: &q 64
+    p: &q 128
     mlp:
       hidden_layers:
-        - 64
-        - 64
-        - 64
+        - 128
+        - 128
+        - 128
       activation:
-        name: ReLU
+        name: LeakyReLU
+        negative_slope: 0.03
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
       origin: [ 0, 0 ]  # These depend on the dataset being used
@@ -48,9 +50,10 @@ model:
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 128
       - 256
       - 256
-      - 128
+      - 256
+      - 256
     activation:
-      name: ReLU
+      name: LeakyReLU
+      negative_slope: 0.03
