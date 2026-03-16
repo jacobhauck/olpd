@@ -17,8 +17,7 @@ metrics:
   
 training:
   loss_fn:
-    name: RelativeL2Loss
-    squared: false
+    name: L1Loss
   batch_size: 64
   epochs: 1000
 
