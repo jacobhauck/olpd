@@ -11,13 +11,15 @@ optim:
   lr: 0.0005
 
 metrics:
-  -
-    name: RelativeL2Loss
+  rel_l2:
+    name: FunctionalL2Loss
     squared: false
+    relative: true
   
 training:
   loss_fn:
-    name: L1Loss
+    name: FunctionalL1Loss
+    relative: false
   batch_size: 64
   epochs: 1000
 
