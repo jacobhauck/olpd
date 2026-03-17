@@ -1,18 +1,14 @@
 data:
   train:
-    file_name: data/pd2d/train_tg5.ol.h5
-    stream_uv: true
+    file_name: data/pd2d/train_tg3.ol.h5
+    stream_uv: false
   test:
-    file_name: data/pd2d/test_tg5.ol.h5
-    stream_uv: true
+    file_name: data/pd2d/test_tg3.ol.h5
+    stream_uv: false
 
 optim:
   name: Adam
-  lr: 0.003
-  
-lr_scheduler:
-  name: ExponentialLR
-  gamma: 0.99
+  lr: 0.001
 
 metrics:
   rel_l2:
@@ -22,8 +18,15 @@ metrics:
 
 training:
   loss_fn:
-    name: FunctionalL1Loss
-    relative: false
+    name: SmoothedLoss
+    base_loss:
+      name: FunctionalL1Loss
+      relative: false
+    smoothing_operator:
+      name: GaussianSmoothing2d
+      kernel_sigma: 0.2
+      x_min: [0.0, 0.0]
+      x_max: [5.0, 5.0]
   batch_size: 16
   epochs: 200
 
