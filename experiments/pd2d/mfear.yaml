@@ -7,15 +7,14 @@ model:
     name: mfear.CompactMLPBasis
     d_in: 2
     d_out: 2
-    p: &p 96
+    p: &p 64
     mlp:
       hidden_layers:
         - 128
         - 128
         - 128
       activation:
-        name: LeakyReLU
-        negative_slope: 0.03
+        name: ReLU
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
       origin: [ 0, 0 ]  # These depend on the dataset being used
@@ -35,8 +34,7 @@ model:
         - 128
         - 128
       activation:
-        name: LeakyReLU
-        negative_slope: 0.03
+        name: ReLU
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
       origin: [ 0, 0 ]  # These depend on the dataset being used
@@ -50,10 +48,15 @@ model:
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 256
-      - 256
-      - 256
-      - 256
+      - 512
+      - 512
+      - 512
+      - 512
+      - 512
+      - 512
     activation:
-      name: LeakyReLU
-      negative_slope: 0.03
+      name: ReLU
+    dropout: 0.07
+    norm:
+      name: LayerNorm
+      normalized_shape: 512
