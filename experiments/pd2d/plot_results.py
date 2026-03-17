@@ -4,6 +4,7 @@ import wandb
 import matplotlib.pyplot as plt
 import os
 from .pd2d import PD2DTrainer
+from operatorlearning.modules import FunctionalL2Loss
 
 
 class PlotResults(mlx.Experiment):
@@ -31,7 +32,7 @@ class PlotResults(mlx.Experiment):
 
         output_dir = os.path.join('results', run.name)
         os.makedirs(output_dir, exist_ok=True)
-        rel_l2 = mlx.modules.RelativeL2Loss()
+        rel_l2 = FunctionalL2Loss(relative=True, squared=False)
 
         trainer.model.train(False)
         for i, (u, x, v, y) in enumerate(data_loader):
