@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job_name=arch_test
+#SBATCH --job-name=arch_test
 #SBATCH --output=log_%a.out
 #SBATCH --array=1-6
 #SBATCH --gpus=1
