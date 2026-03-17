@@ -19,6 +19,7 @@ metrics:
 training:
   loss_fn:
     name: FunctionalL1Loss
+    relative: false
   batch_size: 64
   epochs: 1000
 
