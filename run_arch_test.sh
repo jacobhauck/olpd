@@ -6,4 +6,4 @@
 #SBATCH --mem=5000
 #SBATCH --time=500
 
-mlx pd2d
+mlx pd2d arch_test/mfear$SLURM_ARRAY_TASK_ID
