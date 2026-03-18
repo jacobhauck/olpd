@@ -15,7 +15,7 @@ class TestErrorExperiment(mlx.Experiment):
         trainer = PD2DTrainer(run.config, run)
 
         for name, metric in config.get('additional_metrics', {}).items():
-            trainer.metrics_fns[name] = mlx.create_module(metric)
+            trainer.metrics_fns[name] = mlx.create_module(metric).to(run.config['device'])
 
         # Handle model interface compatibility
         if 'fno' in run.config['model']['name'].lower():
