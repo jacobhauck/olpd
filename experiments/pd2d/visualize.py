@@ -8,7 +8,7 @@ class VisualizePD2DDataset(mlx.Experiment):
     def run(self, config, name, group=None):
         dataset = OLDataset(config['dataset'], stream_uv=True)
 
-        output_dir = os.path.join('results', name)
+        output_dir = os.path.join('results', name, config['dataset'])
         os.makedirs(output_dir, exist_ok=True)
 
         for i, (u, x, v, y) in enumerate(dataset):
