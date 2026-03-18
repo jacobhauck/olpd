@@ -20,7 +20,7 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: full
-      features: 8
+      features: 12
 
   reconstructor_net:
     name: mfear.CompactMLPBasis
@@ -39,21 +39,21 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: full
-      features: 8
+      features: 12
 
   approximator_net:
     name: MLP
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 256
-      - 256
-      - 256
-      - 256
-      - 256
-      - 256
+      - 512
+      - 512
+      - 512
+      - 512
+      - 512
+      - 512
     activation:
       name: ReLU
     norm:
       name: LayerNorm
-      normalized_shape: 256
+      normalized_shape: 512
