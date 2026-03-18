@@ -23,7 +23,7 @@ class MultibandDecomposition2d(torch.nn.Module):
             dtype=u.dtype, device=u.device
         )
         y = torch.empty(
-            (v.shape[0], self.num_steps, *v.shape[1:]),
+            (v.shape[0], self.num_steps, *x.shape[1:]),
             dtype=x.dtype, device=x.device
         )
 

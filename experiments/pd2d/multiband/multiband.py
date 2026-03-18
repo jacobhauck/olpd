@@ -11,11 +11,13 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
     def load_datasets(self, config):
         self.loss_fn = mlx.create_module(config['training']['loss_fn'])
         self.loss_fn.to(config['device'])
-        self.metrics_fns = [
-            mlx.create_module(conf).to(config['device'])
-            for conf in config.get('metrics', ())
-        ]
+        self.metrics_fns = {
+            name: mlx.create_module(conf).to(config['device'])
+            for name, conf in config.get('metrics', {}).items()
+        }
+
         self.decomposition = mlx.create_module(config['multiband']['decomposition'])
+        self.decomposition.to(config['device'])
 
         train_dataset = OLDataset(**config['data']['train'])
         test_dataset = OLDataset(**config['data']['test'])
@@ -52,4 +54,51 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
     def metrics(self, prediction, data):
         _, _, v, _ = data
         v = v.to(self.config['device'])
-        return {repr(fn): fn(prediction, v) for fn in self.metrics_fns}
+        return {name: fn(prediction, v) for name, fn in self.metrics_fns.items()}
+
+
+class MultibandExperiment(mlx.WandBExperiment):
+    def wandb_run(self, config, run):
+        save_interval = config['training'].get('save_interval', 600)
+        log_interval = config['training'].get('log_interval', 3)
+        trainer = Multiband2dTrainer(
+            config, run,
+            save_interval=save_interval,
+            log_interval=log_interval
+        )
+
+        # Fit PCA bases if necessary
+        if 'pcanet' in config['model']['name'].lower():
+            # sample = (u, x, v, y)
+            # noinspection PyTypeChecker
+            uv_map = map(lambda sample: (sample[0], sample[2]), trainer.datasets['train'])
+            _, _x, _, _y = trainer.datasets['train'][0]
+            print('Fitting PCA bases')
+            trainer.model.fit_pca(uv_map, _x, _y)
+
+        # Handle model interface compatibility
+        if 'fno' in config['model']['name'].lower():
+            trainer.apply_model = lambda u, x, y: trainer.model(u)
+        elif 'gnot' in config['model']['name'].lower():
+            trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
+        elif 'pcanet' in config['model']['name'].lower():
+            trainer.apply_model = lambda u, x, y: trainer.model(u)
+
+        trainer.train(epochs=config['training']['epochs'])
+        losses, metrics = trainer.evaluate(('train', 'test'))
+
+        for dataset, dataset_losses in losses.items():
+            print(f'===== Loss for dataset: "{dataset}" =====')
+            for loss_name, loss in dataset_losses.items():
+                print(f'    === Loss: {loss_name} ===')
+                print(f'    Mean: {loss.mean().item():.05f}')
+                print(f'    Median: {loss.median().item():.05f}')
+                print(f'    Std.: {loss.std().item():.05f}')
+
+        for dataset, dataset_metrics in metrics.items():
+            print(f'===== Metric for dataset: "{dataset}" =====')
+            for metric_name, metric in dataset_metrics.items():
+                print(f'    === Loss: {metric_name} ===')
+                print(f'    Mean: {metric.mean().item():.05f}')
+                print(f'    Median: {metric.median().item():.05f}')
+                print(f'    Std.: {metric.std().item():.05f}')
