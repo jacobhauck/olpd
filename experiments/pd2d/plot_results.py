@@ -74,25 +74,25 @@ class PlotResults(mlx.Experiment):
             }
 
             fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0][0].imshow(v[:, :, 0].T, **im_kwargs)
+            axes[0][0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
             axes[0][0].set_title(f'Final $x$ displacement ({i})')
             axes[0][0].set_xlabel('$x$')
             axes[0][0].set_ylabel('$y$')
             axes[0][0].set_aspect('equal')
 
-            axes[0][1].imshow(v[:, :, 1].T, **im_kwargs)
+            axes[0][1].imshow(v[:, :, 1].T.cpu(), **im_kwargs)
             axes[0][1].set_title(f'Final $y$ displacement ({i})')
             axes[0][1].set_xlabel('$x$')
             axes[0][1].set_ylabel('$y$')
             axes[0][1].set_aspect('equal')
 
-            axes[1][0].imshow(v_pred[:, :, 0].T, **im_kwargs)
+            axes[1][0].imshow(v_pred[:, :, 0].T.cpu(), **im_kwargs)
             axes[1][0].set_title(f'Pred $x$ displacement ({i})')
             axes[1][0].set_xlabel('$x$')
             axes[1][0].set_ylabel('$y$')
             axes[1][0].set_aspect('equal')
 
-            last = axes[1][1].imshow(v_pred[:, :, 1].T, **im_kwargs)
+            last = axes[1][1].imshow(v_pred[:, :, 1].T.cpu(), **im_kwargs)
             axes[1][1].set_title(f'Pred $y$ displacement ({i})')
             axes[1][1].set_xlabel('$x$')
             axes[1][1].set_ylabel('$y$')
@@ -113,13 +113,13 @@ class PlotResults(mlx.Experiment):
             plt.close(fig)
 
             fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0].imshow((v - v_pred).abs()[:, :, 0].T, **err_kwargs)
+            axes[0].imshow((v - v_pred).abs()[:, :, 0].T.cpu(), **err_kwargs)
             axes[0].set_title(f'Error $x$ displacement ({i})')
             axes[0].set_xlabel('$x$')
             axes[0].set_ylabel('$y$')
             axes[0].set_aspect('equal')
 
-            last = axes[1].imshow((v - v_pred).abs()[:, :, 1].T, **err_kwargs)
+            last = axes[1].imshow((v - v_pred).abs()[:, :, 1].T.cpu(), **err_kwargs)
             axes[1].set_title(f'Error $y$ displacement ({i})')
             axes[1].set_xlabel('$x$')
             axes[1].set_ylabel('$y$')
