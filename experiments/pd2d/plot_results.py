@@ -30,7 +30,7 @@ class PlotResults(mlx.Experiment):
             shuffle=config.get('random', True)
         )
 
-        output_dir = os.path.join('results', run.name)
+        output_dir = os.path.join('results', run.name + '-' + run.id)
         os.makedirs(output_dir, exist_ok=True)
         rel_l2 = FunctionalL2Loss(relative=True, squared=False)
 
