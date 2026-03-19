@@ -1,8 +1,5 @@
 import mlx
-import torch.utils.data
 import wandb
-import matplotlib.pyplot as plt
-import os
 from .pd2d import PD2DTrainer
 
 

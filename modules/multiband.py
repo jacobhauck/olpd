@@ -41,3 +41,14 @@ class MultibandDecomposition2d(torch.nn.Module):
         self.low_freq_cutoff.set_x_max(start_x_max)
 
         return v, y
+
+
+class SingleBandTransform(torch.nn.Module):
+    def __init__(self, decomposition, band_index):
+        super().__init__()
+        self.decomposition = mlx.create_module(decomposition)
+        self.band_index = band_index
+
+    def forward(self, u, x):
+        u_d, x_d = self.decomposition(u, x)
+        return u_d[:, self.band_index], x_d[:, self.band_index]

@@ -13,8 +13,12 @@ class PlotResults(mlx.Experiment):
         prefix = mlx.wandb_config['entity'] + '/' + mlx.wandb_config['project']
         run = api.run(prefix + '/' + config['run_id'])
         run.step = run.lastHistoryStep - 1
-        run.config['device'] = 'cpu'
+        run.config['device'] = config['device']
         trainer = PD2DTrainer(run.config, run)
+        if 'transform' in config:
+            transform = mlx.create_module(config['transform']).to(config['device'])
+        else:
+            transform = None
 
         # Handle model interface compatibility
         if 'fno' in run.config['model']['name'].lower():
@@ -44,6 +48,10 @@ class PlotResults(mlx.Experiment):
 
             error = float(rel_l2(v, v_pred))
             u, x, v, y, v_pred = u[0], x[0], v[0], y[0], v_pred[0]
+
+            if transform is not None:
+                v, y = transform(v, y)
+
             v_min = min(float(u.min()), float(v.min()))
             v_max = max(float(u.max()), float(v.max()))
             err_fn = (v - v_pred).abs()

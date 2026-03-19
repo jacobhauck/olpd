@@ -1,4 +1,4 @@
-dataset: data/pd2d/test_tg4.ol.h5
+dataset: data/pd2d/test_tg2.ol.h5
 max_plots: 1
 decomposition:
   name: multiband.MultibandDecomposition2d
