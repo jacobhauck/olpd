@@ -43,6 +43,9 @@ class PlotResults(mlx.Experiment):
             if i >= config['max_plots']:
                 break
 
+            d = config['device']
+            u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
+
             with torch.no_grad():
                 v_pred = trainer.apply_model(u, x, y)
 
