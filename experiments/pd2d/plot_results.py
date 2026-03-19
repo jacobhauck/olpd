@@ -49,11 +49,11 @@ class PlotResults(mlx.Experiment):
             with torch.no_grad():
                 v_pred = trainer.apply_model(u, x, y)
 
-            error = float(rel_l2(v, v_pred))
-            u, x, v, y, v_pred = u[0], x[0], v[0], y[0], v_pred[0]
-
             if transform is not None:
                 v, y = transform(v, y)
+
+            error = float(rel_l2(v, v_pred))
+            u, x, v, y, v_pred = u[0], x[0], v[0], y[0], v_pred[0]
 
             v_min = min(float(u.min()), float(v.min()))
             v_max = max(float(u.max()), float(v.max()))
