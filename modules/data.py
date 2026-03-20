@@ -51,14 +51,14 @@ class NormalizedOLDataset(torch.utils.data.Dataset):
 
         print('Normalizing OLDataset')
         self.u_mean = torch.mean(all_u.view(-1, all_u.shape[-1]), dim=0)
-        self.u_mean = self.u_mean.reshape((1,) * len(u0.shape) + (-1,))
+        self.u_mean = self.u_mean.reshape((1,) * (len(u0.shape) - 1) + (-1,))
         self.u_std = torch.std(all_u.view(-1, all_u.shape[-1]), dim=0)
-        self.u_std = self.u_std.reshape((1,) * len(u0.shape) + (-1,))
+        self.u_std = self.u_std.reshape((1,) * (len(u0.shape) - 1) + (-1,))
         print('u stats:', self.u_mean, self.u_std)
         self.v_mean = torch.mean(all_v.view(-1, all_v.shape[-1]), dim=0)
-        self.v_mean = self.v_mean.reshape((1,) * len(v0.shape) + (-1,))
+        self.v_mean = self.v_mean.reshape((1,) * (len(v0.shape) - 1) + (-1,))
         self.v_std = torch.std(all_v.view(-1, all_v.shape[-1]), dim=0)
-        self.v_std = self.v_std.reshape((1,) * len(v0.shape) + (-1,))
+        self.v_std = self.v_std.reshape((1,) * (len(v0.shape) - 1) + (-1,))
         print('v stats:', self.v_mean, self.v_std)
 
     def __len__(self):
