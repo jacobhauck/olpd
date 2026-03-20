@@ -45,7 +45,7 @@ class NormalizedOLDataset(torch.utils.data.Dataset):
         u0, _, v0, _ = base_dataset[0]
         all_u = torch.empty((len(base_dataset), *u0.shape), device=u0.device)
         all_v = torch.empty((len(base_dataset), *v0.shape), device=v0.device)
-        for i, data in base_dataset:
+        for i, data in enumerate(base_dataset):
             all_u[i] = data[0]
             all_v[i] = data[2]
 
