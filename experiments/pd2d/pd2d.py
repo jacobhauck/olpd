@@ -2,6 +2,8 @@ import mlx
 from operatorlearning.data import OLDataset
 import torch.utils.data
 
+from modules.data import NormalizedOLDataset
+
 
 class PD2DTrainer(mlx.training.BaseTrainer):
     loss_fn = None
@@ -17,6 +19,10 @@ class PD2DTrainer(mlx.training.BaseTrainer):
 
         train_dataset = OLDataset(**config['data']['train'])
         test_dataset = OLDataset(**config['data']['test'])
+
+        if config['training'].get('normalize', False):
+            train_dataset = NormalizedOLDataset(train_dataset)
+            test_dataset = NormalizedOLDataset(test_dataset)
 
         train_loader = torch.utils.data.DataLoader(
             train_dataset,
