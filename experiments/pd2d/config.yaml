@@ -1,9 +1,9 @@
 data:
   train:
-    file_name: data/pd2d/train_tg3.ol.h5
+    file_name: data/pd2d/train_tg7.ol.h5
     stream_uv: false
   test:
-    file_name: data/pd2d/test_tg3.ol.h5
+    file_name: data/pd2d/test_tg7.ol.h5
     stream_uv: false
 
 optim:
@@ -17,18 +17,10 @@ metrics:
     squared: false
 
 training:
+  normalize: true
   loss_fn:
-    name: SmoothedLoss
-    base_loss:
-      name: FunctionalL2Loss
-      relative: true
-      squared: false
-    smoothing_operator:
-      name: GaussianSmoothing2d
-      kernel_sigma: 0.2
-      x_min: [0.0, 0.0]
-      x_max: [5.0, 5.0]
-      n: [200, 200]
+    name: FunctionalL1Loss
+    relative: false
   batch_size: 16
-  epochs: 200
+  epochs: 1000
 

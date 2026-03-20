@@ -56,7 +56,6 @@ model:
       - 512
     activation:
       name: ReLU
-    dropout: 0.07
     norm:
       name: LayerNorm
       normalized_shape: 512
