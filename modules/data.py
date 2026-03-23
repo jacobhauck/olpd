@@ -45,7 +45,7 @@ def pd2d_subsample_dataset(dataset_in, dataset_out, nx, ny):
     :param ny: Number of points in y direction
     """
     data_in = OLDataset(dataset_in, stream_uv=False, stream_xy=False)
-    nx_in, ny_in = data_in.u['0'].shape[:2]
+    nx_in, ny_in = data_in.u['0'].shape[1:3]
     assert nx_in % nx == 0 and ny_in % ny == 0, \
         'Subsampling resolution must divide original'
     x_step = nx_in // nx
