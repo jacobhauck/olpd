@@ -34,7 +34,7 @@ class PD2DTrainer(mlx.training.BaseTrainer):
             train_dataset,
             batch_size=config['training']['batch_size'],
             shuffle=True,
-            drop_last=True
+            drop_last=False
         )
 
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1)
