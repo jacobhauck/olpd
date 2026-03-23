@@ -8,7 +8,7 @@ data:
 
 optim:
   name: Adam
-  lr: 0.0005
+  lr: 0.002
 
 metrics:
   rel_l2:
@@ -21,6 +21,6 @@ training:
   loss_fn:
     name: FunctionalL1Loss
     relative: false
-  batch_size: 128
+  batch_size: 512
   epochs: 1000
 
