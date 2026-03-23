@@ -1,8 +1,8 @@
-run_id: tqwld6lo
-max_plots: 20
+run_id: lvds70l8
+max_plots: 5
 show: false
 random: true
-from_dataset: test
+from_dataset: train
 
 xo: 0.0
 yo: 0.0

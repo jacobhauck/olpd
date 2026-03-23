@@ -1,9 +1,9 @@
 data:
   train:
-    file_name: data/pd2d/train_tg7.ol.h5
+    file_name: data/pd2d/train_tg6_50.ol.h5
     stream_uv: false
   test:
-    file_name: data/pd2d/test_tg7.ol.h5
+    file_name: data/pd2d/test_tg6.ol.h5
     stream_uv: false
 
 optim:
@@ -21,6 +21,6 @@ training:
   loss_fn:
     name: FunctionalL1Loss
     relative: false
-  batch_size: 16
+  batch_size: 128
   epochs: 1000
 
