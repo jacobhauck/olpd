@@ -61,7 +61,14 @@ def pd2d_subsample_dataset(dataset_in, dataset_out, nx, ny):
 
 
 class NormalizedOLDataset(torch.utils.data.Dataset):
-    def __init__(self, base_dataset):
+    def __init__(
+            self,
+            base_dataset,
+            u_mean=None,
+            u_std=None,
+            v_mean=None,
+            v_std=None
+    ):
         super().__init__()
         assert len(base_dataset.x) == 1, \
             'NormalizedOLDataset only supports single-representation OLDatasets'
@@ -75,17 +82,34 @@ class NormalizedOLDataset(torch.utils.data.Dataset):
             all_u[i] = data[0]
             all_v[i] = data[2]
 
-        print('Normalizing OLDataset')
-        self.u_mean = torch.mean(all_u.view(-1, all_u.shape[-1]), dim=0)
-        self.u_mean = self.u_mean.reshape((1,) * (len(u0.shape) - 1) + (-1,))
-        self.u_std = torch.std(all_u.view(-1, all_u.shape[-1]), dim=0)
-        self.u_std = self.u_std.reshape((1,) * (len(u0.shape) - 1) + (-1,))
-        print('u stats:', self.u_mean, self.u_std)
-        self.v_mean = torch.mean(all_v.view(-1, all_v.shape[-1]), dim=0)
-        self.v_mean = self.v_mean.reshape((1,) * (len(v0.shape) - 1) + (-1,))
-        self.v_std = torch.std(all_v.view(-1, all_v.shape[-1]), dim=0)
-        self.v_std = self.v_std.reshape((1,) * (len(v0.shape) - 1) + (-1,))
-        print('v stats:', self.v_mean, self.v_std)
+        if u_mean is None:
+            print('Normalizing OLDataset')
+            self.u_mean = torch.mean(all_u.view(-1, all_u.shape[-1]), dim=0)
+            self.u_mean = self.u_mean.reshape((1,) * (len(u0.shape) - 1) + (-1,))
+            print('Calculated u_mean:', self.u_mean)
+        else:
+            self.u_mean = u_mean.clone()
+
+        if u_std is None:
+            self.u_std = torch.std(all_u.view(-1, all_u.shape[-1]), dim=0)
+            self.u_std = self.u_std.reshape((1,) * (len(u0.shape) - 1) + (-1,))
+            print('Calculated u_std:', self.u_std)
+        else:
+            self.u_std = u_std.clone()
+
+        if v_mean is None:
+            self.v_mean = torch.mean(all_v.view(-1, all_v.shape[-1]), dim=0)
+            self.v_mean = self.v_mean.reshape((1,) * (len(v0.shape) - 1) + (-1,))
+            print('Calculated v_mean:', self.v_mean)
+        else:
+            self.v_mean = v_mean.clone()
+
+        if v_std is None:
+            self.v_std = torch.std(all_v.view(-1, all_v.shape[-1]), dim=0)
+            self.v_std = self.v_std.reshape((1,) * (len(v0.shape) - 1) + (-1,))
+            print('Calculated v_std:', self.v_std)
+        else:
+            self.v_std = v_std.clone()
 
     def __len__(self):
         return len(self.base_dataset)

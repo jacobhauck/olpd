@@ -22,7 +22,13 @@ class PD2DTrainer(mlx.training.BaseTrainer):
 
         if config['training'].get('normalize', False):
             train_dataset = NormalizedOLDataset(train_dataset)
-            test_dataset = NormalizedOLDataset(test_dataset)
+            test_dataset = NormalizedOLDataset(
+                test_dataset,
+                u_mean=train_dataset.u_mean,
+                u_std=train_dataset.u_std,
+                v_mean=train_dataset.v_mean,
+                v_std=train_dataset.v_std
+            )
 
         train_loader = torch.utils.data.DataLoader(
             train_dataset,
