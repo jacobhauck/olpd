@@ -45,16 +45,16 @@ def pd2d_subsample_dataset(dataset_in, dataset_out, nx, ny):
     :param ny: Number of points in y direction
     """
     data_in = OLDataset(dataset_in, stream_uv=False, stream_xy=False)
-    nx_in, ny_in = data_in.u['1'].shape[:2]
+    nx_in, ny_in = data_in.u['0'].shape[:2]
     assert nx_in % nx == 0 and ny_in % ny == 0, \
         'Subsampling resolution must divide original'
     x_step = nx_in // nx
     y_step = ny_in // ny
 
-    u = data_in.u['1'][:, ::x_step, ::y_step]  # (B, nx, ny, 2)
-    v = data_in.v['1'][:, ::x_step, ::y_step]  # (B, nx, ny, 2)
-    x = data_in.x[1][::x_step, ::y_step]  # (nx, ny, 2)
-    y = data_in.y[1][::x_step, ::y_step]  # (nx, ny, 2)
+    u = data_in.u['0'][:, ::x_step, ::y_step]  # (B, nx, ny, 2)
+    v = data_in.v['0'][:, ::x_step, ::y_step]  # (B, nx, ny, 2)
+    x = data_in.x[0][::x_step, ::y_step]  # (nx, ny, 2)
+    y = data_in.y[0][::x_step, ::y_step]  # (nx, ny, 2)
 
     disc = torch.zeros(len(u), dtype=torch.long)
     OLDataset.write(u, [x], v, [y], dataset_out, u_disc=disc, v_disc=disc)
