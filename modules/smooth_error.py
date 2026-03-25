@@ -49,7 +49,7 @@ class SmoothedLoss(torch.nn.Module):
 
 
 class GaussianSmoothing2d(torch.nn.Module):
-    def __init__(self, kernel_sigma, x_min, x_max, n, extend='constant'):
+    def __init__(self, kernel_sigma, x_min, x_max, n, extend='constant', adaptive=False):
         """
         Applies convolution with a Gaussian kernel to smooth the 2D input
         function. Function must be sampled at centers of uniform grid of squares
@@ -63,6 +63,8 @@ class GaussianSmoothing2d(torch.nn.Module):
         :param extend: How to extend the input function to the whole plane to
             make the convolution work. Choose from 'zero', 'reflect', or
             'periodic', 'constant'. Default = 'constant'.
+        :param adaptive: Whether the operator should adaptively rebuild the
+            kernel in response to a new resolution. Default = False
         """
         super().__init__()
         self.kernel_sigma = kernel_sigma
@@ -73,9 +75,16 @@ class GaussianSmoothing2d(torch.nn.Module):
         self.register_buffer('weight0', w0)
         self.register_buffer('weight1', w1)
         self.extend = extend
+        self.adaptive = adaptive
 
     def set_x_max(self, x_max):
         self.x_max[:] = x_max
+        self.kernel_radius, w0, w1 = self._build_weights()
+        self.weight0 = w0
+        self.weight1 = w1
+
+    def set_n(self, n):
+        self.n[:] = n
         self.kernel_radius, w0, w1 = self._build_weights()
         self.weight0 = w0
         self.weight1 = w1
@@ -116,6 +125,13 @@ class GaussianSmoothing2d(torch.nn.Module):
         :return: (B, N0, N1, v_d_out) smoothed function values on the grid
         """
         batch_size, n0, n1, v_d_out = u.shape
+
+        if self.n[0] != n0 or self.n[1] != n1:
+            self.n[0] = n0
+            self.n[1] = n1
+            self.kernel_radius, w0, w1 = self._build_weights()
+            self.weight0 = w0
+            self.weight1 = w1
 
         # Move output components to batch dimension to apply convolution
         # component-wise, and add dummy channel dimension for compliance with
