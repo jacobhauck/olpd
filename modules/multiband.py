@@ -17,7 +17,7 @@ class MultibandDecomposition2d(torch.nn.Module):
             and y has shape (B, num_steps, N1, N2, d_in), which give the
             multiband decomposition of u
         """
-        start_x_max = self.low_freq_cutoff.x_max
+        start_x_max = self.low_freq_cutoff.x_max.clone()
         v = torch.empty(
             (u.shape[0], self.num_steps, *u.shape[1:]),
             dtype=u.dtype, device=u.device
