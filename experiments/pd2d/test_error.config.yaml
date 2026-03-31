@@ -1,4 +1,4 @@
-run_id: ctb4pcj3
+run_id: e3gpzpse
 additional_metrics:
   smooth_rel_l2:
     name: SmoothedLoss
@@ -7,7 +7,7 @@ additional_metrics:
       relative: true
     smoothing_operator:
       name: GaussianSmoothing2d
-      kernel_sigma: 0.2
+      kernel_sigma: 0.3
       x_min: [0.0, 0.0]
       x_max: [5.0, 5.0]
       n: [200, 200]

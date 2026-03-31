@@ -20,7 +20,7 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 128
+      features: 64
       learnable: true
 
   reconstructor_net:
@@ -40,7 +40,7 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 128
+      features: 64
       learnable: true
 
   approximator_net:
@@ -48,12 +48,12 @@ model:
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 128
-      - 128
-      - 128
-      - 128
+      - 80
+      - 80
+      - 80
+      - 80
     activation:
       name: ReLU
     norm:
       name: LayerNorm
-      normalized_shape: 128
+      normalized_shape: 80

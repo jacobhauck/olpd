@@ -1,14 +1,14 @@
 data:
   train:
-    file_name: data/pd2d/train_tg6_50.ol.h5
+    file_name: data/pd2d/train_tg2_50.ol.h5
     stream_uv: false
   test:
-    file_name: data/pd2d/test_tg6.ol.h5
+    file_name: data/pd2d/test_tg2.ol.h5
     stream_uv: false
 
 optim:
   name: Adam
-  lr: 0.002
+  lr: 0.0005
 
 metrics:
   rel_l2:
@@ -18,9 +18,9 @@ metrics:
 
 training:
   normalize: true
-  loss_fn:
-    name: FunctionalL1Loss
-    relative: false
-  batch_size: 512
-  epochs: 1000
+  #loss_fn:
+  #  name: FunctionalL1Loss
+  #  relative: false
+  batch_size: 128
+  epochs: 3000
 
