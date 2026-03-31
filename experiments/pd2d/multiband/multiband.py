@@ -75,8 +75,8 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
             band_losses, loss = self.loss_fn(bands, v_dd, y_dd)
 
             loss_dict = {'objective': loss}
-            for i in range(len(band_losses)):
-                loss_dict[f'band_{i}'] = band_losses[i]
+            for i, band_i in enumerate(self.config['training']['bands']):
+                loss_dict[f'band_{band_i}'] = band_losses[i]
             return bands, loss_dict
         else:
             v_pred = self.model(u, x, y)
