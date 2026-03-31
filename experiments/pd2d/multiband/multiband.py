@@ -58,7 +58,7 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
         if self.model.training:
             v_d, y_d = self.model.decomposition(v, y)
             v_dd, y_dd = self.downsample(v_d, y_d)
-            bands = self.model(u, x, y_dd)
+            bands = self.model(u, x, y_dd, bands=self.config['training']['bands'])
             band_losses, loss = self.loss_fn(bands, v_dd, y_dd)
 
             loss_dict = {'objective': loss}
