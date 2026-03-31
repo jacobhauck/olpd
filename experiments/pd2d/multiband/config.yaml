@@ -17,6 +17,7 @@ metrics:
     squared: false
 
 training:
+  normalize: true
   loss_fn:
     name: multiband.MultiLoss
     base_loss:
