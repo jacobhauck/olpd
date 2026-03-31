@@ -1,6 +1,6 @@
 data:
   train:
-    file_name: data/pd2d/test_tg5.ol.h5
+    file_name: data/pd2d/train_tg5.ol.h5
     stream_uv: false
   test:
     file_name: data/pd2d/test_tg5.ol.h5
@@ -24,7 +24,7 @@ training:
       relative: true
       squared: false
     weights: [1.0, 1.0]
-  batch_size: 1
-  epochs: 200
+  batch_size: 128
+  epochs: 1500
   resolutions: [50, 100]
   bands: [0]
