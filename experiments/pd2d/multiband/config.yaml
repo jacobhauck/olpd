@@ -27,3 +27,4 @@ training:
   batch_size: 1
   epochs: 200
   resolutions: [50, 100]
+  bands: [0]

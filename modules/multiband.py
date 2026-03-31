@@ -34,7 +34,7 @@ class MultiModel(torch.nn.Module):
         ])
         self.decomposition = mlx.create_module(decomposition)
 
-    def forward(self, u, x, y):
+    def forward(self, u, x, y, bands=None):
         """
         Applies multiband model and returns either full recomposed prediction
         or separate bands
@@ -44,6 +44,8 @@ class MultiModel(torch.nn.Module):
             tensor of output function sample points. To request separate
             bands, a list of (B, *out_shape_i, v_d_in) tensors giving output
             sampling points for each band
+        :param bands: Indices of specific bands to return predictions for. If
+            None, then all bands are returned.
         :return: (B, *out_shape, v_d_out) Output function values, if
             separate_bands is False (can only be used if all bands use the same
             size sampling grid, or if in eval mode); otherwise, returns a list
@@ -59,8 +61,10 @@ class MultiModel(torch.nn.Module):
             y = [y[:, i] for i in range(self.decomposition.num_steps)]
 
         v = []
-        for model, y_i in zip(self.models, y):
-            v.append(model(u, x, x_out=y_i))
+        if bands is None:
+            bands = range(len(self.models))
+        for i in bands:
+            v.append(self.models[i](u, x, x_out=y[i]))
 
         if recompose:
             v = torch.stack(v, dim=1)
