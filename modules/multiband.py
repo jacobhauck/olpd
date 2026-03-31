@@ -8,12 +8,14 @@ class MultiLoss(torch.nn.Module):
         self.base_loss = mlx.create_module(base_loss)
         self.register_buffer('weights', torch.tensor(weights))
 
-    def forward(self, pred, target, x=None):
+    def forward(self, pred, target, x=None, bands=None):
         """
         :param pred: list of (B, *shape, d_out) predicted function bands
         :param target: list of (B, *shape, d_out) target function bands
         :param x: list of (B, *shape, d_in) sample points for each band (or None,
             if loss does not require them)
+        :param bands: list of band indices for the bands being evaluated. If
+            None, then all bands are assumed to be present
         :return: tuple (band_losses, total_loss), where band_losses is a tensor
             of shape (num_steps,) of base_loss applied to each band separately
             and total_loss is band_losses averaged using weights
@@ -23,7 +25,10 @@ class MultiLoss(torch.nn.Module):
         losses = torch.stack([
             self.base_loss(p, t, x=x_i) for p, t, x_i in zip(pred, target, x)
         ])
-        return losses, torch.sum(losses * self.weights)
+
+        if bands is None:
+            bands = list(range(len(pred)))
+        return losses, torch.sum(losses * self.weights[bands])
 
 
 class MultiModel(torch.nn.Module):
