@@ -20,8 +20,9 @@ training:
   loss_fn:
     name: multiband.MultiLoss
     base_loss:
-      name: FunctionalL1Loss
-      relative: false
+      name: FunctionalL2Loss
+      relative: true
+      squared: false
     weights: [1.0, 1.0]
   batch_size: 1
   epochs: 200

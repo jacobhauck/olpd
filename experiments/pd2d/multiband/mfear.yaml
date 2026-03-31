@@ -48,15 +48,15 @@ model_blueprint: &model
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 128
-      - 128
-      - 128
-      - 128
+      - 96
+      - 96
+      - 96
+      - 96
     activation:
       name: ReLU
     norm:
       name: LayerNorm
-      normalized_shape: 128
+      normalized_shape: 96
 
 model:
   name: multiband.MultiModel
