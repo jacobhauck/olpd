@@ -6,7 +6,6 @@ import torch.utils.data
 class Multiband2dTrainer(mlx.training.BaseTrainer):
     loss_fn = None
     metrics_fns = {}
-    decomposition = None
 
     def load_datasets(self, config):
         self.loss_fn = mlx.create_module(config['training']['loss_fn'])
@@ -15,9 +14,6 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
             name: mlx.create_module(conf).to(config['device'])
             for name, conf in config.get('metrics', {}).items()
         }
-
-        self.decomposition = mlx.create_module(config['multiband']['decomposition'])
-        self.decomposition.to(config['device'])
 
         train_dataset = OLDataset(**config['data']['train'])
         test_dataset = OLDataset(**config['data']['test'])
@@ -36,25 +32,50 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
             {'train': train_loader, 'test': test_loader}
         )
 
-    def apply_model(self, u, x, y):
-        # Default implementation; works for MFEAR
-        return self.model(u, x_in=x, x_out=y)
+    def downsample(self, v_d, y_d):
+        """
+        :param v_d: (B, num_steps, N1, N2, 2) decomposed bands
+        :param y_d: (B, num_steps, N1, N2, 2) expanded sample points
+        :return: tuple (v_dd, y_dd), where v_dd is a list of
+            (B, N1_i, N2_i, v_d_out) tensors of downsampled band values and
+            y_dd is a list of (B, N1_i, N2_i, 2) of downsampled points
+        """
+        result_v = []
+        result_y = []
+        for i in range(y_d.shape[1]):
+            step1 = y_d.shape[2] // self.config['training']['resolutions'][i]
+            step2 = y_d.shape[3] // self.config['training']['resolutions'][i]
+            result_v.append(v_d[:, i, ::step1, ::step2])
+            result_y.append(y_d[:, i, ::step1, ::step2])
+
+        return result_v, result_y
 
     def loss(self, data):
         u, x, v, y = data
         d = self.config['device']
         u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
 
-        v_d, y_d = self.decomposition(v, y)
-        v_pred = self.apply_model(u, x, y)
-        loss = self.loss_fn(v_pred, v_d[:, -1], x=y_d[:, -1])
+        if self.model.training:
+            v_d, y_d = self.model.decomposition(v, y)
+            v_dd, y_dd = self.downsample(v_d, y_d)
+            bands = self.model(u, x, y_dd)
+            band_losses, loss = self.loss_fn(bands, v_dd, y_dd)
 
-        return v_pred, {'objective': loss}
+            loss_dict = {'objective': loss}
+            for i in range(len(band_losses)):
+                loss_dict[f'band_{i}'] = band_losses[i]
+            return bands, loss_dict
+        else:
+            v_pred = self.model(u, x, y)
+            return v_pred, {}
 
     def metrics(self, prediction, data):
-        _, _, v, _ = data
-        v = v.to(self.config['device'])
-        return {name: fn(prediction, v) for name, fn in self.metrics_fns.items()}
+        if not isinstance(prediction, torch.Tensor):
+            return {}
+
+        _, _, v, y = data
+        v, y = v.to(self.config['device']), y.to(self.config['device'])
+        return {name: fn(prediction, v, y) for name, fn in self.metrics_fns.items()}
 
 
 class MultibandExperiment(mlx.WandBExperiment):
@@ -66,23 +87,6 @@ class MultibandExperiment(mlx.WandBExperiment):
             save_interval=save_interval,
             log_interval=log_interval
         )
-
-        # Fit PCA bases if necessary
-        if 'pcanet' in config['model']['name'].lower():
-            # sample = (u, x, v, y)
-            # noinspection PyTypeChecker
-            uv_map = map(lambda sample: (sample[0], sample[2]), trainer.datasets['train'])
-            _, _x, _, _y = trainer.datasets['train'][0]
-            print('Fitting PCA bases')
-            trainer.model.fit_pca(uv_map, _x, _y)
-
-        # Handle model interface compatibility
-        if 'fno' in config['model']['name'].lower():
-            trainer.apply_model = lambda u, x, y: trainer.model(u)
-        elif 'gnot' in config['model']['name'].lower():
-            trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
-        elif 'pcanet' in config['model']['name'].lower():
-            trainer.apply_model = lambda u, x, y: trainer.model(u)
 
         trainer.train(epochs=config['training']['epochs'])
         losses, metrics = trainer.evaluate(('train', 'test'))

@@ -1,4 +1,4 @@
-model:
+model_blueprint: &model
   name: MFEAR
   integrator:
     name: TrapezoidIntegrator
@@ -48,15 +48,27 @@ model:
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 512
-      - 512
-      - 512
-      - 512
-      - 512
-      - 512
+      - 128
+      - 128
+      - 128
+      - 128
     activation:
       name: ReLU
-    dropout: 0.07
     norm:
       name: LayerNorm
-      normalized_shape: 512
+      normalized_shape: 128
+
+model:
+  name: multiband.MultiModel
+  models: [*model, *model]
+  decomposition:
+    name: multiband.MultibandDecomposition2d
+    low_freq_cutoff:
+      name: smooth_error.GaussianSmoothing2d
+      kernel_sigma: 0.3
+      x_min: [ 0.0, 0.0 ]
+      x_max: [ 5.0, 5.0 ]
+      n: [ 200, 200 ]
+      adaptive: true
+    dilation: 1.5
+    num_steps: 2
