@@ -39,43 +39,37 @@ class MultiModel(torch.nn.Module):
         ])
         self.decomposition = mlx.create_module(decomposition)
 
-    def forward(self, u, x, y, bands=None):
+    @property
+    def num_bands(self):
+        return len(self.models)
+
+    def predict_band(self, u, x, y, band):
         """
-        Applies multiband model and returns either full recomposed prediction
-        or separate bands
+        Predicts a particular band
         :param u: (B, *in_shape, u_d_out) Input function values
         :param x: (B, *in_shape, u_d_in) Input function sample points
-        :param y: To request recomposed prediction, (B, *out_shape, v_d_in)
-            tensor of output function sample points. To request separate
-            bands, a list of (B, *out_shape_i, v_d_in) tensors giving output
-            sampling points for each band
-        :param bands: Indices of specific bands to return predictions for. If
-            None, then all bands are returned.
-        :return: (B, *out_shape, v_d_out) Output function values, if
-            separate_bands is False (can only be used if all bands use the same
-            size sampling grid, or if in eval mode); otherwise, returns a list
-            of length num_steps of tensors with shape (B, *out_shape_i, v_d_out)
-            giving the function values for each band, and points is a list of
-            tensors of shape (b, *out_shape_i, v_d_in) giving the corresponding
-            sample points
+        :param y: (B, *out_shape, v_d_in) tensor of output function sample points
+        :param band: Index of band to predict
+        :return: (B, *out_shape, v_d_out) Output function values
         """
-        recompose = False
-        if isinstance(y, torch.Tensor):
-            recompose = True
-            y = self.decomposition.get_x(y)  # get per-band sampling points
-            y = [y[:, i] for i in range(self.decomposition.num_steps)]
+        return self.models[band](u, x, x_out=y)
+
+    def forward(self, u, x, y):
+        """
+        Applies multiband model and returns full recomposed prediction.
+        :param u: (B, *in_shape, u_d_out) Input function values
+        :param x: (B, *in_shape, u_d_in) Input function sample points
+        :param y: (B, *out_shape, v_d_in) tensor of output function sample points
+        :return: (B, *out_shape, v_d_out) Output function values
+        """
+        y = self.decomposition.get_x(y)  # get per-band sampling points
 
         v = []
-        if bands is None:
-            bands = range(len(self.models))
-        for i in bands:
-            v.append(self.models[i](u, x, x_out=y[i]))
+        for i in range(len(self.models)):
+            v.append(self.models[i](u, x, x_out=y[:, i]))
 
-        if recompose:
-            v = torch.stack(v, dim=1)
-            return self.decomposition.recompose(v)
-        else:
-            return v
+        v = torch.stack(v, dim=1)
+        return self.decomposition.recompose(v)
 
 
 class MultibandDecomposition2d(torch.nn.Module):
@@ -88,7 +82,7 @@ class MultibandDecomposition2d(torch.nn.Module):
     def get_x(self, x):
         """
         :param x: (B, N1, N2, 2) base function (band 0) sample points
-        :return: (B, num_steps, N1, N2) sample points for each band
+        :return: (B, num_steps, N1, N2, 2) sample points for each band
         """
         y = torch.empty(
             (x.shape[0], self.num_steps, *x.shape[1:]),
@@ -137,7 +131,7 @@ class MultibandDecomposition2d(torch.nn.Module):
     def recompose(self, v):
         """
         :param v: (B, num_steps, N1, N2, d_out) Band projection sample values
-        :return: (B, num_steps, N1, N2, d_out) Reconstructed function sample values
+        :return: (B, N1, N2, d_out) Reconstructed function sample values
         """
         weights = torch.pow(self.dilation, -2 * torch.arange(self.num_steps))
         return torch.einsum('BnXYD,n->BXYD', v, weights.to(v.device))

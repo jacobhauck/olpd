@@ -1,5 +1,6 @@
 import mlx
 from operatorlearning.data import OLDataset
+from operatorlearning.modules import FunctionalL2Loss
 from modules.data import NormalizedOLDataset
 import torch.utils.data
 
@@ -7,10 +8,12 @@ import torch.utils.data
 class Multiband2dTrainer(mlx.training.BaseTrainer):
     loss_fn = None
     metrics_fns = {}
+    rel_l2 = None
 
     def load_datasets(self, config):
         self.loss_fn = mlx.create_module(config['training']['loss_fn'])
         self.loss_fn.to(config['device'])
+        self.rel_l2 = FunctionalL2Loss(relative=True, squared=False)
         self.metrics_fns = {
             name: mlx.create_module(conf).to(config['device'])
             for name, conf in config.get('metrics', {}).items()
@@ -43,52 +46,61 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
             {'train': train_loader, 'test': test_loader}
         )
 
-    def downsample(self, v_d, y_d):
+    def downsample(self, u, band):
         """
-        :param v_d: (B, num_steps, N1, N2, 2) decomposed bands
-        :param y_d: (B, num_steps, N1, N2, 2) expanded sample points
-        :return: tuple (v_dd, y_dd), where v_dd is a list of
-            (B, N1_i, N2_i, v_d_out) tensors of downsampled band values and
-            y_dd is a list of (B, N1_i, N2_i, 2) of downsampled points
+        Downsample to a particular band resolution
+        :param u: (B, N1, N2, d_out) function sample values
+        :param band: Index of band
+        :return: downsampled u
         """
-        result_v = []
-        result_y = []
-        for i in range(y_d.shape[1]):
-            step1 = y_d.shape[2] // self.config['training']['resolutions'][i]
-            step2 = y_d.shape[3] // self.config['training']['resolutions'][i]
-            result_v.append(v_d[:, i, ::step1, ::step2])
-            result_y.append(y_d[:, i, ::step1, ::step2])
-
-        return result_v, result_y
+        if self.model.training:
+            r = self.config['training']['resolutions'][band]
+            step1 = u.shape[1] // r
+            step2 = u.shape[2] // r
+            return u[:, ::step1, ::step2]
+        else:
+            return u
 
     def loss(self, data):
         u, x, v, y = data
         d = self.config['device']
         u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
 
-        if self.model.training:
-            v_d, y_d = self.model.decomposition(v, y)
-            v_dd, y_dd = self.downsample(v_d, y_d)
-            bands = self.model(u, x, y_dd, bands=self.config['training']['bands'])
-            v_dd = [v_dd[i] for i in self.config['training']['bands']]
-            y_dd = [y_dd[i] for i in self.config['training']['bands']]
-            band_losses, loss = self.loss_fn(bands, v_dd, y_dd)
+        v_dec, y_dec = self.model.decomposition(v, y)
 
-            loss_dict = {'objective': loss}
-            for i, band_i in enumerate(self.config['training']['bands']):
-                loss_dict[f'band_{band_i}'] = band_losses[i]
-            return bands, loss_dict
-        else:
-            v_pred = self.model(u, x, y)
-            return v_pred, {}
+        losses = {'objective': 0.0}
+        pred = []
+        v_ds, y_ds = [], []
+        for i in self.config['training']['bands']:
+            u_d, x_d = self.downsample(u, i), self.downsample(x, i)
+            v_d, y_d = self.downsample(v_dec[:, i], i), self.downsample(y_dec[:, i], i)
+
+            v_pred = self.model.predict_band(u_d, x_d, y_d, band=i)
+            pred.append(v_pred)
+            v_ds.append(v_d)
+            y_ds.append(y_d)
+            loss = self.loss_fn(v_pred, v_d, y_d)
+            w = self.config['training']['band_weights'][i]
+            losses[f'band_{i}'] = loss
+            losses['objective'] = w * loss + losses['objective']
+
+        return (pred, v_ds, y_ds), losses
 
     def metrics(self, prediction, data):
-        if not isinstance(prediction, torch.Tensor):
-            return {}
-
         _, _, v, y = data
         v, y = v.to(self.config['device']), y.to(self.config['device'])
-        return {name: fn(prediction, v, y) for name, fn in self.metrics_fns.items()}
+        v_pred, v_d, y_d = prediction
+
+        metrics = {}
+        for name, fn in self.metrics_fns.items():
+            if not self.model.training:
+                pred_recon = self.model.decomposition.recompose(torch.stack(v_pred, dim=1))
+                metrics[f'{name}_rec'] = fn(pred_recon, v, y)
+
+            for i in self.config['training']['bands']:
+                metrics[f'{name}_{i}'] = fn(v_pred[i], v_d[i], y_d[i])
+
+        return metrics
 
 
 class MultibandExperiment(mlx.WandBExperiment):
