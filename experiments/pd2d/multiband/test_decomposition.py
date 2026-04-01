@@ -2,7 +2,6 @@ import mlx
 from operatorlearning.data import OLDataset
 import matplotlib.pyplot as plt
 import os
-import torch
 
 
 class TestMultibandDecomposition(mlx.Experiment):
@@ -19,8 +18,7 @@ class TestMultibandDecomposition(mlx.Experiment):
 
             v_d, y_d = decompose(v[None], y[None])
             v_d, y_d = v_d[0], y_d[0]
-            coef = decompose.dilation ** (-torch.arange(decompose.num_steps) * 2)
-            v_rebuild = torch.sum(v_d * coef[:, None, None, None], dim=0)
+            v_rebuild = decompose.recompose(v_d[None])[0]
 
             v_min = float(v.min())
             v_max = float(v.max())
