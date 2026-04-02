@@ -32,6 +32,7 @@ class PlotResults(mlx.Experiment):
 
             d = config['device']
             u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
+            u, x = u[0], x[0],
 
             v_dec, y_dec = trainer.model.decomposition(v, y)
 
@@ -40,7 +41,7 @@ class PlotResults(mlx.Experiment):
                     v_pred = trainer.model.predict_band(u, x, y_dec[:, i], band=i)
 
                 error = float(rel_l2(v_dec[:, i], v_pred))
-                u, x, v, y, v_pred = u[0], x[0], v_dec[0, i], y_dec[0, i], v_pred[0]
+                v, y, v_pred = v_dec[0, i], y_dec[0, i], v_pred[0]
 
                 v_min = min(float(u.min()), float(v.min()))
                 v_max = max(float(u.max()), float(v.max()))
