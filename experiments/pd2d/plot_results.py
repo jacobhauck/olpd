@@ -12,7 +12,7 @@ class PlotResults(mlx.Experiment):
         api = wandb.Api()
         prefix = mlx.wandb_config['entity'] + '/' + mlx.wandb_config['project']
         run = api.run(prefix + '/' + config['run_id'])
-        run.step = run.lastHistoryStep - 1
+        run.step = run.lastHistoryStep
         run.config['device'] = config['device']
         trainer = PD2DTrainer(run.config, run)
         if 'transform' in config:
