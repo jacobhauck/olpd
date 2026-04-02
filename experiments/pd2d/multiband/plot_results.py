@@ -128,7 +128,12 @@ class PlotResults(mlx.Experiment):
 
                 plt.close(fig)
 
-            u, x = u[None], x[None]
+        for j, (u, x, v, y) in enumerate(data_loader):
+            if j >= config['max_plots']:
+                break
+
+            d = config['device']
+            u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
             with torch.no_grad():
                 v_pred = trainer.model(u, x, y)
 
