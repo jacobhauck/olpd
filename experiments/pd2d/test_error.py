@@ -10,6 +10,8 @@ class TestErrorExperiment(mlx.Experiment):
         run = api.run(prefix + '/' + config['run_id'])
         run.step = run.lastHistoryStep
         trainer = PD2DTrainer(run.config, run)
+        if 'checkpoint' in config:
+            trainer.load_checkpoint(config['checkpoint'])
 
         for name, metric in config.get('additional_metrics', {}).items():
             trainer.metrics_fns[name] = mlx.create_module(metric).to(run.config['device'])

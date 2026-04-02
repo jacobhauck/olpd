@@ -1,4 +1,5 @@
 run_id: ctb4pcj3
+checkpoint: 39136
 additional_metrics:
   smooth_rel_l2:
     name: SmoothedLoss
