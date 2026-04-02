@@ -48,12 +48,12 @@ model:
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 80
-      - 80
-      - 80
-      - 80
+      - 128
+      - 128
+      - 128
+      - 128
     activation:
       name: ReLU
     norm:
       name: LayerNorm
-      normalized_shape: 80
+      normalized_shape: 128

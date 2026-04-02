@@ -1,66 +1,125 @@
-model_blueprint: &model
-  name: MFEAR
-  integrator:
-    name: TrapezoidIntegrator
-
-  encoder_net:
-    name: mfear.CompactMLPBasis
-    d_in: 2
-    d_out: 2
-    p: &p 64
-    mlp:
-      hidden_layers:
-        - 128
-        - 128
-        - 128
-      activation:
-        name: ReLU
-    feat_expansion:
-      name: deeponet.FourierFeatureExpansion
-      origin: [ 0, 0 ]  # These depend on the dataset being used
-      scale: [ 5, 5 ]
-      mode: random
-      features: 128
-      learnable: true
-
-  reconstructor_net:
-    name: mfear.CompactMLPBasis
-    d_in: 2
-    d_out: 2
-    p: &q 128
-    mlp:
-      hidden_layers:
-        - 128
-        - 128
-        - 128
-      activation:
-        name: ReLU
-    feat_expansion:
-      name: deeponet.FourierFeatureExpansion
-      origin: [ 0, 0 ]  # These depend on the dataset being used
-      scale: [ 5, 5 ]
-      mode: random
-      features: 128
-      learnable: true
-
-  approximator_net:
-    name: MLP
-    d_in: *p
-    d_out: *q
-    hidden_layers:
-      - 96
-      - 96
-      - 96
-      - 96
-    activation:
-      name: ReLU
-    norm:
-      name: LayerNorm
-      normalized_shape: 96
-
 model:
   name: multiband.MultiModel
-  models: [*model, *model]
+  models: 
+    -
+      name: MFEAR
+      integrator:
+        name: TrapezoidIntegrator
+
+      encoder_net:
+        name: mfear.CompactMLPBasis
+        d_in: 2
+        d_out: 2
+        p: &p0 64
+        mlp:
+          hidden_layers:
+            - 128
+            - 128
+            - 128
+          activation:
+            name: ReLU
+        feat_expansion:
+          name: deeponet.FourierFeatureExpansion
+          origin: [ 0, 0 ]  # These depend on the dataset being used
+          scale: [ 5, 5 ]
+          mode: random
+          features: 128
+          learnable: true
+
+      reconstructor_net:
+        name: mfear.CompactMLPBasis
+        d_in: 2
+        d_out: 2
+        p: &q0 128
+        mlp:
+          hidden_layers:
+            - 128
+            - 128
+            - 128
+          activation:
+            name: ReLU
+        feat_expansion:
+          name: deeponet.FourierFeatureExpansion
+          origin: [ 0, 0 ]  # These depend on the dataset being used
+          scale: [ 5, 5 ]
+          mode: random
+          features: 128
+          learnable: true
+
+      approximator_net:
+        name: MLP
+        d_in: *p0
+        d_out: *q0
+        hidden_layers:
+          - 150
+          - 150
+          - 150
+          - 150
+        activation:
+          name: ReLU
+        norm:
+          name: LayerNorm
+          normalized_shape: 150
+    -
+      name: MFEAR
+      integrator:
+        name: TrapezoidIntegrator
+
+      encoder_net:
+        name: mfear.CompactMLPBasis
+        d_in: 2
+        d_out: 2
+        p: &p1 64
+        mlp:
+          hidden_layers:
+            - 128
+            - 128
+            - 128
+          activation:
+            name: ReLU
+        feat_expansion:
+          name: deeponet.FourierFeatureExpansion
+          origin: [ 0, 0 ]  # These depend on the dataset being used
+          scale: [ 5, 5 ]
+          mode: random
+          features: 128
+          learnable: true
+
+      reconstructor_net:
+        name: mfear.CompactMLPBasis
+        d_in: 2
+        d_out: 2
+        p: &q1 128
+        mlp:
+          hidden_layers:
+            - 128
+            - 128
+            - 128
+          activation:
+            name: ReLU
+        feat_expansion:
+          name: deeponet.FourierFeatureExpansion
+          origin: [ 0, 0 ]  # These depend on the dataset being used
+          scale: [ 5, 5 ]
+          mode: random
+          features: 128
+          learnable: true
+
+      approximator_net:
+        name: MLP
+        d_in: *p1
+        d_out: *q1
+        hidden_layers:
+          - 250
+          - 250
+          - 250
+          - 250
+        activation:
+          name: ReLU
+        norm:
+          name: LayerNorm
+          normalized_shape: 250
+
   decomposition:
     name: multiband.MultibandDecomposition2d
     low_freq_cutoff:

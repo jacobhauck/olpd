@@ -19,13 +19,10 @@ metrics:
 training:
   normalize: true
   loss_fn:
-    name: multiband.MultiLoss
-    base_loss:
-      name: FunctionalL2Loss
-      relative: true
-      squared: false
-    weights: [1.0, 1.0]
-  batch_size: 128
+    name: FunctionalL1Loss
+    relative: false
+  batch_size: 64
   epochs: 1500
-  resolutions: [50, 100]
-  bands: [0]
+  resolutions: [50, 50]
+  bands: [0, 1]
+  band_weights: [1.0, 1.0]
