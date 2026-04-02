@@ -94,7 +94,13 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
         metrics = {}
         for name, fn in self.metrics_fns.items():
             if not self.model.training:
-                pred_recon = self.model.decomposition.recompose(torch.stack(v_pred, dim=1))
+                v_bands = []
+                for i in range(self.model.num_bands):
+                    if i in v_pred:
+                        v_bands.append(v_pred[i])
+                    else:
+                        v_bands.append(torch.zeros_like(v))
+                pred_recon = self.model.decomposition.recompose(torch.stack(v_bands, dim=1))
                 metrics[f'{name}_rec'] = fn(pred_recon, v, y)
 
             for i in self.config['training']['bands']:
