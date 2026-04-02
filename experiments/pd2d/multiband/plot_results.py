@@ -127,3 +127,95 @@ class PlotResults(mlx.Experiment):
                     plt.show()
 
                 plt.close(fig)
+
+            u, x = u[None], x[None]
+            with torch.no_grad():
+                v_pred = trainer.model(u, x, y)
+
+            error = float(rel_l2(v, v_pred))
+            v, y, v_pred = v[0], y[0], v_pred[0]
+            u, x = u[0], x[0]
+
+            v_min = min(float(u.min()), float(v.min()))
+            v_max = max(float(u.max()), float(v.max()))
+            err_fn = (v - v_pred).abs()
+
+            im_kwargs = {
+                'vmin': v_min,
+                'vmax': v_max,
+                'cmap': 'seismic',
+                'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
+                'origin': 'lower'
+            }
+            err_kwargs = {
+                'vmin': float(err_fn.min()),
+                'vmax': float(err_fn.max()),
+                'cmap': 'plasma',
+                'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
+                'origin': 'lower'
+            }
+
+            fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
+            axes[0][0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
+            axes[0][0].set_title(f'Final $x$ displacement ({i})')
+            axes[0][0].set_xlabel('$x$')
+            axes[0][0].set_ylabel('$y$')
+            axes[0][0].set_aspect('equal')
+
+            axes[0][1].imshow(v[:, :, 1].T.cpu(), **im_kwargs)
+            axes[0][1].set_title(f'Final $y$ displacement ({i})')
+            axes[0][1].set_xlabel('$x$')
+            axes[0][1].set_ylabel('$y$')
+            axes[0][1].set_aspect('equal')
+
+            axes[1][0].imshow(v_pred[:, :, 0].T.cpu(), **im_kwargs)
+            axes[1][0].set_title(f'Pred $x$ displacement ({i})')
+            axes[1][0].set_xlabel('$x$')
+            axes[1][0].set_ylabel('$y$')
+            axes[1][0].set_aspect('equal')
+
+            last = axes[1][1].imshow(v_pred[:, :, 1].T.cpu(), **im_kwargs)
+            axes[1][1].set_title(f'Pred $y$ displacement ({i})')
+            axes[1][1].set_xlabel('$x$')
+            axes[1][1].set_ylabel('$y$')
+            axes[1][1].set_aspect('equal')
+
+            fig.subplots_adjust(right=0.8)
+            cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
+            fig.colorbar(last, cax=cbar_ax, label='Displacement')
+
+            plt.savefig(
+                os.path.join(output_dir, config.get('from_dataset', 'test') + f'_pred_{j}.png'),
+                bbox_inches='tight'
+            )
+
+            if config['show']:
+                plt.show()
+
+            plt.close(fig)
+
+            fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(10, 8))
+            axes[0].imshow((v - v_pred).abs()[:, :, 0].T.cpu(), **err_kwargs)
+            axes[0].set_title(f'Error $x$ displacement ({i})')
+            axes[0].set_xlabel('$x$')
+            axes[0].set_ylabel('$y$')
+            axes[0].set_aspect('equal')
+
+            last = axes[1].imshow((v - v_pred).abs()[:, :, 1].T.cpu(), **err_kwargs)
+            axes[1].set_title(f'Error $y$ displacement ({i})')
+            axes[1].set_xlabel('$x$')
+            axes[1].set_ylabel('$y$')
+            axes[1].set_aspect('equal')
+            fig.subplots_adjust(right=0.8)
+            cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
+            fig.colorbar(last, cax=cbar_ax, label=f'Displacement error ($RL^2 = $ {100 * error:.02f}%)')
+
+            plt.savefig(
+                os.path.join(output_dir, config.get('from_dataset', 'test') + f'_error_{j}.png'),
+                bbox_inches='tight'
+            )
+
+            if config['show']:
+                plt.show()
+
+            plt.close(fig)
