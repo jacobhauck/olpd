@@ -96,8 +96,8 @@ class Multiband2dTrainer(mlx.training.BaseTrainer):
             if not self.model.training:
                 for b_max in range(1, self.model.num_bands + 1):
                     v_bands = []
-                    for i in range(b_max):
-                        if i in v_pred:
+                    for i in range(self.model.num_bands):
+                        if i in v_pred and i < b_max:
                             v_bands.append(v_pred[i])
                         else:
                             v_bands.append(torch.zeros_like(v))
