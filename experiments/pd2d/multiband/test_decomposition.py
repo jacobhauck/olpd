@@ -23,7 +23,7 @@ class TestMultibandDecomposition(mlx.Experiment):
             for b in range(decompose.num_steps):
                 v_d_b = v_d.clone()
                 v_d_b[:, b + 1:] = 0.0  # Zero bands above b
-                v_recon = decompose.recompose(v_d)[0]
+                v_recon = decompose.recompose(v_d_b)[0]
                 errors[b].append((v_recon - v).abs().mean().item() / v.abs().mean().item())
         errors = torch.tensor(errors)
 
