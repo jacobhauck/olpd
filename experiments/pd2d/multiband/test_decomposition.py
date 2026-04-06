@@ -15,6 +15,7 @@ class TestMultibandDecomposition(mlx.Experiment):
         os.makedirs(output_dir, exist_ok=True)
 
         errors = [[] for _ in range(decompose.num_steps)]
+        decompose.to(config['device'])
         for u, x, v, y in dataset:
             d = config['device']
             v, y = v.to(d), y.to(d)
@@ -33,6 +34,7 @@ class TestMultibandDecomposition(mlx.Experiment):
             print(f'Median error: {float(errors.median()):.04f}')
             print()
 
+        decompose.to('cpu')
         for i, (u, x, v, y) in enumerate(dataset):
             if i >= config.get('max_plots', float('inf')):
                 break
