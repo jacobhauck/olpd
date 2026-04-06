@@ -29,9 +29,9 @@ class TestMultibandDecomposition(mlx.Experiment):
 
         for b in range(decompose.num_steps):
             print(f'Error for band {b}')
-            print(f'Mean error: {float(errors.mean()):.04f}')
-            print(f'Std error: {float(errors.std()):.04f}')
-            print(f'Median error: {float(errors.median()):.04f}')
+            print(f'Mean error: {float(errors[b].mean()):.04f}')
+            print(f'Std error: {float(errors[b].std()):.04f}')
+            print(f'Median error: {float(errors[b].median()):.04f}')
             print()
 
         decompose.to('cpu')
