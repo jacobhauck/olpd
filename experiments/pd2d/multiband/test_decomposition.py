@@ -1,7 +1,9 @@
-import mlx
-from operatorlearning.data import OLDataset
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
+import mlx
+import torch
+from operatorlearning.data import OLDataset
 
 
 class TestMultibandDecomposition(mlx.Experiment):
@@ -11,6 +13,25 @@ class TestMultibandDecomposition(mlx.Experiment):
 
         output_dir = os.path.join('results', name)
         os.makedirs(output_dir, exist_ok=True)
+
+        errors = [[] for _ in range(decompose.num_steps)]
+        for u, x, v, y in dataset:
+            d = config['device']
+            v, y = v.to(d), y.to(d)
+            v_d, _ = decompose(v[None], y[None])
+            for b in range(decompose.num_steps):
+                v_d_b = v_d.clone()
+                v_d_b[:, b + 1:] = 0.0  # Zero bands above b
+                v_recon = decompose.recompose(v_d)[0]
+                errors[b].append((v_recon - v).abs().mean().item() / v.abs().mean().item())
+        errors = torch.tensor(errors)
+
+        for b in range(decompose.num_steps):
+            print(f'Error for band {b}')
+            print(f'Mean error: {float(errors.mean()):.04f}')
+            print(f'Std error: {float(errors.std()):.04f}')
+            print(f'Median error: {float(errors.median()):.04f}')
+            print()
 
         for i, (u, x, v, y) in enumerate(dataset):
             if i >= config.get('max_plots', float('inf')):
