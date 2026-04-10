@@ -23,6 +23,6 @@ training:
     relative: false
   batch_size: 64
   epochs: 1500
-  resolutions: [50, 50]
-  bands: [0, 1]
-  band_weights: [1.0, 1.0]
+  resolutions: [50, 50, 50, 50]
+  bands: [0, 1, 2, 3]
+  band_weights: [1.0, 1.0, 1.0, 1.0]
