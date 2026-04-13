@@ -120,6 +120,14 @@ class MultibandExperiment(mlx.WandBExperiment):
             log_interval=log_interval
         )
 
+        # Handle model interface compatibility
+        if 'fno' in config['model']['name'].lower():
+            trainer.model.apply_model = lambda model, u, x, y: model(u)
+        elif 'gnot' in config['model']['name'].lower():
+            trainer.model.apply_model = lambda model, u, x, y: model([(u, x)], y)
+        elif 'pcanet' in config['model']['name'].lower():
+            trainer.model.apply_model = lambda model, u, x, y: model(u)
+
         trainer.train(epochs=config['training']['epochs'])
         losses, metrics = trainer.evaluate(('train', 'test'))
 

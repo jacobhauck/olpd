@@ -32,12 +32,13 @@ class MultiLoss(torch.nn.Module):
 
 
 class MultiModel(torch.nn.Module):
-    def __init__(self, models, decomposition):
+    def __init__(self, models, decomposition, apply_model=None):
         super().__init__()
         self.models = torch.nn.ModuleList([
             mlx.create_module(model) for model in models
         ])
         self.decomposition = mlx.create_module(decomposition)
+        self.apply_model = apply_model
 
     @property
     def num_bands(self):
@@ -52,7 +53,10 @@ class MultiModel(torch.nn.Module):
         :param band: Index of band to predict
         :return: (B, *out_shape, v_d_out) Output function values
         """
-        return self.models[band](u, x, x_out=y)
+        if self.apply_model is None:
+            return self.models[band](u, x, x_out=y)
+        else:
+            return self.apply_model(self.models[band], u, x, y)
 
     def forward(self, u, x, y):
         """
@@ -66,7 +70,10 @@ class MultiModel(torch.nn.Module):
 
         v = []
         for i in range(len(self.models)):
-            v.append(self.models[i](u, x, x_out=y[:, i]))
+            if self.apply_model is None:
+                v.append(self.models[i](u, x, x_out=y[:, i]))
+            else:
+                v.append(self.apply_model(self.models[i], u, x, y[:, i]))
 
         v = torch.stack(v, dim=1)
         return self.decomposition.recompose(v)
