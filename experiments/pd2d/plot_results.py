@@ -3,6 +3,8 @@ import torch.utils.data
 import wandb
 import matplotlib.pyplot as plt
 import os
+
+from modules.data import NormalizedOLDataset
 from .pd2d import PD2DTrainer
 from operatorlearning.modules import FunctionalL2Loss
 from operatorlearning.data import OLDataset
@@ -34,6 +36,15 @@ class PlotResults(mlx.Experiment):
             dataset = trainer.datasets[dataset_name]
         else:
             dataset = OLDataset(dataset_name)
+            if run.config['training'].get('normalize', False):
+                NormalizedOLDataset(
+                    dataset,
+                    u_mean=trainer.datasets['train'].u_mean,
+                    u_std=trainer.datasets['train'].u_std,
+                    v_mean=trainer.datasets['train'].v_mean,
+                    v_std=trainer.datasets['train'].v_std
+                )
+            dataset_name = 'custom'
 
         data_loader = torch.utils.data.DataLoader(
             dataset,
@@ -110,7 +121,7 @@ class PlotResults(mlx.Experiment):
             fig.colorbar(last, cax=cbar_ax, label='Displacement')
 
             plt.savefig(
-                os.path.join(output_dir, config.get('from_dataset', 'test') + '_pred_' + str(i) + '.png'),
+                os.path.join(output_dir, dataset_name + '_pred_' + str(i) + '.png'),
                 bbox_inches='tight'
             )
 
@@ -136,7 +147,7 @@ class PlotResults(mlx.Experiment):
             fig.colorbar(last, cax=cbar_ax, label=f'Displacement error ($RL^2 = $ {100*error:.02f}%)')
 
             plt.savefig(
-                os.path.join(output_dir, config.get('from_dataset', 'test') + '_error_' + str(i) + '.png'),
+                os.path.join(output_dir, dataset_name + '_error_' + str(i) + '.png'),
                 bbox_inches='tight'
             )
 
