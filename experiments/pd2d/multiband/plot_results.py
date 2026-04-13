@@ -3,6 +3,10 @@ import torch.utils.data
 import wandb
 import matplotlib.pyplot as plt
 import os
+
+from operatorlearning import OLDataset
+from orbax.export.examples.periodically_export_main import train
+
 from .multiband import Multiband2dTrainer
 from operatorlearning.modules import FunctionalL2Loss
 
@@ -15,8 +19,14 @@ class PlotResults(mlx.Experiment):
         run.config['device'] = config['device']
         trainer = Multiband2dTrainer(run.config, run)
 
+        dataset_name = config.get('from_dataset', 'test')
+        if dataset_name in trainer.datasets:
+            dataset = trainer.datasets[dataset_name]
+        else:
+            dataset = OLDataset(dataset_name)
+
         data_loader = torch.utils.data.DataLoader(
-            trainer.datasets[config.get('from_dataset', 'test')],
+            dataset,
             batch_size=1,
             shuffle=config.get('random', True)
         )

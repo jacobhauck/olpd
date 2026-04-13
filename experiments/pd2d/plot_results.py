@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import os
 from .pd2d import PD2DTrainer
 from operatorlearning.modules import FunctionalL2Loss
+from operatorlearning.data import OLDataset
 
 
 class PlotResults(mlx.Experiment):
@@ -28,8 +29,14 @@ class PlotResults(mlx.Experiment):
         elif 'pcanet' in run.config['model']['name'].lower():
             trainer.apply_model = lambda u, x, y: trainer.model(u)
 
+        dataset_name = config.get('from_dataset', 'test')
+        if dataset_name in trainer.datasets:
+            dataset = trainer.datasets[dataset_name]
+        else:
+            dataset = OLDataset(dataset_name)
+
         data_loader = torch.utils.data.DataLoader(
-            trainer.datasets[config.get('from_dataset', 'test')],
+            dataset,
             batch_size=1,
             shuffle=config.get('random', True)
         )
