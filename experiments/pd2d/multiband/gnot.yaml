@@ -1,3 +1,5 @@
+model_compatibility: gnot
+
 model:
   name: multiband.MultiModel
   models:

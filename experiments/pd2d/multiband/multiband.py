@@ -121,11 +121,11 @@ class MultibandExperiment(mlx.WandBExperiment):
         )
 
         # Handle model interface compatibility
-        if config.get('model_compatibility').lower() == 'fno':
+        if config.get('model_compatibility', '').lower() == 'fno':
             trainer.model.apply_model = lambda model, u, x, y: model(u)
-        elif config.get('model_compatibility').lower() == 'gnot':
+        elif config.get('model_compatibility', '').lower() == 'gnot':
             trainer.model.apply_model = lambda model, u, x, y: model([(u, x)], y)
-        elif config.get('model_compatibility').lower() == 'pcanet':
+        elif config.get('model_compatibility', '').lower() == 'pcanet':
             trainer.model.apply_model = lambda model, u, x, y: model(u)
 
         trainer.train(epochs=config['training']['epochs'])
