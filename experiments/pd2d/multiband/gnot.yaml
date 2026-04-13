@@ -1,0 +1,154 @@
+model:
+  name: multiband.MultiModel
+  models:
+    # Band 0
+    - name: gnot.GNOT
+      d_model: &d_model 64
+      v_d_in: 2
+      v_d_out: 2
+      query_mlp_config:
+        hidden_layers:
+          - 128
+          - 128
+        activation:
+          name: GELU
+      output_mlp_config:
+        hidden_layers:
+          - 256
+        activation:
+          name: GELU
+      input_encoders:
+        - name: gnot.SampledFunctionEncoder
+          f_d_in: 2
+          f_d_out: 2
+          d_model: *d_model
+          mlp_config:
+            hidden_layers:
+              - 128
+              - 128
+            activation:
+              name: GELU
+      num_layers: 3
+      layer_config:
+        d_model: *d_model
+        d_hidden: 128
+        num_heads: 8
+        activation:
+          name: GELU
+
+    # Band 1
+    - name: gnot.GNOT
+      d_model: &d_model 64
+      v_d_in: 2
+      v_d_out: 2
+      query_mlp_config:
+        hidden_layers:
+          - 128
+          - 128
+        activation:
+          name: GELU
+      output_mlp_config:
+        hidden_layers:
+          - 256
+        activation:
+          name: GELU
+      input_encoders:
+        - name: gnot.SampledFunctionEncoder
+          f_d_in: 2
+          f_d_out: 2
+          d_model: *d_model
+          mlp_config:
+            hidden_layers:
+              - 128
+              - 128
+            activation:
+              name: GELU
+      num_layers: 3
+      layer_config:
+        d_model: *d_model
+        d_hidden: 128
+        num_heads: 8
+        activation:
+          name: GELU
+
+    # Band 2
+    - name: gnot.GNOT
+      d_model: &d_model 64
+      v_d_in: 2
+      v_d_out: 2
+      query_mlp_config:
+        hidden_layers:
+          - 128
+          - 128
+        activation:
+          name: GELU
+      output_mlp_config:
+        hidden_layers:
+          - 256
+        activation:
+          name: GELU
+      input_encoders:
+        - name: gnot.SampledFunctionEncoder
+          f_d_in: 2
+          f_d_out: 2
+          d_model: *d_model
+          mlp_config:
+            hidden_layers:
+              - 128
+              - 128
+            activation:
+              name: GELU
+      num_layers: 3
+      layer_config:
+        d_model: *d_model
+        d_hidden: 128
+        num_heads: 8
+        activation:
+          name: GELU
+
+    # Band 3
+    - name: gnot.GNOT
+      d_model: &d_model 64
+      v_d_in: 2
+      v_d_out: 2
+      query_mlp_config:
+        hidden_layers:
+          - 128
+          - 128
+        activation:
+          name: GELU
+      output_mlp_config:
+        hidden_layers:
+          - 256
+        activation:
+          name: GELU
+      input_encoders:
+        - name: gnot.SampledFunctionEncoder
+          f_d_in: 2
+          f_d_out: 2
+          d_model: *d_model
+          mlp_config:
+            hidden_layers:
+              - 128
+              - 128
+            activation:
+              name: GELU
+      num_layers: 3
+      layer_config:
+        d_model: *d_model
+        d_hidden: 128
+        num_heads: 8
+        activation:
+          name: GELU
+
+  decomposition:
+    name: multiband.MultibandDecomposition2d
+    low_freq_cutoff:
+      name: smooth_error.GaussianSmoothing2d
+      kernel_sigma: 0.23
+      x_min: [ 0.0, 0.0 ]
+      x_max: [ 5.0, 5.0 ]
+      n: [ 200, 200 ]
+      adaptive: true
+    dilation: 1.5
+    num_steps: 4
