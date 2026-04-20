@@ -1,0 +1,14 @@
+run_id: kpx1vnh6
+grf_params:
+  num_modes: 12
+  alpha: 0.01
+  beta: 1.0
+  gamma: 3.1
+  x0: 0.0
+  x1: 5.0
+  y0: 0.0
+  y1: 5.0
+  integrator:
+    name: TrapezoidIntegrator
+
+dataset: data/pd2d/BumpProp2.ol.h5
