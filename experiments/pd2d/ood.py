@@ -47,8 +47,10 @@ class GRFBasis(torch.nn.Module):
         :return: (n) projection coefficients on the basis
         """
         basis = self.evaluate(x)  # (n, *shape, 1)
-        c = self.integrator(basis * u[None], x[None].expand(basis.shape[0], *x.shape))
-        return c[:, 0]
+        prod = torch.einsum('n...d,...d->n...', basis, u)  # (n, *shape)
+        c = self.integrator(prod[..., None], x[None].expand(basis.shape[0], *x.shape))
+        # (n)
+        return c
 
     def project(self, u, x):
         """
@@ -57,14 +59,15 @@ class GRFBasis(torch.nn.Module):
         :return: (*shape, 2) projection of u onto space spanned by the basis
         """
         basis = self.evaluate(x)  # (n, *shape, 2)
-        c = self.integrator(basis * u[None], x[None].expand(basis.shape[0], *x.shape))
-        # (n, 2)
-        return torch.einsum('nd,n...d->...d', c, basis)  # (*shape, 2)
+        prod = torch.einsum('n...d,...d->n...', basis, u)  # (n, *shape)
+        c = self.integrator(prod[..., None], x[None].expand(basis.shape[0], *x.shape))
+        # (n)
+        return torch.einsum('n,n...d->...d', c, basis)  # (*shape, 2)
 
     def evaluate(self, x):
         """
         :param x: (*shape, 2) sample points at which to evaluate basis
-        :return: (n, *shape, 1) basis functions evaluated at sample points
+        :return: (n, *shape, 2) basis functions evaluated at sample points
         """
         x_, y_ = x.reshape(-1, 2).T  # each (prod(shape),)
         px = self.g_x[:, None] * (2*torch.pi * (x_[None] - self.x0) / (self.x1 - self.x0))
@@ -76,7 +79,16 @@ class GRFBasis(torch.nn.Module):
         s = s[self.nonzero]  # ((2m+1)^2-1, prod(shape))
         c = torch.cos(phase) / f  # ((2m+1)^2, prod(shape))
 
-        return torch.cat([s, c], dim=0).reshape(-1, *x.shape[:-1], 1)
+        one_comp = torch.cat([s, c], dim=0).reshape(-1, *x.shape[:-1], 1)
+        # (n/2, *shape, 1)
+
+        first_comp = torch.cat([one_comp, torch.zeros_like(one_comp)], dim=-1)
+        # (n/2, *shape, 2)
+
+        second_comp = torch.cat([torch.zeros_like(one_comp), one_comp], dim=-1)
+        # (n/2, *shape, 2)
+
+        return torch.cat([first_comp, second_comp], dim=0)  # (n, *shape, 2)
 
 
 class OODExperiment(mlx.Experiment):
@@ -95,13 +107,12 @@ class OODExperiment(mlx.Experiment):
             encoder_basis = trainer.model.encoder_net(x[None])[0]  # (*shape, p, 2)
         dims = (len(x.shape) - 1, *range(0, len(x.shape) - 1), -1)
         encoder_basis = torch.permute(encoder_basis, dims)  # (p, *shape, 2)
-        grf_basis = grf.evaluate(x)  # (n, *shape, 1)
-        grf_basis = torch.tile(grf_basis, (1,) * (len(grf_basis.shape) - 1) + (x.shape[-1],))
+        grf_basis = grf.evaluate(x)  # (n, *shape, 2)
 
         n = len(grf_basis)
         p = len(encoder_basis)
 
-        a = grf.coefficients(u, x)
+        a = grf.coefficients(u, x)  # (n)
 
         p_mat = torch.empty((p, n), device=config['device'])  # (p, n)
         x_batch = torch.tile(x[None], (p, 1, 1, 1))  # (p, *shape, 2)
