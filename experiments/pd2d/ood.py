@@ -121,16 +121,8 @@ class OODExperiment(mlx.Experiment):
             # (p, *shape)
             p_mat[:, i] = grf.integrator(prod[..., None], x_batch)[:, 0]
 
-        print(encoder_basis.shape, u.shape)
         prod = torch.einsum('p...d,...d->p...', encoder_basis, u)  # (p, *shape, 2)
-        print(prod.shape, x.shape)
         z0 = trainer.model.integrator(prod[..., None], x_batch)[:, 0]  # (p)
-        print(z0.shape)
-
-        print('z0 direct')
-        print(z0)
-        print('z0 from a')
-        print(p_mat @ a)
 
         u_mat, d, v_mat_t = torch.linalg.svd(p_mat)  # (p, p), (p), (n, n)
         t = torch.diag(1/d) @ u_mat.T @ z0  # (p)
@@ -139,7 +131,7 @@ class OODExperiment(mlx.Experiment):
         sig11 = sig_prime[:p, :p]  # (p, p)
         mu_bar = sig21 @ torch.linalg.inv(sig11) @ t  # (n - p)
         mu_prob =  torch.cat([t, mu_bar])  # (n)
-        a_prob = v_mat_t @ mu_prob  # (n)
+        a_prob = v_mat_t.T @ mu_prob  # (n)
         u_prob = torch.einsum('n,n...d->...d', a_prob, grf_basis)  # (*shape, 2)
 
         u_proj = grf.project(u, x)  # (*shape, 2)
