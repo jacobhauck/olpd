@@ -87,30 +87,31 @@ class OODExperiment(mlx.Experiment):
         trainer = PD2DTrainer(run.config, run)
         grf = GRFBasis(**config['grf_params']).to(config['device'])
 
-        base_dataset = OLDataset(config['dataset'])
-        t = trainer.datasets['train']
-        dataset = NormalizedOLDataset(base_dataset, t.u_mean, t.u_std, t.v_mean, t.v_std)
+        dataset = OLDataset(config['dataset'])
 
         u, x, _, _ = dataset[0]
         u, x = u.to(config['device']), x.to(config['device'])
-        encoder_basis = trainer.model.encoder_net(x[None])[0]  # (*shape, p, 2)
+        with torch.no_grad():
+            encoder_basis = trainer.model.encoder_net(x[None])[0]  # (*shape, p, 2)
         dims = (len(x.shape) - 1, *range(0, len(x.shape) - 1), -1)
         encoder_basis = torch.permute(encoder_basis, dims)  # (p, *shape, 2)
-        grf_basis = grf.evaluate(x)  # (n, *shape, 2)
+        grf_basis = grf.evaluate(x)  # (n, *shape, 1)
+        grf_basis = torch.tile(grf_basis, (1,) * (len(grf_basis.shape) - 1) + (x.shape[-1],))
 
         n = len(grf_basis)
         p = len(encoder_basis)
 
-        p_mat = torch.empty((p, n))  # (p, n)
+        p_mat = torch.empty((p, n), device=config['device'])  # (p, n)
         x_batch = torch.tile(x[None], (p, 1, 1, 1))  # (p, *shape, 2)
         for i in range(n):
             p_mat[:, i] = grf.integrator(encoder_basis * grf_basis[i:i+1], x_batch)[:, 0]
 
-        prod = torch.einsum('...d,p...d->p...d', encoder_basis, u)  # (p, *shape, 2)
-        z0 = trainer.model.integrator(prod[None], x[None])[0, :, 0]  # (p)
+        prod = torch.einsum('p...d,...d->p...d', encoder_basis, u)  # (p, *shape, 2)
+        z0 = trainer.model.integrator(prod, x_batch)[:, 0]  # (p)
 
         u_mat, d, v_mat_t = torch.linalg.svd(p_mat)  # (p, p), (p), (n, n)
-        t = torch.diagonal(1/d) @ u_mat.T @ z0  # (p)
+        print(torch.diag(1/d).shape, u_mat.shape, z0.shape)
+        t = torch.diag(1/d) @ u_mat.T @ z0  # (p)
         sig_prime = v_mat_t @ grf.cov @ v_mat_t.T
         sig21 = sig_prime[p:, :p]  # (n - p, p)
         sig11 = sig_prime[:p, :p]  # (p, p)
@@ -122,11 +123,12 @@ class OODExperiment(mlx.Experiment):
         v_min = float(u.min())
         v_max = float(u.max())
 
+        grf_params = config['grf_params']
         im_kwargs = {
             'vmin': v_min,
             'vmax': v_max,
             'cmap': 'seismic',
-            'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
+            'extent': (grf_params['x0'], grf_params['x1'], grf_params['y0'], grf_params['y1']),
             'origin': 'lower'
         }
 
@@ -160,6 +162,7 @@ class OODExperiment(mlx.Experiment):
         fig.colorbar(last, cax=cbar_ax, label='Displacement')
 
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
+        os.makedirs(output_dir, exist_ok=True)
         plt.savefig(
             os.path.join(output_dir, 'compare0.png'),
             bbox_inches='tight'
