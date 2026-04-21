@@ -101,6 +101,8 @@ class OODExperiment(mlx.Experiment):
         n = len(grf_basis)
         p = len(encoder_basis)
 
+        a = grf.coefficients(u, x)
+
         p_mat = torch.empty((p, n), device=config['device'])  # (p, n)
         x_batch = torch.tile(x[None], (p, 1, 1, 1))  # (p, *shape, 2)
         for i in range(n):
@@ -108,6 +110,10 @@ class OODExperiment(mlx.Experiment):
 
         prod = torch.einsum('...d,p...d->p...', encoder_basis, u)  # (p, *shape, 2)
         z0 = trainer.model.integrator(prod[None, ..., None], x[None])[0, :, 0]  # (p)
+        print('z0 direct')
+        print(z0)
+        print('z0 from a')
+        print(p_mat @ a)
 
         u_mat, d, v_mat_t = torch.linalg.svd(p_mat)  # (p, p), (p), (n, n)
         t = torch.diag(1/d) @ u_mat.T @ z0  # (p)
