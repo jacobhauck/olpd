@@ -28,7 +28,7 @@ class GRFBasis(torch.nn.Module):
         f = ((x1 - x0) * (y1 - y0) / 2) ** .5
         s_var = (f * self.a[self.nonzero]) ** 2  # ((2m+1)^2-1,)
         c_var = (f * self.a) ** 2  # ((2m+1)^2,)
-        self.register_buffer('cov', torch.diag(torch.cat([s_var, c_var])))
+        self.register_buffer('cov', torch.diag(torch.cat([s_var, c_var, s_var, c_var])))
         # (2(2m+1)^2-1, 2(2m+1)^2-1)
 
         self.alpha = alpha
