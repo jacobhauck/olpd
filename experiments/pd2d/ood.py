@@ -88,8 +88,9 @@ class OODExperiment(mlx.Experiment):
 
         dataset = OLDataset(config['dataset'])
 
-        u, x, _, _ = dataset[0]
+        u, x, v, y = dataset[0]
         u, x = u.to(config['device']), x.to(config['device'])
+        v, y = v.to(config['device']), y.to(config['device'])
         with torch.no_grad():
             encoder_basis = trainer.model.encoder_net(x[None])[0]  # (*shape, p, 2)
         dims = (len(x.shape) - 1, *range(0, len(x.shape) - 1), -1)
@@ -109,7 +110,6 @@ class OODExperiment(mlx.Experiment):
         z0 = trainer.model.integrator(prod, x_batch)[:, 0]  # (p)
 
         u_mat, d, v_mat_t = torch.linalg.svd(p_mat)  # (p, p), (p), (n, n)
-        print(torch.diag(1/d).shape, u_mat.shape, z0.shape)
         t = torch.diag(1/d) @ u_mat.T @ z0  # (p)
         sig_prime = v_mat_t @ grf.cov @ v_mat_t.T
         sig21 = sig_prime[p:, :p]  # (n - p, p)
@@ -125,6 +125,10 @@ class OODExperiment(mlx.Experiment):
         v_max = float(u.max())
 
         grf_params = config['grf_params']
+        with torch.no_grad():
+            v_prob = trainer.model(u_prob[None], x[None], y[None])[0]
+            v_proj = trainer.model(u_proj[None], x[None], y[None])[0]
+
         im_kwargs = {
             'vmin': v_min,
             'vmax': v_max,
@@ -165,9 +169,10 @@ class OODExperiment(mlx.Experiment):
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
         os.makedirs(output_dir, exist_ok=True)
         plt.savefig(
-            os.path.join(output_dir, 'compare_prob.png'),
+            os.path.join(output_dir, 'compare_u_prob.png'),
             bbox_inches='tight'
         )
+        plt.close()
 
         fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
         axes[0][0].imshow(u[:, :, 0].T.cpu(), **im_kwargs)
@@ -200,6 +205,79 @@ class OODExperiment(mlx.Experiment):
 
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
         plt.savefig(
-            os.path.join(output_dir, 'compare_proj.png'),
+            os.path.join(output_dir, 'compare_u_proj.png'),
             bbox_inches='tight'
         )
+        plt.close()
+
+        fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
+        axes[0][0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
+        axes[0][0].set_title(f'Final $x$ displacement')
+        axes[0][0].set_xlabel('$x$')
+        axes[0][0].set_ylabel('$y$')
+        axes[0][0].set_aspect('equal')
+
+        axes[0][1].imshow(v[:, :, 1].T.cpu(), **im_kwargs)
+        axes[0][1].set_title(f'Final $y$ displacement')
+        axes[0][1].set_xlabel('$x$')
+        axes[0][1].set_ylabel('$y$')
+        axes[0][1].set_aspect('equal')
+
+        axes[1][0].imshow(v_prob[:, :, 0].T.cpu(), **im_kwargs)
+        axes[1][0].set_title(f'Pred most likely $x$ displacement')
+        axes[1][0].set_xlabel('$x$')
+        axes[1][0].set_ylabel('$y$')
+        axes[1][0].set_aspect('equal')
+
+        last = axes[1][1].imshow(v_prob[:, :, 1].T.cpu(), **im_kwargs)
+        axes[1][1].set_title(f'Pred most likely $y$ displacement')
+        axes[1][1].set_xlabel('$x$')
+        axes[1][1].set_ylabel('$y$')
+        axes[1][1].set_aspect('equal')
+
+        fig.subplots_adjust(right=0.8)
+        cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
+        fig.colorbar(last, cax=cbar_ax, label='Displacement')
+
+        output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
+        plt.savefig(
+            os.path.join(output_dir, 'compare_v_prob.png'),
+            bbox_inches='tight'
+        )
+        plt.close()
+
+        fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
+        axes[0][0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
+        axes[0][0].set_title(f'Final $x$ displacement')
+        axes[0][0].set_xlabel('$x$')
+        axes[0][0].set_ylabel('$y$')
+        axes[0][0].set_aspect('equal')
+
+        axes[0][1].imshow(v[:, :, 1].T.cpu(), **im_kwargs)
+        axes[0][1].set_title(f'Final $y$ displacement')
+        axes[0][1].set_xlabel('$x$')
+        axes[0][1].set_ylabel('$y$')
+        axes[0][1].set_aspect('equal')
+
+        axes[1][0].imshow(v_proj[:, :, 0].T.cpu(), **im_kwargs)
+        axes[1][0].set_title(f'Pred projected $x$ displacement')
+        axes[1][0].set_xlabel('$x$')
+        axes[1][0].set_ylabel('$y$')
+        axes[1][0].set_aspect('equal')
+
+        last = axes[1][1].imshow(v_proj[:, :, 1].T.cpu(), **im_kwargs)
+        axes[1][1].set_title(f'Pred projected $y$ displacement')
+        axes[1][1].set_xlabel('$x$')
+        axes[1][1].set_ylabel('$y$')
+        axes[1][1].set_aspect('equal')
+
+        fig.subplots_adjust(right=0.8)
+        cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
+        fig.colorbar(last, cax=cbar_ax, label='Displacement')
+
+        output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
+        plt.savefig(
+            os.path.join(output_dir, 'compare_v_proj.png'),
+            bbox_inches='tight'
+        )
+        plt.close()
