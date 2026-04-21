@@ -48,7 +48,7 @@ class GRFBasis(torch.nn.Module):
         """
         basis = self.evaluate(x)  # (n, *shape, 1)
         prod = torch.einsum('n...d,...d->n...', basis, u)  # (n, *shape)
-        c = self.integrator(prod[..., None], x[None].expand(basis.shape[0], *x.shape))
+        c = self.integrator(prod[..., None], x[None].expand(basis.shape[0], *x.shape))[:, 0]
         # (n)
         return c
 
@@ -60,7 +60,7 @@ class GRFBasis(torch.nn.Module):
         """
         basis = self.evaluate(x)  # (n, *shape, 2)
         prod = torch.einsum('n...d,...d->n...', basis, u)  # (n, *shape)
-        c = self.integrator(prod[..., None], x[None].expand(basis.shape[0], *x.shape))
+        c = self.integrator(prod[..., None], x[None].expand(basis.shape[0], *x.shape))[:, 0]
         # (n)
         return torch.einsum('n,n...d->...d', c, basis)  # (*shape, 2)
 
