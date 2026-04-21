@@ -1,7 +1,6 @@
 import mlx
 from operatorlearning import OLDataset
 
-from modules.data import NormalizedOLDataset
 from .pd2d import PD2DTrainer
 import torch
 import matplotlib.pyplot as plt
@@ -120,6 +119,8 @@ class OODExperiment(mlx.Experiment):
         a_prob = v_mat_t @ mu_prob  # (n)
         u_prob = torch.einsum('n,n...d->...d', a_prob, grf_basis)  # (*shape, 2)
 
+        u_proj = grf_basis.project(u, x)  # (*shape, 2)
+
         v_min = float(u.min())
         v_max = float(u.max())
 
@@ -164,6 +165,41 @@ class OODExperiment(mlx.Experiment):
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
         os.makedirs(output_dir, exist_ok=True)
         plt.savefig(
-            os.path.join(output_dir, 'compare0.png'),
+            os.path.join(output_dir, 'compare_prob.png'),
+            bbox_inches='tight'
+        )
+
+        fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
+        axes[0][0].imshow(u[:, :, 0].T.cpu(), **im_kwargs)
+        axes[0][0].set_title(f'Original $x$ displacement')
+        axes[0][0].set_xlabel('$x$')
+        axes[0][0].set_ylabel('$y$')
+        axes[0][0].set_aspect('equal')
+
+        axes[0][1].imshow(u[:, :, 1].T.cpu(), **im_kwargs)
+        axes[0][1].set_title(f'Original $y$ displacement')
+        axes[0][1].set_xlabel('$x$')
+        axes[0][1].set_ylabel('$y$')
+        axes[0][1].set_aspect('equal')
+
+        axes[1][0].imshow(u_proj[:, :, 0].T.cpu(), **im_kwargs)
+        axes[1][0].set_title(f'Projected $x$ displacement')
+        axes[1][0].set_xlabel('$x$')
+        axes[1][0].set_ylabel('$y$')
+        axes[1][0].set_aspect('equal')
+
+        last = axes[1][1].imshow(u_proj[:, :, 1].T.cpu(), **im_kwargs)
+        axes[1][1].set_title(f'Projected $y$ displacement')
+        axes[1][1].set_xlabel('$x$')
+        axes[1][1].set_ylabel('$y$')
+        axes[1][1].set_aspect('equal')
+
+        fig.subplots_adjust(right=0.8)
+        cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
+        fig.colorbar(last, cax=cbar_ax, label='Displacement')
+
+        output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
+        plt.savefig(
+            os.path.join(output_dir, 'compare_proj.png'),
             bbox_inches='tight'
         )
