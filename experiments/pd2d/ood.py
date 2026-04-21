@@ -113,6 +113,7 @@ class OODExperiment(mlx.Experiment):
         p = len(encoder_basis)
 
         a = grf.coefficients(u, x)  # (n)
+        print(grf.coefficients(grf_basis[0], x))
 
         p_mat = torch.empty((p, n), device=config['device'])  # (p, n)
         x_batch = torch.tile(x[None], (p, 1, 1, 1))  # (p, *shape, 2)
