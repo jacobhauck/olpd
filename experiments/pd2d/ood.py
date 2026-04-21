@@ -119,7 +119,7 @@ class OODExperiment(mlx.Experiment):
         a_prob = v_mat_t @ mu_prob  # (n)
         u_prob = torch.einsum('n,n...d->...d', a_prob, grf_basis)  # (*shape, 2)
 
-        u_proj = grf_basis.project(u, x)  # (*shape, 2)
+        u_proj = grf.project(u, x)  # (*shape, 2)
 
         v_min = float(u.min())
         v_max = float(u.max())
