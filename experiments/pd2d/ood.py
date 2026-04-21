@@ -113,12 +113,13 @@ class OODExperiment(mlx.Experiment):
         p = len(encoder_basis)
 
         a = grf.coefficients(u, x)  # (n)
-        print(grf.coefficients(grf_basis[0], x))
 
         p_mat = torch.empty((p, n), device=config['device'])  # (p, n)
         x_batch = torch.tile(x[None], (p, 1, 1, 1))  # (p, *shape, 2)
         for i in range(n):
-            p_mat[:, i] = grf.integrator(encoder_basis * grf_basis[i:i+1], x_batch)[:, 0]
+            prod = torch.einsum('p...d,...d->p...', encoder_basis, grf_basis[i])
+            # (p, *shape)
+            p_mat[:, i] = grf.integrator(prod[..., None], x_batch)[:, 0]
 
         print(encoder_basis.shape, u.shape)
         prod = torch.einsum('p...d,...d->p...', encoder_basis, u)  # (p, *shape, 2)
