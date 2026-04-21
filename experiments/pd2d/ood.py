@@ -91,15 +91,17 @@ class OODExperiment(mlx.Experiment):
         u, x, v, y = dataset[0]
         u, x = u.to(config['device']), x.to(config['device'])
         v, y = v.to(config['device']), y.to(config['device'])
-        encoder_basis = trainer.model.encoder_net(x[None])[0]  # (*shape, p, 2)
+        with torch.no_grad():
+            encoder_basis = trainer.model.encoder_net(x[None])[0]  # (*shape, p, 2)
         dims = (len(x.shape) - 1, *range(0, len(x.shape) - 1), -1)
         encoder_basis = torch.permute(encoder_basis, dims)  # (p, *shape, 2)
-        grf_basis = grf.evaluate(x)  # (n, *shape, 2)
+        grf_basis = grf.evaluate(x)  # (n, *shape, 1)
+        grf_basis = torch.tile(grf_basis, (1,) * (len(grf_basis.shape) - 1) + (x.shape[-1],))
 
         n = len(grf_basis)
         p = len(encoder_basis)
 
-        p_mat = torch.empty((p, n))  # (p, n)
+        p_mat = torch.empty((p, n), device=config['device'])  # (p, n)
         x_batch = torch.tile(x[None], (p, 1, 1, 1))  # (p, *shape, 2)
         for i in range(n):
             p_mat[:, i] = grf.integrator(encoder_basis * grf_basis[i:i+1], x_batch)[:, 0]
@@ -108,7 +110,7 @@ class OODExperiment(mlx.Experiment):
         z0 = trainer.model.integrator(prod[None, ..., None], x[None])[0, :, 0]  # (p)
 
         u_mat, d, v_mat_t = torch.linalg.svd(p_mat)  # (p, p), (p), (n, n)
-        t = torch.diagonal(1/d) @ u_mat.T @ z0  # (p)
+        t = torch.diag(1/d) @ u_mat.T @ z0  # (p)
         sig_prime = v_mat_t @ grf.cov @ v_mat_t.T
         sig21 = sig_prime[p:, :p]  # (n - p, p)
         sig11 = sig_prime[:p, :p]  # (p, p)
@@ -117,7 +119,7 @@ class OODExperiment(mlx.Experiment):
         a_prob = v_mat_t @ mu_prob  # (n)
         u_prob = torch.einsum('n,n...d->...d', a_prob, grf_basis)  # (*shape, 2)
 
-        u_proj = grf_basis.project(u, x)  # (*shape, 2)
+        u_proj = grf.project(u, x)  # (*shape, 2)
         prob_prod = torch.einsum('...d,p...d->p...', encoder_basis, u_prob)  # (p, *shape, 2)
         prob_z0 = trainer.model.integrator(prob_prod[None, ..., None], x[None])[0, :, 0]  # (p)
 
@@ -134,6 +136,7 @@ class OODExperiment(mlx.Experiment):
         v_min = float(u.min())
         v_max = float(u.max())
 
+        grf_params = config['grf_params']
         with torch.no_grad():
             v_prob = trainer.model(u_prob[None], x[None], y[None])[0]
             v_proj = trainer.model(u_proj[None], x[None], y[None])[0]
@@ -142,7 +145,7 @@ class OODExperiment(mlx.Experiment):
             'vmin': v_min,
             'vmax': v_max,
             'cmap': 'seismic',
-            'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
+            'extent': (grf_params['x0'], grf_params['x1'], grf_params['y0'], grf_params['y1']),
             'origin': 'lower'
         }
 
@@ -176,8 +179,9 @@ class OODExperiment(mlx.Experiment):
         fig.colorbar(last, cax=cbar_ax, label='Displacement')
 
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
+        os.makedirs(output_dir, exist_ok=True)
         plt.savefig(
-            os.path.join(output_dir, 'compare_prob.png'),
+            os.path.join(output_dir, 'compare_u_prob.png'),
             bbox_inches='tight'
         )
         plt.close()
@@ -213,7 +217,7 @@ class OODExperiment(mlx.Experiment):
 
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
         plt.savefig(
-            os.path.join(output_dir, 'compare_proj.png'),
+            os.path.join(output_dir, 'compare_u_proj.png'),
             bbox_inches='tight'
         )
         plt.close()
@@ -249,7 +253,7 @@ class OODExperiment(mlx.Experiment):
 
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
         plt.savefig(
-            os.path.join(output_dir, 'compare_proj.png'),
+            os.path.join(output_dir, 'compare_v_prob.png'),
             bbox_inches='tight'
         )
         plt.close()
@@ -268,13 +272,13 @@ class OODExperiment(mlx.Experiment):
         axes[0][1].set_aspect('equal')
 
         axes[1][0].imshow(v_proj[:, :, 0].T.cpu(), **im_kwargs)
-        axes[1][0].set_title(f'Pred most likely $x$ displacement')
+        axes[1][0].set_title(f'Pred projected $x$ displacement')
         axes[1][0].set_xlabel('$x$')
         axes[1][0].set_ylabel('$y$')
         axes[1][0].set_aspect('equal')
 
         last = axes[1][1].imshow(v_proj[:, :, 1].T.cpu(), **im_kwargs)
-        axes[1][1].set_title(f'Pred most likely $y$ displacement')
+        axes[1][1].set_title(f'Pred projected $y$ displacement')
         axes[1][1].set_xlabel('$x$')
         axes[1][1].set_ylabel('$y$')
         axes[1][1].set_aspect('equal')
@@ -285,7 +289,7 @@ class OODExperiment(mlx.Experiment):
 
         output_dir = os.path.join('results/pd2d/ood', run.name + '-' + run.id)
         plt.savefig(
-            os.path.join(output_dir, 'compare_proj.png'),
+            os.path.join(output_dir, 'compare_v_proj.png'),
             bbox_inches='tight'
         )
         plt.close()
