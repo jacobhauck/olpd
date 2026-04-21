@@ -104,8 +104,8 @@ class OODExperiment(mlx.Experiment):
         for i in range(n):
             p_mat[:, i] = grf.integrator(encoder_basis * grf_basis[i:i+1], x_batch)[:, 0]
 
-        prod = torch.einsum('...d,p...d->p...d', encoder_basis, u)  # (p, *shape, 2)
-        z0 = trainer.model.integrator(prod[None], x[None])[0, :, 0]  # (p)
+        prod = torch.einsum('...d,p...d->p...', encoder_basis, u)  # (p, *shape, 2)
+        z0 = trainer.model.integrator(prod[None], x[None])[0, :]  # (p)
 
         u_mat, d, v_mat_t = torch.linalg.svd(p_mat)  # (p, p), (p), (n, n)
         t = torch.diagonal(1/d) @ u_mat.T @ z0  # (p)
@@ -118,6 +118,18 @@ class OODExperiment(mlx.Experiment):
         u_prob = torch.einsum('n,n...d->...d', a_prob, grf_basis)  # (*shape, 2)
 
         u_proj = grf_basis.project(u, x)  # (*shape, 2)
+        prob_prod = torch.einsum('...d,p...d->p...', encoder_basis, u_prob)  # (p, *shape, 2)
+        prob_z0 = trainer.model.integrator(prob_prod[None], x[None])[0, :]  # (p)
+
+        proj_prod = torch.einsum('...d,p...d->p...', encoder_basis, u_proj)  # (p, *shape, 2)
+        proj_z0 = trainer.model.integrator(proj_prod[None], x[None])[0, :]  # (p)
+
+        print('Original')
+        print(z0)
+        print('Most likely')
+        print(prob_z0)
+        print('Projected')
+        print(proj_z0)
 
         v_min = float(u.min())
         v_max = float(u.max())
