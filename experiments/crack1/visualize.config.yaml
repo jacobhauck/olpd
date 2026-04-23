@@ -1,6 +1,7 @@
-dataset: data/crack1/RandomCrack1-1_tg.ol.h5
-max_plots: 1
-show: true
+dataset: data/crack1/train_1-1_tg.ol.h5
+max_plots: 5
+random: true
+show: false
 xo: -0.05
 xn: 0.05
 yo: -0.02

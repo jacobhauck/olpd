@@ -1,0 +1,26 @@
+data:
+  train:
+    file_name: data/crack1/train_1-1_tg_50.ol.h5
+    stream_uv: false
+  test:
+    file_name: data/crack1/test_1-1_tg.ol.h5
+    stream_uv: false
+
+optim:
+  name: Adam
+  lr: 0.0005
+
+metrics:
+  rel_l2:
+    name: FunctionalL2Loss
+    relative: true
+    squared: false
+
+training:
+  normalize: false
+  loss_fn:
+    name: FunctionalL1Loss
+    relative: false
+  batch_size: 128
+  epochs: 3000
+
