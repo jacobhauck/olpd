@@ -1,0 +1,7 @@
+dataset: data/crack1/RandomCrack1-1_tg.ol.h5
+max_plots: 1
+show: true
+xo: -0.05
+xn: 0.05
+yo: -0.02
+yn: 0.02

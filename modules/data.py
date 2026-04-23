@@ -5,13 +5,14 @@ from operatorlearning.data import OLDataset
 
 def pd2d_to_tensor_grid(t, nx, ny):
     """
-    :param t: (B, N, 2) flat tensor read from OLPDMATLAB2D output
+    :param t: (B, N, d) flat tensor read from OLPDMATLAB2D output
     :param nx: number of points in the x (first) direction
     :param ny: number of points in thee y (second) direction
-    :return: (B, nx, ny, 2) version of tensor conforming to
+    :return: (B, nx, ny, d) version of tensor conforming to
         operatorlearning.GridFunction tensor grid conventions
     """
-    t = t.reshape(-1, nx, ny, 2).permute(0, 2, 1, 3)
+    d = t.shape[-1]
+    t = t.reshape(-1, ny, nx, d).permute(0, 2, 1, 3)
     return torch.flip(t, (2,))
 
 
@@ -54,6 +55,56 @@ def pd2d_subsample_dataset(dataset_in, dataset_out, nx, ny):
     u = data_in.u['0'][:, ::x_step, ::y_step]  # (B, nx, ny, 2)
     v = data_in.v['0'][:, ::x_step, ::y_step]  # (B, nx, ny, 2)
     x = data_in.x[0][::x_step, ::y_step]  # (nx, ny, 2)
+    y = data_in.y[0][::x_step, ::y_step]  # (nx, ny, 2)
+
+    disc = torch.zeros(len(u), dtype=torch.long)
+    OLDataset.write(u, [x], v, [y], dataset_out, u_disc=disc, v_disc=disc)
+
+
+def crack1_import_dataset(dataset_in, dataset_out, nx, ny):
+    """
+    Converts all tensors in the given OLPDMATLAB2D output dataset to
+    the tensor grid conventions of operatorlearning.GridFunction
+    :param dataset_in: Path to input .ol.h5 dataset
+    :param dataset_out: Path to new output .ol.h5 dataset
+    :param nx: Number of nodes in x direction
+    :param ny: Number of nodes in y direction
+    """
+    data_in = OLDataset(dataset_in, stream_uv=False, stream_xy=False)
+    v = pd2d_to_tensor_grid(data_in.v['1'], nx, ny)  # (B, nx, ny, 1)
+    y = pd2d_to_tensor_grid(data_in.y[1][None], nx, ny)[0]  # (nx, ny, 2)
+
+    disc = torch.zeros(len(v), dtype=torch.long)
+    OLDataset.write(data_in.u['1'], [data_in.x[1]], v, [y], dataset_out, u_disc=disc, v_disc=disc)
+
+
+def crack1_subsample_dataset(dataset_in, dataset_out, nbx, nx, ny):
+    """
+    Subsamples the given dataset to a grid with the requested dimensions
+    (which must divide the source dimensions for nx and ny, and must generate
+    a valid subsampling for nbx (which uses a closed sampling rule))
+
+    :param dataset_in: Name of input dataset file
+    :param dataset_out: Name of file to save subsampled dataset to
+    :param nbx: Number of sampling points on the boundary (in x direction)
+    :param nx: Number of points in x direction
+    :param ny: Number of points in y direction
+    """
+    data_in = OLDataset(dataset_in, stream_uv=False, stream_xy=False)
+    nbx_in = data_in.u['0'].shape[1]
+    assert (nbx_in - 1) % (nbx - 1) == 0, \
+        'nbx must be valid number of boundary subsampling points'
+    bx_step = (nbx_in - 1) // (nbx - 1)
+
+    nx_in, ny_in = data_in.v['0'].shape[1:3]
+    assert nx_in % nx == 0 and ny_in % ny == 0, \
+        'Subsampling resolution must divide original'
+    x_step = nx_in // nx
+    y_step = ny_in // ny
+
+    u = data_in.u['0'][:, ::bx_step]  # (B, nbx, 2)
+    v = data_in.v['0'][:, ::x_step, ::y_step]  # (B, nx, ny, 1)
+    x = data_in.x[0][::bx_step]  # (nbx, 1)
     y = data_in.y[0][::x_step, ::y_step]  # (nx, ny, 2)
 
     disc = torch.zeros(len(u), dtype=torch.long)
