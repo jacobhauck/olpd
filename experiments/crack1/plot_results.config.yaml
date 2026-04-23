@@ -1,0 +1,10 @@
+run_id: zhbsxbl8
+max_plots: 5
+show: false
+random: true
+from_dataset: test
+
+xo: -0.05
+yo: -0.02
+xn: 0.05
+yn: 0.02

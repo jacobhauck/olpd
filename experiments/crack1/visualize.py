@@ -48,3 +48,5 @@ def experiment(config, name, group=None):
         output_dir = os.path.join(f'results/{name}/{config["dataset"]}')
         os.makedirs(output_dir, exist_ok=True)
         fig.savefig(os.path.join(output_dir, f'{i}.png'))
+
+        plt.close(fig)
