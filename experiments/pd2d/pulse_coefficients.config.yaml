@@ -1,0 +1,11 @@
+num_modes: 24
+sigma: [0.03, 0.05, 0.1, 0.2, 0.3]
+x_min: [0, 0]
+x_max: [5, 5]
+xm: 2.5
+ym: 2.5
+A: 0.025
+resolution: 256
+alpha: 1.0
+beta: 1.0
+gamma: 3.1
