@@ -75,27 +75,39 @@ class PlotResults(mlx.Experiment):
             im_kwargs = {
                 'vmin': v_min,
                 'vmax': v_max,
-                'cmap': 'seismic',
+                'cmap': 'plasma',
                 'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
                 'origin': 'lower'
             }
 
-            fig, axes = plt.subplots(1, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
-            axes[0].set_title(f'Final damage field ({i})')
-            axes[0].set_xlabel('$x$')
-            axes[0].set_ylabel('$y$')
-            axes[0].set_aspect('equal')
+            fig, axes = plt.subplots(3, 1, figsize=(6, 8))
+            gs = axes[0].get_subplotspec().get_gridspec()
+            axes[1].remove()
+            axes[2].remove()
 
-            last = axes[1].imshow(v_pred[:, :, 0].T.cpu(), **im_kwargs)
-            axes[1].set_title(f'Pred damage field ({i})')
-            axes[1].set_xlabel('$x$')
-            axes[1].set_ylabel('$y$')
-            axes[1].set_aspect('equal')
+            axes[0].plot(x[:, 0], u[:, 0], label='top traction')
+            axes[0].plot(x[:, 0], u[:, 1], label='bot traction')
+            axes[0].set_ylim(0, 0.8)
+            axes[0].set_xlabel('x')
+            axes[0].set_ylabel('rel. stress')
+            axes[0].legend()
+            axes[0].set_title(f'Boundary relative traction ({i})')
 
-            fig.subplots_adjust(right=0.8)
-            cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
-            fig.colorbar(last, cax=cbar_ax, label='Damage')
+            sub_fig = fig.add_subfigure(gs[1:])
+            sub_axes = sub_fig.subplots(2, 1, sharex=True)
+            dmg_im = sub_axes[0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
+            sub_axes[0].set_title(f'Final damage field ({i})')
+            sub_axes[0].set_xlabel('$x$')
+            sub_axes[0].set_ylabel('$y$')
+
+            sub_axes[1].imshow(v_pred[:, :, 0].T.cpu(), **im_kwargs)
+            sub_axes[1].set_title(f'Pred damage field ({i})')
+            sub_axes[1].set_xlabel('$x$')
+            sub_axes[1].set_ylabel('$y$')
+
+            sub_fig.subplots_adjust(right=0.8)
+            cbar_ax = sub_fig.add_axes((0.85, 0.15, 0.05, 0.7))
+            sub_fig.colorbar(dmg_im, cax=cbar_ax, label='Damage')
 
             plt.savefig(
                 os.path.join(output_dir, dataset_name + '_pred_' + str(i) + '.png'),
