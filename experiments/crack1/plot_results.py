@@ -85,8 +85,8 @@ class PlotResults(mlx.Experiment):
             axes[1].remove()
             axes[2].remove()
 
-            axes[0].plot(x[:, 0], u[:, 0], label='top traction')
-            axes[0].plot(x[:, 0], u[:, 1], label='bot traction')
+            axes[0].plot(x[:, 0].cpu(), u[:, 0].cpu(), label='top traction')
+            axes[0].plot(x[:, 0].cpu(), u[:, 1].cpu(), label='bot traction')
             axes[0].set_ylim(0, 0.8)
             axes[0].set_xlabel('x')
             axes[0].set_ylabel('rel. stress')
