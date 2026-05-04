@@ -111,6 +111,27 @@ def crack1_subsample_dataset(dataset_in, dataset_out, nbx, nx, ny):
     OLDataset.write(u, [x], v, [y], dataset_out, u_disc=disc, v_disc=disc)
 
 
+def crack1_crop_dataset(dataset_in, dataset_out, i_x_min, i_x_max, i_y_min, i_y_max):
+    """
+    Crops outputs in a crack1 dataset and saves the result in a new dataset.
+    :param dataset_in: Path to input dataset
+    :param dataset_out: Path to output dataset
+    :param i_x_min: Index of x cell from which to start crop (inclusive)
+    :param i_x_max: Index of x cell at which to stop crop (exclusive)
+    :param i_y_min: Index of y cell from which to start crop (inclusive)
+    :param i_y_max: Index of y cell at which to stop crop (exclusive)
+    """
+    data_in = OLDataset(dataset_in, stream_uv=False, stream_xy=False)
+    u = data_in.u['0']
+    x = data_in.x[0]
+
+    v = data_in.v['0'][:, i_x_min:i_x_max, i_y_min:i_y_max]  # (B, nx', ny', 1)
+    y = data_in.y[0][i_x_min:i_x_max, i_y_min:i_y_max]  # (nx', ny', 2)
+
+    disc = torch.zeros(len(v), dtype=torch.long)
+    OLDataset.write(u, [x], v, [y], dataset_out, u_disc=disc, v_disc=disc)
+
+
 class NormalizedOLDataset(torch.utils.data.Dataset):
     def __init__(
             self,
