@@ -1,0 +1,12 @@
+run_id: qfeh6763
+show: false
+max_plots: 5
+random: true
+from_dataset: test
+damage_thresh: 0.3
+good_cutoff: 0.0023
+
+xo: 0.0
+yo: -0.0068
+xn: 0.04
+yn: 0.0065
