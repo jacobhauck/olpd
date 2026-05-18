@@ -1,7 +1,10 @@
-dataset: data/crack1/test_tg4.ol.h5
-max_plots: 10
-random: true
+dataset: data/crack1/test_crop2.ol.h5
+max_plots: 128
+random: false
 show: false
+traction_range: [0.24, 0.8]
+samples: [8, 9, 17, 26, 29, 35, 41, 20, 21]
+
 xo: -0.05
 xn: 0.05
 yo: -0.02

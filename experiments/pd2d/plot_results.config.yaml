@@ -1,11 +1,10 @@
-run_id: zhbsxbl8
-max_plots: 5
+run_id: 7yperrfjiw``
+max_plots: 1
 show: false
 random: true
-from_dataset: test
+from_dataset: data/pd2d/BumpProp5.ol.h5
 
 xo: 0.0
 yo: 0.0
 xn: 5.0
 yn: 5.0
-
