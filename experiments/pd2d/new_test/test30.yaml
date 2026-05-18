@@ -1,0 +1,7 @@
+data:
+  train:
+    file_name: data/pd2d/train30_tg_50.ol.h5
+    stream_uv: false
+  test:
+    file_name: data/pd2d/test30_tg.ol.h5
+    stream_uv: false
