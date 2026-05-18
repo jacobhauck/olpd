@@ -11,9 +11,9 @@ class VisualizePD2DDataset(mlx.Experiment):
         output_dir = os.path.join('results', name, config['dataset'])
         os.makedirs(output_dir, exist_ok=True)
 
-        for i, (u, x, v, y) in enumerate(dataset):
-            if i >= config.get('max_plots', float('inf')):
-                break
+        generated = 0
+        for i in mlx.subset_indices(config, dataset):
+            u, x, v, y = dataset[i]
 
             v_min = min(float(u.min()), float(v.min()))
             v_max = max(float(u.max()), float(v.max()))
@@ -63,5 +63,6 @@ class VisualizePD2DDataset(mlx.Experiment):
                 plt.show()
 
             plt.close(fig)
+            generated += 1
 
-        print(f'Generated {config.get("max_plots", len(dataset))} visualizations in {output_dir}')
+        print(f'Generated {generated} visualizations in {output_dir}')
