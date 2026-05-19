@@ -44,23 +44,14 @@ class PlotResults(mlx.Experiment):
                     v_mean=trainer.datasets['train'].v_mean,
                     v_std=trainer.datasets['train'].v_std
                 )
-            dataset_name = 'custom'
-
-        data_loader = torch.utils.data.DataLoader(
-            dataset,
-            batch_size=1,
-            shuffle=config.get('random', True)
-        )
 
         output_dir = os.path.join('results', run.name + '-' + run.id)
         os.makedirs(output_dir, exist_ok=True)
         rel_l2 = FunctionalL2Loss(relative=True, squared=False)
 
         trainer.model.train(False)
-        for i, (u, x, v, y) in enumerate(data_loader):
-            if i >= config['max_plots']:
-                break
-
+        for i in mlx.subset_indices(config, dataset):
+            u, x, v, y = dataset[i]
             d = config['device']
             u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
 

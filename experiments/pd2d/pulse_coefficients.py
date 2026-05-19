@@ -24,8 +24,8 @@ def var_curve(basis, config):
     ky = basis.ky()
     gx = kx / (2 * torch.pi)
     gy = ky / (2 * torch.pi)
-    var = config['alpha'] / (config['beta'] + gx**2 + gy**2) ** config['gamma']
-    return sorted((var / var.max()).cpu().numpy(), reverse=True)
+    var = config['alpha']**2 / (config['beta'] + gx**2 + gy**2) ** config['gamma']
+    return 1 - np.cumsum(sorted((var / var.sum()).cpu().numpy(), reverse=True))
 
 
 @mlx.experiment

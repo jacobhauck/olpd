@@ -1,9 +1,10 @@
 run_id: qfeh6763
-max_plots: 5
 show: false
-random: false
+max_plots: 5
+random: true
 from_dataset: test
-samples: [6, 7, 16, 25, 27, 28, 39, 40, 42]
+damage_thresh: 0.3
+good_cutoff: 0.0023
 
 xo: 0.0
 yo: -0.0068

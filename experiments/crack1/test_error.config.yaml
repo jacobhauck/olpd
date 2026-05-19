@@ -1,0 +1,5 @@
+run_id: qfeh6763
+additional_metrics:
+  iou:
+    name: modules.iou.CrackIoU2d
+    damage_thresh: 0.3

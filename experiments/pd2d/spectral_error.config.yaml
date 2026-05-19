@@ -1,0 +1,19 @@
+run_id: 334xu0lz
+
+dataset: data/pd2d/test_tg11.ol.h5
+
+sample:
+  size: 1
+  random: true
+
+x_min: [0, 0]
+x_max: [5, 5]
+
+num_modes: 16
+alpha: 0.01
+beta: 4.0
+gamma: 2.6
+
+metric:
+  name: FunctionalL2Loss
+  relative: false

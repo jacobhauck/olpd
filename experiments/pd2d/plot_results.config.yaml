@@ -1,11 +1,11 @@
 run_id: 334xu0lz
-max_plots: 10
 show: false
-random: true
-from_dataset: test #data/pd2d/BumpProp3.ol.h5
+from_dataset: test
+sample:
+  random: false
+  size: 1 
 
 xo: 0.0
 yo: 0.0
 xn: 5.0
 yn: 5.0
-

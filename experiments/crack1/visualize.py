@@ -24,6 +24,8 @@ def experiment(config, name, group=None):
         axes[0].plot(x[:, 0], u[:, 0], label='top traction')
         axes[0].plot(x[:, 0], u[:, 1], label='bot traction')
         axes[0].set_xlabel('x')
+        if 'traction_range' in config:
+            axes[0].set_ylim(config['traction_range'])
         axes[0].set_ylabel('rel. stress')
         axes[0].legend()
         axes[0].set_title(f'Boundary relative traction ({i})')
