@@ -8,7 +8,7 @@ from operatorlearning.modules import FunctionalL2Loss
 
 
 @mlx.experiment
-def run_experiment(config, name, **__):
+def run_experiment(config, name, *_, **__):
     run = mlx.load_run(config['run_id'])
     run.device = config['device']
 
