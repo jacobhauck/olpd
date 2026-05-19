@@ -28,6 +28,9 @@ def run_experiment(config, name, *_, **__):
         d = config['device']
         u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
 
+        with torch.no_grad():
+            v_base = trainer.model(u[None], x[None], y[None])[0]
+
         errors = []
         for scale in config['scales']:
             with torch.no_grad():
