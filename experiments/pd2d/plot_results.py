@@ -53,7 +53,7 @@ class PlotResults(mlx.Experiment):
         for i in mlx.subset_indices(config, dataset):
             u, x, v, y = dataset[i]
             d = config['device']
-            u, x, v, y = u.to(d), x.to(d), v.to(d), y.to(d)
+            u, x, v, y = u.to(d)[None], x.to(d)[None], v.to(d)[None], y.to(d)[None]
 
             with torch.no_grad():
                 v_pred = trainer.apply_model(u, x, y)
