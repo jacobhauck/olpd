@@ -1,3 +1,5 @@
+model_compatibility: fno
+
 model:
   name: multiband.MultiModel
   models:
