@@ -1,9 +1,9 @@
 data:
   train:
-    file_name: data/crack1/train_1-1_tg_50.ol.h5
+    file_name: data/crack1/train_crop4.ol.h5
     stream_uv: false
   test:
-    file_name: data/crack1/test_1-1_tg.ol.h5
+    file_name: data/crack1/test_crop4.ol.h5
     stream_uv: false
 
 optim:

@@ -10,9 +10,9 @@ model:
     p: &p 32
     mlp:
       hidden_layers:
-        - 64
-        - 64
-        - 64
+        - 32
+        - 32
+        - 32
       activation:
         name: ReLU
     feat_expansion:
@@ -20,7 +20,7 @@ model:
       origin: [ -0.05 ]  # These depend on the dataset being used
       scale: [ 0.1 ]
       mode: random
-      features: 16
+      features: 32
       learnable: true
 
   reconstructor_net:
