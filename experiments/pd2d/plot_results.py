@@ -44,10 +44,12 @@ class PlotResults(mlx.Experiment):
                     v_mean=trainer.datasets['train'].v_mean,
                     v_std=trainer.datasets['train'].v_std
                 )
-                dataset_name = os.path.basename(dataset_name)
+            dataset_name = os.path.basename(dataset_name)
 
         output_dir = os.path.join('results', run.name + '-' + run.id)
         os.makedirs(output_dir, exist_ok=True)
+        print(f'Using output directory {output_dir}')
+        print(f'Dataset name {dataset_name}')
         rel_l2 = FunctionalL2Loss(relative=True, squared=False)
 
         trainer.model.train(False)
