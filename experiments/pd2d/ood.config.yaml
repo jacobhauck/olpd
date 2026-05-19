@@ -1,4 +1,4 @@
-run_id: kpx1vnh6
+run_id: rf0uhjbl
 grf_params:
   num_modes: 12
   alpha: 0.01
@@ -11,4 +11,4 @@ grf_params:
   integrator:
     name: TrapezoidIntegrator
 
-dataset: data/pd2d/BumpProp2.ol.h5
+dataset: data/pd2d/BumpProp5.ol.h5

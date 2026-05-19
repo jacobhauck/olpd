@@ -1,8 +1,8 @@
-run_id: zhbsxbl8
-max_plots: 5
+run_id: 334xu0lz
+max_plots: 10
 show: false
 random: true
-from_dataset: test
+from_dataset: test #data/pd2d/BumpProp3.ol.h5
 
 xo: 0.0
 yo: 0.0
