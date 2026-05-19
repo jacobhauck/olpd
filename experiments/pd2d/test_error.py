@@ -1,6 +1,9 @@
 import mlx
+import torch.utils.data
 import wandb
+import os
 from .pd2d import PD2DTrainer
+from operatorlearning.data import OLDataset
 
 
 class TestErrorExperiment(mlx.Experiment):
@@ -16,6 +19,15 @@ class TestErrorExperiment(mlx.Experiment):
         for name, metric in config.get('additional_metrics', {}).items():
             trainer.metrics_fns[name] = mlx.create_module(metric).to(run.config['device'])
 
+        for dataset_name in config.get('additional_datasets', ()):
+            name = os.path.basename(dataset_name)
+            trainer.datasets[name] = OLDataset(dataset_name)
+            trainer.data_loaders[name] = torch.utils.data.DataLoader(
+                trainer.datasets[name],
+                batch_size=1,
+                shuffle=False
+            )
+
         # Handle model interface compatibility
         if 'fno' in run.config['model']['name'].lower():
             trainer.apply_model = lambda u, x, y: trainer.model(u)
@@ -24,7 +36,7 @@ class TestErrorExperiment(mlx.Experiment):
         elif 'pcanet' in run.config['model']['name'].lower():
             trainer.apply_model = lambda u, x, y: trainer.model(u)
 
-        losses, metrics = trainer.evaluate(('train', 'test'))
+        losses, metrics = trainer.evaluate(tuple(trainer.datasets.keys()))
 
         for dataset, dataset_losses in losses.items():
             print(f'===== Loss for dataset: "{dataset}" =====')

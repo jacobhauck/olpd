@@ -44,6 +44,7 @@ class PlotResults(mlx.Experiment):
                     v_mean=trainer.datasets['train'].v_mean,
                     v_std=trainer.datasets['train'].v_std
                 )
+                dataset_name = os.path.basename(dataset_name)
 
         output_dir = os.path.join('results', run.name + '-' + run.id)
         os.makedirs(output_dir, exist_ok=True)
