@@ -33,7 +33,7 @@ def run_experiment(config, name, *_, **__):
             with torch.no_grad():
                 v_pred = trainer.model(u * scale, x, y)
             v_scale = v * scale
-            errors.append(rel_l2(v_pred, v_scale))
+            errors.append(float(rel_l2(v_pred, v_scale)))
 
         print(f'Errors for sample {i}')
         print(errors)
