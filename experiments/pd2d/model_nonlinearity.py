@@ -35,7 +35,7 @@ def run_experiment(config, name, *_, **__):
         for scale in config['scales']:
             with torch.no_grad():
                 v_pred = trainer.model(u[None] * scale, x[None], y[None])[0]
-            v_scale = v * scale
+            v_scale = v_base * scale
             errors.append(float(rel_l2(v_pred[None], v_scale[None])))
 
         print(f'Errors for sample {i}')
