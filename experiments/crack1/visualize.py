@@ -1,6 +1,5 @@
 import mlx
 from operatorlearning.data import OLDataset
-import random
 import matplotlib.pyplot as plt
 import os
 
@@ -9,15 +8,7 @@ import os
 def experiment(config, name, group=None):
     dataset = OLDataset(config['dataset'])
 
-    num_samples = min(len(dataset), config['max_plots'])
-    if 'samples' in config:
-        samples = config['samples']
-    elif config.get('random', False):
-        samples = random.sample(range(len(dataset)), num_samples)
-    else:
-        samples = range(num_samples)
-
-    for i in samples:
+    for i in mlx.subset_indices(config, dataset):
         u, x, v, y = dataset[i]
 
         fig, axes = plt.subplots(2, 1, figsize=(10, 10))

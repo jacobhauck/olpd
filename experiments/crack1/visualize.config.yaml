@@ -1,6 +1,4 @@
-dataset: data/crack1/test_crop4.ol.h5
-max_plots: 10
-random: true
+dataset: data/crack1/test_crop.ol.h5
 show: false
 xo: 0.0 
 xn: 0.04
