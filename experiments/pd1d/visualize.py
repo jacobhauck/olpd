@@ -34,4 +34,4 @@ class VisualizePD1DDataset(mlx.Experiment):
 
             plt.close(fig)
 
-        print(f'Generated {len(dataset)} visualizations in {output_dir}')
+        print(f'Generated {config.get("max_plots", len(dataset))} visualizations in {output_dir}')

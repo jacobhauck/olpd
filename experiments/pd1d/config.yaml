@@ -13,5 +13,8 @@ optim:
 training:
   loss_fn:
     name: RelativeL2Loss
-  batch_size: 128
+    squared: False
+  batch_size: 32
   epochs: 1000
+  log_interval: 0.2
+  save_interval: 300

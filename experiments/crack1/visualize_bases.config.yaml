@@ -1,0 +1,5 @@
+run_id: hm5rge49
+device: cpu
+x_min: [0.0, -0.0068]
+x_max: [0.04, 0.0065]
+resolution: [500, 250]

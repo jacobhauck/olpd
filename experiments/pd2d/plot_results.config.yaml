@@ -1,0 +1,11 @@
+run_id: 334xu0lz
+show: false
+from_dataset: test
+sample:
+  random: false
+  size: 1 
+
+xo: 0.0
+yo: 0.0
+xn: 5.0
+yn: 5.0

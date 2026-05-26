@@ -1,0 +1,11 @@
+run_id: qfeh6763
+max_plots: 5
+show: false
+random: false
+from_dataset: test
+samples: [6, 7, 16, 25, 27, 28, 39, 40, 42]
+
+xo: 0.0
+yo: -0.0068
+xn: 0.04
+yn: 0.0065

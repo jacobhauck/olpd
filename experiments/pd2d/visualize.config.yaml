@@ -1,0 +1,9 @@
+dataset: data/pd2d/train31_tg_50.ol.h5
+show: false
+sample:
+  random: true
+  size: 15
+xo: 0.0
+xn: 5.0
+yo: 0.0
+yn: 5.0
