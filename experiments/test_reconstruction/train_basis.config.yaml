@@ -1,0 +1,37 @@
+data:
+  train:
+    file_name: data/pd2d/train19_tg_50.ol.h5
+    stream_uv: false
+  test:
+    file_name: data/pd2d/test19_tg.ol.h5
+    stream_uv: false
+
+optim:
+  name: Adam
+  lr: 0.0001
+
+training:
+  epochs: 1000
+  batch_size: 16
+
+use_integrator: false
+
+model:
+  name: mfear.CompactMLPBasis
+  d_in: 2
+  d_out: 2
+  p: 64
+  mlp:
+    hidden_layers:
+      - 128
+      - 128
+      - 128
+    activation:
+      name: ReLU
+  feat_expansion:
+    name: deeponet.FourierFeatureExpansion
+    origin: [ 0, 0 ]  # These depend on the dataset being used
+    scale: [ 5, 5 ]
+    mode: random
+    features: 64
+    learnable: true
