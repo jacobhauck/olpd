@@ -2,6 +2,7 @@ import mlx
 from operatorlearning.data import OLDataset
 import matplotlib.pyplot as plt
 import os
+import set_fonts
 
 
 class VisualizePD2DDataset(mlx.Experiment):
@@ -28,32 +29,32 @@ class VisualizePD2DDataset(mlx.Experiment):
 
             fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
             axes[0][0].imshow(u[:, :, 0].T, **im_kwargs)
-            axes[0][0].set_title(f'Initial $x$ displacement ({i})')
+            axes[0][0].set_title(f'Initial $x$ displacement (m) id={i}')
             axes[0][0].set_xlabel('$x$')
             axes[0][0].set_ylabel('$y$')
             axes[0][0].set_aspect('equal')
 
             axes[0][1].imshow(u[:, :, 1].T, **im_kwargs)
-            axes[0][1].set_title(f'Initial $y$ displacement ({i})')
+            axes[0][1].set_title(f'Initial $y$ displacement (m) id={i}')
             axes[0][1].set_xlabel('$x$')
             axes[0][1].set_ylabel('$y$')
             axes[0][1].set_aspect('equal')
 
             axes[1][0].imshow(v[:, :, 0].T, **im_kwargs)
-            axes[1][0].set_title(f'Final $x$ displacement ({i})')
+            axes[1][0].set_title(f'Final $x$ displacement (m) id={i}')
             axes[1][0].set_xlabel('$x$')
             axes[1][0].set_ylabel('$y$')
             axes[1][0].set_aspect('equal')
 
             last = axes[1][1].imshow(v[:, :, 1].T, **im_kwargs)
-            axes[1][1].set_title(f'Final $y$ displacement ({i})')
+            axes[1][1].set_title(f'Final $y$ displacement (m) id={i}')
             axes[1][1].set_xlabel('$x$')
             axes[1][1].set_ylabel('$y$')
             axes[1][1].set_aspect('equal')
 
             fig.subplots_adjust(right=0.8)
             cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
-            fig.colorbar(last, cax=cbar_ax, label='Displacement')
+            fig.colorbar(last, cax=cbar_ax, label='Displacement (m)')
 
             plt.savefig(
                 os.path.join(output_dir, str(i) + '.' + file_format),
