@@ -1,8 +1,9 @@
-dataset: data/pd2d/train31_tg_50.ol.h5
+dataset: data/pd2d/test21_tg.ol.h5
 show: false
+format: pdf
 sample:
-  random: true
-  size: 15
+  random: false
+  size: 5
 xo: 0.0
 xn: 5.0
 yo: 0.0

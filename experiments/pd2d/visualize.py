@@ -10,6 +10,7 @@ class VisualizePD2DDataset(mlx.Experiment):
 
         output_dir = os.path.join('results', name, config['dataset'])
         os.makedirs(output_dir, exist_ok=True)
+        file_format = config.get('format', 'png')
 
         generated = 0
         for i in mlx.subset_indices(config, dataset):
@@ -55,7 +56,7 @@ class VisualizePD2DDataset(mlx.Experiment):
             fig.colorbar(last, cax=cbar_ax, label='Displacement')
 
             plt.savefig(
-                os.path.join(output_dir, str(i) + '.png'),
+                os.path.join(output_dir, str(i) + '.' + file_format),
                 bbox_inches='tight'
             )
 
