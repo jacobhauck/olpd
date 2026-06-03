@@ -8,11 +8,17 @@ from modules.reconstruction import ReconstructionLoss
 
 rel_loss = ReconstructionLoss(relative=True, squared=False)
 
-def metrics(prediction, data):
-    basis_val = prediction  # (B, *shape, p, d_out)
-    _, _, v, y = data
-    v, y = v.to(basis_val.device), y.to(basis_val.device)
-    return {'rel_recon': rel_loss(basis_val, u, x)}
+def make_metrics(model):
+    def metrics(_, data):
+        u, x, v, y = data
+        encoder_basis = model.encoder_net(x)  # (B, *in_shape, p, u_d_out)
+        recon_basis = model.reconstructor_net(y)  # (B, *out_shape, q, v_d_out)
+        return {
+            'rel_recon': rel_loss(encoder_basis, u, x),
+            'rel_encode': rel_loss(recon_basis, v, y)
+        }
+
+    return metrics
 
 
 @mlx.experiment
@@ -22,8 +28,7 @@ def run_test(config, name, group=None):
     if 'checkpoint' in config:
         trainer.load_checkpoint(config['checkpoint'])
 
-    for name, metric in config.get('additional_metrics', {}).items():
-        trainer.metrics_fns[name] = mlx.create_module(metric).to(run.config['device'])
+    trainer.metrics = make_metrics(trainer.model)
 
     for dataset_name in config.get('additional_datasets', ()):
         name = os.path.basename(dataset_name)
@@ -33,14 +38,6 @@ def run_test(config, name, group=None):
             batch_size=1,
             shuffle=False
         )
-
-    # Handle model interface compatibility
-    if 'fno' in run.config['model']['name'].lower():
-        trainer.apply_model = lambda u, x, y: trainer.model(u)
-    elif 'gnot' in run.config['model']['name'].lower():
-        trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
-    elif 'pcanet' in run.config['model']['name'].lower():
-        trainer.apply_model = lambda u, x, y: trainer.model(u)
 
     losses, metrics = trainer.evaluate(tuple(trainer.datasets.keys()))
 
