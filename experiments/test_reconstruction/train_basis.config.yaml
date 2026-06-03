@@ -6,6 +6,8 @@ data:
     file_name: data/pd2d/test19_tg.ol.h5
     stream_uv: false
 
+target_dist: output
+
 optim:
   name: Adam
   lr: 0.0001
