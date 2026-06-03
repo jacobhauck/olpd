@@ -1,0 +1,2 @@
+integrator:
+  name: TrapezoidIntegrator

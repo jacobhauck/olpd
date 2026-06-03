@@ -1,21 +1,31 @@
 import mlx
 from .train_basis import BasisTrainer
-from modules.reconstruction import ReconstructionLoss, coefficients
+from modules.reconstruction import ReconstructionLoss
 
 rel_loss = ReconstructionLoss(relative=True, squared=False)
 
-def metrics(prediction, data):
+def metrics_u(prediction, data):
     basis_val = prediction  # (B, *shape, p, d_out)
     u, x, _, _ = data
     u, x = u.to(basis_val.device), x.to(basis_val.device)
     return {'rel_recon': rel_loss(basis_val, u, x)}
 
 
+def metrics_v(prediction, data):
+    basis_val = prediction  # (B, *shape, q, d_out)
+    _, _, v, y = data
+    v, y = v.to(basis_val.device), y.to(basis_val.device)
+    return {'rel_recon': rel_loss(basis_val, v, y)}
+
+
 @mlx.experiment
 def eval_basis(config, name, group=None):
     run = mlx.load_run(config['run_id'])
     trainer = BasisTrainer(run.config, run)
-    trainer.metrics = metrics
+    if run.config.get('target_dist', 'input') == 'input':
+        trainer.metrics = metrics_u
+    else:
+        trainer.metrics = metrics_v
 
     losses, metrics_ = trainer.evaluate(datasets=('train', 'test',))
 
