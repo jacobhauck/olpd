@@ -8,9 +8,10 @@ from modules.reconstruction import ReconstructionLoss
 
 rel_loss = ReconstructionLoss(relative=True, squared=False)
 
-def make_metrics(model):
+def make_metrics(model, device):
     def metrics(_, data):
         u, x, v, y = data
+        u, x, v, y = u.to(device), x.to(device), v.to(device), y.to(device)
         encoder_basis = model.encoder_net(x)  # (B, *in_shape, p, u_d_out)
         recon_basis = model.reconstructor_net(y)  # (B, *out_shape, q, v_d_out)
         return {
@@ -24,11 +25,12 @@ def make_metrics(model):
 @mlx.experiment
 def run_test(config, name, group=None):
     run = mlx.load_run(config['run_id'])
+    run.config['device'] = config['device']
     trainer = PD2DTrainer(run.config, run)
     if 'checkpoint' in config:
         trainer.load_checkpoint(config['checkpoint'])
 
-    trainer.metrics = make_metrics(trainer.model)
+    trainer.metrics = make_metrics(trainer.model, config['device'])
 
     for dataset_name in config.get('additional_datasets', ()):
         name = os.path.basename(dataset_name)
