@@ -73,7 +73,7 @@ class PD2DTraining(mlx.WandBExperiment):
         )
 
         # Fit PCA bases if necessary
-        if 'pcanet' in config['model']['name'].lower():
+        if 'pcanet' in config['model']['name'].lower() and (run.step is None or run.step == 0):
             # sample = (u, x, v, y)
             # noinspection PyTypeChecker
             uv_map = map(lambda sample: (sample[0], sample[2]), trainer.datasets['train'])
