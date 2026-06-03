@@ -1,0 +1,5 @@
+width: 1.0
+height: 0.5
+max_n: 4
+min_point: [-2.5, -2.5]
+max_point: [2.5, 2.5]

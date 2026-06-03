@@ -1,4 +1,4 @@
-dataset: data/pd2d/test19_tg.ol.h5
+dataset: data/pd2d/train19_tg_50.ol.h5
 basis:
   num_modes: 16
   x_min: [0.0, 0.0]

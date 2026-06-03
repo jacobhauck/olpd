@@ -3,6 +3,7 @@ import torch.utils.data
 import wandb
 import matplotlib.pyplot as plt
 import os
+import set_fonts
 
 from modules.data import NormalizedOLDataset
 from .pd2d import PD2DTrainer
@@ -51,6 +52,7 @@ class PlotResults(mlx.Experiment):
         print(f'Using output directory {output_dir}')
         print(f'Dataset name {dataset_name}')
         rel_l2 = FunctionalL2Loss(relative=True, squared=False)
+        file_format = '.' + config.get('format', 'png')
 
         trainer.model.train(False)
         for i in mlx.subset_indices(config, dataset):
@@ -85,37 +87,33 @@ class PlotResults(mlx.Experiment):
                 'origin': 'lower'
             }
 
-            fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
+            fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(4, 3.5))
             axes[0][0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
-            axes[0][0].set_title(f'Final $x$ displacement ({i})')
-            axes[0][0].set_xlabel('$x$')
+            axes[0][0].set_title(f'Final $x$ disp. (m)')
             axes[0][0].set_ylabel('$y$')
             axes[0][0].set_aspect('equal')
 
             axes[0][1].imshow(v[:, :, 1].T.cpu(), **im_kwargs)
-            axes[0][1].set_title(f'Final $y$ displacement ({i})')
-            axes[0][1].set_xlabel('$x$')
-            axes[0][1].set_ylabel('$y$')
+            axes[0][1].set_title(f'Final $y$ disp. (m)')
             axes[0][1].set_aspect('equal')
 
             axes[1][0].imshow(v_pred[:, :, 0].T.cpu(), **im_kwargs)
-            axes[1][0].set_title(f'Pred $x$ displacement ({i})')
+            axes[1][0].set_title(f'Pred. $x$ disp. (m)')
             axes[1][0].set_xlabel('$x$')
             axes[1][0].set_ylabel('$y$')
             axes[1][0].set_aspect('equal')
 
             last = axes[1][1].imshow(v_pred[:, :, 1].T.cpu(), **im_kwargs)
-            axes[1][1].set_title(f'Pred $y$ displacement ({i})')
+            axes[1][1].set_title(f'Pred. $y$ disp. (m)')
             axes[1][1].set_xlabel('$x$')
-            axes[1][1].set_ylabel('$y$')
             axes[1][1].set_aspect('equal')
 
             fig.subplots_adjust(right=0.8)
             cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
-            fig.colorbar(last, cax=cbar_ax, label='Displacement')
+            fig.colorbar(last, cax=cbar_ax, label='Displacement (m)')
 
             plt.savefig(
-                os.path.join(output_dir, dataset_name + '_pred_' + str(i) + '.png'),
+                os.path.join(output_dir, dataset_name + '_pred_' + str(i) + file_format),
                 bbox_inches='tight'
             )
 
@@ -141,7 +139,7 @@ class PlotResults(mlx.Experiment):
             fig.colorbar(last, cax=cbar_ax, label=f'Displacement error ($RL^2 = $ {100*error:.02f}%)')
 
             plt.savefig(
-                os.path.join(output_dir, dataset_name + '_error_' + str(i) + '.png'),
+                os.path.join(output_dir, dataset_name + '_error_' + str(i) + file_format),
                 bbox_inches='tight'
             )
 

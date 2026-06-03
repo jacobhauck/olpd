@@ -1,9 +1,11 @@
-run_id: 334xu0lz
+run_id: 0i8al8pf
 show: false
-from_dataset: test
+from_dataset: data/pd2d/BumpProp5.ol.h5
 sample:
   random: false
-  size: 1 
+  size: 1
+
+format: pdf
 
 xo: 0.0
 yo: 0.0

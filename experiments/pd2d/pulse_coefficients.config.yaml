@@ -7,5 +7,5 @@ ym: 2.5
 A: 0.025
 resolution: 256
 alpha: 0.01
-beta: 4.0
-gamma: 2.6
+beta: 1.0
+gamma: 3.1

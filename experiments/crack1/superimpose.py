@@ -3,6 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import mlx
 import torch.utils.data
+import set_fonts
 
 from .crack1 import Crack1Trainer
 
@@ -17,6 +18,7 @@ def superimpose(config, name, group=None):
 
     output_dir = os.path.join('results', name, run.name + '-' + run.id)
     os.makedirs(output_dir, exist_ok=True)
+    file_format = config.get('format', 'png')
 
     trainer.model.train(False)
     im_kwargs = {
@@ -39,10 +41,10 @@ def superimpose(config, name, group=None):
         im2 = ax.imshow(v_pred[:, :, 0].T.cpu(), cmap='Reds', alpha=config['alpha'], **im_kwargs)
         ax.set_xlabel('x')
         ax.set_ylabel('y')
-        ax.set_title(f'Predicted (red) crack ({i})')
-        fig.colorbar(im)
-        fig.colorbar(im2)
+        ax.set_title(f'Predicted (red) crack')
+        fig.colorbar(im, label='True damage')
+        fig.colorbar(im2, label='Pred. damage')
         if config.get('show', False):
             plt.show()
-        fig.savefig(os.path.join(output_dir, f'compare_{i}.png'), bbox_inches='tight')
+        fig.savefig(os.path.join(output_dir, f'compare_{i}.{file_format}'), bbox_inches='tight')
         plt.close(fig)
