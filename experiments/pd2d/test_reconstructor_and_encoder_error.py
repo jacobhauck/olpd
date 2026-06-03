@@ -1,9 +1,12 @@
 import mlx
 import torch.utils.data
 import os
+
+from operatorlearning.modules import FunctionalL2Loss
+
 from .pd2d import PD2DTrainer
 from operatorlearning.data import OLDataset
-from modules.reconstruction import ReconstructionLoss
+from modules.reconstruction import ReconstructionLoss, coefficients
 
 
 rel_loss = ReconstructionLoss(relative=True, squared=False)
@@ -15,8 +18,8 @@ def make_metrics(model, device):
         encoder_basis = model.encoder_net(x)  # (B, *in_shape, p, u_d_out)
         recon_basis = model.reconstructor_net(y)  # (B, *out_shape, q, v_d_out)
         return {
-            'rel_recon': rel_loss(encoder_basis, u, x),
-            'rel_encode': rel_loss(recon_basis, v, y)
+            'rel_encode': rel_loss(encoder_basis, u, x),
+            'rel_recon': rel_loss(recon_basis, v, y)
         }
 
     return metrics
