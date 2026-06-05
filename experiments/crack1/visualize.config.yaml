@@ -1,8 +1,9 @@
-dataset: data/crack1/sym_crop.ol.h5
+dataset: data/crack1/convergence3-IPA-AC-7.ol.h5
 sample:
-  indices: [118, 119]
+  random: false
+  size: 1
 show: false
-format: pdf
+format: png
 xo: 0.0 
 xn: 0.04
 yo: -0.0068
