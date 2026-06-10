@@ -1,0 +1,4 @@
+dataset: data/pd2d/train19_tg_50.ol.h5
+test_dataset: data/pd2d/test19_tg_50.ol.h5
+u_max_modes: 512
+v_max_modes: 512

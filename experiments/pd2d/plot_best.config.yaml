@@ -1,0 +1,12 @@
+run_id: 0i8al8pf
+sample:
+  size: 5
+  random: false
+
+show: false
+from_dataset: test
+
+xo: 0.0
+yo: 0.0
+xn: 5.0
+yn: 5.0

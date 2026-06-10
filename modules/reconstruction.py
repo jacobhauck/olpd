@@ -51,7 +51,7 @@ class ReconstructionLoss(torch.nn.Module):
         :return: Reconstruction loss
         """
         coef = coefficients(basis, u, x, self.integrator)
-        # (B, p, 1)
+        # (B, p)
         recon = torch.einsum('b...pd,bp->b...d', basis, coef)
         # (B, *shape, d_out)
 
