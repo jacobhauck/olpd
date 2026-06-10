@@ -1,20 +1,19 @@
 model:
   name: PCANet
-  u_num_modes: &u_num_modes 256
-  v_num_modes: &v_num_modes 256
-  u_sample_shape: [200, 200, 1]
-  v_sample_shape: [200, 200, 1]
+  u_num_modes: &u_num_modes 512
+  v_num_modes: &v_num_modes 512
+  u_sample_shape: [200, 200, 2]
+  v_sample_shape: [200, 200, 2]
   approximator:
     name: MLP
     d_in: *u_num_modes
     d_out: *v_num_modes
-    hidden_layers:
-      - &d_hidden 128
-      - *d_hidden
-      - *d_hidden
-      - *d_hidden
+    hidden_layers: []
     activation:
-      name: ReLU
-    norm:
-      name: LayerNorm
-      normalized_shape: *d_hidden
+      name: Identity
+
+optim:
+  lr: 0.0005
+
+training:
+  epochs: 3000

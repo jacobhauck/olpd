@@ -7,7 +7,7 @@ model:
     name: mfear.CompactMLPBasis
     d_in: 2
     d_out: 2
-    p: &p 128
+    p: &p 64
     mlp:
       hidden_layers:
         - 128
@@ -20,7 +20,7 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 180
+      features: 64
       learnable: true
 
   reconstructor_net:
@@ -40,21 +40,13 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 180
+      features: 64
       learnable: true
 
   approximator_net:
     name: MLP
     d_in: *p
     d_out: *q
-    hidden_layers:
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
+    hidden_layers: []
     activation:
-      name: SELU
+      name: ReLU

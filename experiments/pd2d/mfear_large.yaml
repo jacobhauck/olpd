@@ -7,12 +7,12 @@ model:
     name: mfear.CompactMLPBasis
     d_in: 2
     d_out: 2
-    p: &p 128
+    p: &p 180
     mlp:
       hidden_layers:
-        - 128
-        - 128
-        - 128
+        - 180
+        - 180
+        - 180
       activation:
         name: ReLU
     feat_expansion:
@@ -20,19 +20,19 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 180
+      features: 300
       learnable: true
 
   reconstructor_net:
     name: mfear.CompactMLPBasis
     d_in: 2
     d_out: 2
-    p: &q 128
+    p: &q 180
     mlp:
       hidden_layers:
-        - 128
-        - 128
-        - 128
+        - 180
+        - 180
+        - 180
       activation:
         name: ReLU
     feat_expansion:
@@ -40,7 +40,7 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 180
+      features: 300
       learnable: true
 
   approximator_net:
@@ -48,13 +48,14 @@ model:
     d_in: *p
     d_out: *q
     hidden_layers:
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
+      - 384
+      - 384
+      - 384
+      - 384
+      - 384
+      - 384
     activation:
-      name: SELU
+      name: ReLU
+    norm:
+      name: LayerNorm
+      normalized_shape: 384
