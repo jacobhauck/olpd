@@ -1,11 +1,11 @@
-run_id: 0i8al8pf
+run_id: p65760gm
 show: false
-from_dataset: data/pd2d/BumpProp5.ol.h5
+from_dataset: data/pd2d/BumpProp4_50.ol.h5
 sample:
   random: false
   size: 1
 
-format: pdf
+format: png
 
 xo: 0.0
 yo: 0.0
