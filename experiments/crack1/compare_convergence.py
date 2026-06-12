@@ -23,7 +23,7 @@ def run_experiment(config, name, group=None):
     }
 
     i_dataset = 0
-    for dataset_name in config['datasets']:
+    for j, dataset_name in enumerate(config['datasets']):
         dataset = OLDataset(config['datasets'][dataset_name])
 
         print('Dataset', dataset_name)
@@ -35,7 +35,13 @@ def run_experiment(config, name, group=None):
         print()
         for i, dt_i in enumerate(dt):
             v = dataset[i][2]
-            v_crop = v[config['crop']['x'][0] : config['crop']['x'][1], config['crop']['y'][0] : config['crop']['y'][1]]
+            if 'crop' in config:
+                v_crop = v[config['crop']['x'][0] : config['crop']['x'][1], config['crop']['y'][0] : config['crop']['y'][1]]
+            elif 'crops' in config:
+                crop = config['crops'][j]
+                v_crop = v[crop['x'][0] : crop['x'][1], crop['y'][0] : crop['y'][1]]
+            else:
+                v_crop = v
             axes[i][i_dataset].imshow(v_crop[:, :, 0].T, **im_kwargs)
 
             if i_dataset == 0:

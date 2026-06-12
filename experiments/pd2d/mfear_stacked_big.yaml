@@ -4,15 +4,16 @@ model:
     name: TrapezoidIntegrator
 
   encoder_net:
-    name: mfear.CompactMLPBasis
+    name: mfear.StackedMLPBasis
     d_in: 2
     d_out: 2
-    p: &p 128
+    p: &p 1024
+    num_units: 64
     mlp:
       hidden_layers:
-        - 128
-        - 128
-        - 128
+        - 16
+        - 16
+        - 16
       activation:
         name: ReLU
     feat_expansion:
@@ -20,19 +21,20 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 180
+      features: 512
       learnable: true
 
   reconstructor_net:
-    name: mfear.CompactMLPBasis
+    name: mfear.StackedMLPBasis
     d_in: 2
     d_out: 2
-    p: &q 128
+    p: &q 1024
+    num_units: 64
     mlp:
       hidden_layers:
-        - 128
-        - 128
-        - 128
+        - 16
+        - 16
+        - 16
       activation:
         name: ReLU
     feat_expansion:
@@ -40,21 +42,13 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 180
+      features: 512
       learnable: true
 
   approximator_net:
     name: MLP
     d_in: *p
     d_out: *q
-    hidden_layers:
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
-      - 180
+    hidden_layers: []
     activation:
-      name: SELU
+      name: Identity
