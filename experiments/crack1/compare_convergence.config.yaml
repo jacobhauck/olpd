@@ -1,12 +1,20 @@
 datasets:
-  FA: data/crack1/convergence3-FA_tg.ol.h5
-  IPA-AC: data/crack1/convergence3-IPA-AC_tg.ol.h5
+  1: data/crack1/convergence5-FA_tg.ol.h5
+  1/2: data/crack1/convergence6-FA_tg.ol.h5
+  1/4: data/crack1/convergence7-FA_tg.ol.h5
+  1/8: data/crack1/convergence8-FA_tg.ol.h5
 
 settings:
   dt over dt_0: ["1", "1/2", "1/4", "1/8"]
 
-crop:
-  x: [299, 540]
-  y: [79, 160]
+crops:
+  - x: [149, 270]
+    y: [39, 80]
+  - x: [299, 540]
+    y: [79, 160]
+  - x: [599, 1080]
+    y: [159, 320]
+  - x: [1199, 2160]
+    y: [319, 640]
 
 format: png
