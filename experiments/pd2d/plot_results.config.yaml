@@ -1,9 +1,9 @@
-run_id: 0i8al8pf
+run_id: mlhobv7a
 show: false
-from_dataset: data/pd2d/BumpProp4.ol.h5 
+from_dataset: data/pd2d/test19_tg.ol.h5 
 sample:
   random: false
-  size: 1
+  size: 5
 
 format: png
 
