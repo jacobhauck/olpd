@@ -1,0 +1,16 @@
+model:
+  encoder_net:
+    num_units: 2
+    mlp:
+      hidden_layers:
+        - 160
+        - 160
+        - 160
+
+  reconstructor_net:
+    num_units: 2
+    mlp:
+      hidden_layers:
+        - 160
+        - 160
+        - 160

@@ -27,10 +27,12 @@ def count_flops(config, name, group=None):
 
     print(model)
 
-    print('Forward pass:')
-    print_recursive(flops_forward)
+    print('Forward pass')
+    #print_recursive(flops_forward)
+    print('Total:', flops_forward['']['bmm.default'] + flops_forward['']['addmm.default'])
     print()
 
-    print('Backward pass:')
-    print_recursive(flops_backward)
+    print('Backward pass')
+    #print_recursive(flops_backward)
+    print('Total:', flops_backward['']['mm.default'] + flops_backward['']['bmm.default'])
     print()

@@ -8,12 +8,13 @@ model:
     d_in: 2
     d_out: 2
     p: &p 256
-    num_units: 8
+    num_units: 1
     mlp:
       hidden_layers:
-        - 40
-        - 40
-        - 40
+        - 320
+        - 320
+        - 320
+      dense_initial: false
       activation:
         name: ReLU
     feat_expansion:
@@ -29,12 +30,13 @@ model:
     d_in: 2
     d_out: 2
     p: &q 256
-    num_units: 8
+    num_units: 1
     mlp:
       hidden_layers:
-        - 40
-        - 40
-        - 40
+        - 320
+        - 320
+        - 320
+      dense_initial: false
       activation:
         name: ReLU
     feat_expansion:

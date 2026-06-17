@@ -1,0 +1,24 @@
+model:
+  encoder_net:
+    p: &p 1024
+    mlp:
+      hidden_layers:
+        - 160
+        - 160
+        - 160
+    feat_expansion:
+      features: 1280
+
+  reconstructor_net:
+    p: &q 1024
+    mlp:
+      hidden_layers:
+        - 160
+        - 160
+        - 160
+    feat_expansion:
+      features: 1280
+
+  approximator_net:
+    d_in: *p
+    d_out: *q

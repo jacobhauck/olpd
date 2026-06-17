@@ -29,6 +29,6 @@ model:
   layer_config:
     d_model: *d_model
     d_hidden: 256
-    num_heads: 8
+    num_heads: 16
     activation:
       name: GELU

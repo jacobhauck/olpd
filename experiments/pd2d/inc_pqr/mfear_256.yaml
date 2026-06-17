@@ -1,0 +1,16 @@
+model:
+  encoder_net:
+    p: &p 256
+    num_units: 16
+    feat_expansion:
+      features: 320
+
+  reconstructor_net:
+    p: &q 256
+    num_units: 16
+    feat_expansion:
+      features: 320
+
+  approximator_net:
+    d_in: *p
+    d_out: *q

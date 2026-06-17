@@ -7,13 +7,14 @@ model:
     name: mfear.StackedMLPBasis
     d_in: 2
     d_out: 2
-    p: &p 256
+    p: &p 128
     num_units: 8
     mlp:
       hidden_layers:
-        - 40
-        - 40
-        - 40
+        - 20
+        - 20
+        - 20
+      dense_initial: false
       activation:
         name: ReLU
     feat_expansion:
@@ -21,20 +22,21 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 320
+      features: 160
       learnable: true
 
   reconstructor_net:
     name: mfear.StackedMLPBasis
     d_in: 2
     d_out: 2
-    p: &q 256
+    p: &q 128
     num_units: 8
     mlp:
       hidden_layers:
-        - 40
-        - 40
-        - 40
+        - 20
+        - 20
+        - 20
+      dense_initial: false
       activation:
         name: ReLU
     feat_expansion:
@@ -42,7 +44,7 @@ model:
       origin: [ 0, 0 ]  # These depend on the dataset being used
       scale: [ 5, 5 ]
       mode: random
-      features: 320
+      features: 160
       learnable: true
 
   approximator_net:

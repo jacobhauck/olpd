@@ -14,7 +14,7 @@ model:
         - 320
         - 320
       activation:
-        name: ReLU
+        name: GELU
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
       origin: [ 0, 0 ]  # These depend on the dataset being used
@@ -34,7 +34,7 @@ model:
         - 320
         - 320
       activation:
-        name: ReLU
+        name: GELU
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
       origin: [ 0, 0 ]  # These depend on the dataset being used
