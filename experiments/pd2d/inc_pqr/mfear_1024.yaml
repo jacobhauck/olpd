@@ -1,13 +1,13 @@
 model:
   encoder_net:
     p: &p 1024
-    num_units: 32
+    num_units: 64
     feat_expansion:
       features: 1280
 
   reconstructor_net:
     p: &q 1024 
-    num_units: 32
+    num_units: 64
     feat_expansion:
       features: 1280
 
