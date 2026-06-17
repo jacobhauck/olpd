@@ -61,6 +61,10 @@ class PD2DTrainer(mlx.training.BaseTrainer):
         v = v.to(self.config['device'])
         return {name: fn(prediction, v) for name, fn in self.metrics_fns.items()}
 
+    def on_evaluation_start(self):
+        if getattr(self.model.integrator, 'lazy', False):
+            self.model.integrator.weights = None
+
 
 class PD2DTraining(mlx.WandBExperiment):
     def wandb_run(self, config, run):
