@@ -65,6 +65,9 @@ class PD2DTrainer(mlx.training.BaseTrainer):
         if getattr(self.model.integrator, 'lazy', False):
             self.model.integrator.weights = None
 
+        if getattr(self.loss_fn.integrator, 'lazy', False):
+            self.loss_fn.integrator.weights = None
+
 
 class PD2DTraining(mlx.WandBExperiment):
     def wandb_run(self, config, run):
