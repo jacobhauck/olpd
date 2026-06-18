@@ -1,0 +1,8 @@
+training:
+  loss_fn:
+    integrator:
+      name: SplineGridIntegrator
+      n: 2
+      x_min: [0, 0]
+      x_max: [5, 5]
+      lazy: true
