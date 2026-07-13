@@ -1,7 +1,7 @@
-dataset: data/crack1/convergence3-IPA-AC-7.ol.h5
+dataset: data/crack1/convergenceDimensionless_tg.ol.h5
 sample:
   random: false
-  size: 1
+  size: 2
 show: false
 format: png
 xo: 0.0 
