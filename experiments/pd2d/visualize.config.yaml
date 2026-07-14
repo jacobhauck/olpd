@@ -1,9 +1,9 @@
-dataset: data/pd2d/test21_tg.ol.h5
+dataset: data/pd2d/waveSquare_tg.ol.h5
 show: false
-format: pdf
+format: png
 sample:
   random: false
-  size: 5
+  size: 1
 xo: 0.0
 xn: 5.0
 yo: 0.0
