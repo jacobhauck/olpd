@@ -1,0 +1,5 @@
+dataset: data/heat1d/train1.ol.h5
+show: false
+sample:
+  random: false
+  size: 10
