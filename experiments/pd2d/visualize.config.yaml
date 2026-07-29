@@ -1,6 +1,6 @@
-dataset: data/pd2d/waveSquare_tg.ol.h5
+dataset: data/pd2d/BumpProp4.ol.h5
 show: false
-format: png
+format: pdf
 sample:
   random: false
   size: 1

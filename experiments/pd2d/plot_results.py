@@ -87,7 +87,7 @@ class PlotResults(mlx.Experiment):
                 'origin': 'lower'
             }
 
-            fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(4, 3.5))
+            fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 5))
             axes[0][0].imshow(v[:, :, 0].T.cpu(), **im_kwargs)
             axes[0][0].set_title(f'Final $x$ disp. (m)')
             axes[0][0].set_ylabel('$y$')
@@ -102,6 +102,8 @@ class PlotResults(mlx.Experiment):
             axes[1][0].set_xlabel('$x$')
             axes[1][0].set_ylabel('$y$')
             axes[1][0].set_aspect('equal')
+            axes[1][0].set_axis_off()
+            axes[1][0].set_title('Predicted $x$ displacement')
 
             last = axes[1][1].imshow(v_pred[:, :, 1].T.cpu(), **im_kwargs)
             axes[1][1].set_title(f'Pred. $y$ disp. (m)')

@@ -15,7 +15,7 @@ def generate(config, name, group=None):
     sq_lam = config['alpha'] / (config['beta'] + (n*torch.pi/size)**2) ** (config['gamma'] / 2)
     # (num_modes + 1,)
 
-    c = config['c']
+    k = config['k']
     t = config['t_final']
     pi = torch.pi
 
@@ -25,9 +25,9 @@ def generate(config, name, group=None):
     basis_s = sq_lam[None, 1:] * torch.sin(n[None, 1:] * x[:, None] * 2 * pi / size) * (2/size)**.5
     # (mesh_size, num_modes)
 
-    data_lib = OLDatasetLibrary('wave1d')
+    data_lib = OLDatasetLibrary('heat1d')
     dataset_id = data_lib.create_dataset(
-        c=config['c'],
+        k=config['k'],
         x0=config['x0'],
         x1=config['x1'],
         t_final=config['t_final'],
@@ -53,22 +53,14 @@ def generate(config, name, group=None):
                 u_2 = (coef_c_2 * basis_c).sum(dim=1) + (coef_s_2 * basis_s).sum(dim=1)  # (mesh_size,)
                 all_u.append(torch.stack([u_1, u_2], dim=1))  # (mesh_size, 2)
 
-                v_coef_c_1 = coef_c_1.clone()
-                v_coef_c_1[:, 1:] *= torch.cos(n[None, 1:] * (2*pi*c*t/size))
-                v_coef_c_1[:, 0] += t * coef_c_2[:, 0]
-                v_coef_c_1[:, 1:] += (size/(n[None, 1:] * 2*pi*c)) * torch.sin(n[None, 1:] * (2*pi*c*t/size)) * coef_c_2[:, 1:]
-
-                v_coef_s_1 = coef_s_1.clone()
-                v_coef_s_1 *= torch.cos(n[None, 1:] * (2*pi*c*t/size))
-                v_coef_s_1 += (size/(n[None, 1:] * 2*pi*c)) * torch.sin(n[None, 1:] * (2*pi*c*t/size)) * coef_s_2
-
-                v_coef_c_2 = coef_c_2.clone()
-                v_coef_c_2[:, 1:] *= torch.cos(n[None, 1:] * (2*pi*c*t/size))
-                v_coef_c_2[:, 1:] -= ((n[None, 1:] * 2*pi*c)/size) * torch.sin(n[None, 1:] * (2*pi*c*t/size)) * coef_c_1[:, 1:]
-
-                v_coef_s_2 = coef_s_2.clone()
-                v_coef_s_2 *= torch.cos(n[None, 1:] * (2*pi*c*t/size))
-                v_coef_s_2 -= ((n[None, 1:] * 2*pi*c)/size) * torch.sin(n[None, 1:] * (2*pi*c*t/size)) * coef_s_1
+                v_coef_c_1 = coef_c_1 * torch.exp(-k * n[None, :]**2 * pi**2 / size**2 * t)
+                # (1, num_modes + 1)
+                v_coef_c_2 = coef_c_2 * torch.exp(-k * n[None, :]**2 * pi**2 / size**2 * t)
+                # (1, num_modes + 1)
+                v_coef_s_1 = coef_s_1 * torch.exp(-k * n[None, 1:]**2 * pi**2 / size**2 * t)
+                # (1, num_modes + 1)
+                v_coef_s_2 = coef_s_2 * torch.exp(-k * n[None, 1:]**2 * pi**2 / size**2 * t)
+                # (1, num_modes + 1)
 
                 v_1 = (v_coef_c_1 * basis_c).sum(dim=1) + (v_coef_s_1 * basis_s).sum(dim=1)  # (mesh_size,)
                 v_2 = (v_coef_c_2 * basis_c).sum(dim=1) + (v_coef_s_2 * basis_s).sum(dim=1)  # (mesh_size,)

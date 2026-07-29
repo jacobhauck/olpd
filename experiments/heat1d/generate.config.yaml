@@ -1,7 +1,7 @@
 splits:
   train: 1000
   test: 250
-c: 1.0
+k: 0.005
 seed: 2026
 x0: 0.0
 x1: 1.0

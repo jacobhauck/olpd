@@ -5,7 +5,7 @@ MEDIUM_SIZE = 14
 BIGGER_SIZE = 18
 
 plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # font size of the axes title
+plt.rc('axes', titlesize=MEDIUM_SIZE)     # font size of the axes title
 plt.rc('axes', labelsize=SMALL_SIZE)    # font size of the x and y labels
 plt.rc('xtick', labelsize=SMALL_SIZE)    # font size of the tick labels
 plt.rc('ytick', labelsize=SMALL_SIZE)    # font size of the tick labels
