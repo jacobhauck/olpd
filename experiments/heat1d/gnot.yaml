@@ -2,7 +2,7 @@ model:
   name: gnot.GNOT
   d_model: &d_model 64
   v_d_in: 1
-  v_d_out: 1
+  v_d_out: 2
   query_mlp_config:
     hidden_layers:
       - 128
@@ -17,7 +17,7 @@ model:
   input_encoders:
     - name: gnot.SampledFunctionEncoder
       f_d_in: 1
-      f_d_out: 1
+      f_d_out: 2
       d_model: *d_model
       mlp_config:
         hidden_layers:
@@ -25,7 +25,7 @@ model:
           - 128
         activation:
           name: GELU
-  num_layers: 3
+  num_layers: 2
   layer_config:
     d_model: *d_model
     d_hidden: 128

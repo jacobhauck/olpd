@@ -6,7 +6,7 @@ model:
   encoder_net:
     name: mfear.CompactMLPBasis
     d_in: 1
-    d_out: 1
+    d_out: 2
     p: &p 32
     mlp:
       hidden_layers:
@@ -26,7 +26,7 @@ model:
   reconstructor_net:
     name: mfear.CompactMLPBasis
     d_in: 1
-    d_out: 1
+    d_out: 2
     p: &q 64
     mlp:
       hidden_layers:
@@ -47,14 +47,6 @@ model:
     name: MLP
     d_in: *p
     d_out: *q
-    hidden_layers:
-      - 128
-      - 128
-      - 128
-      - 128
-      - 128
-      - 128
-      - 128
-      - 128
+    hidden_layers: []
     activation:
-      name: SELU
+      name: Identity
