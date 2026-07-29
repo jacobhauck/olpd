@@ -2,7 +2,7 @@ model:
   name: DeepONet
   branch_config:
     name: MLPBranchNet
-    num_sensors: 256
+    num_sensors: 512
     num_branches: 64
     mlp_config:
       hidden_layers:

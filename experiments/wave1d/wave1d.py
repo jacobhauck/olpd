@@ -54,6 +54,8 @@ def wandb_run(config, run):
         trainer.apply_model = lambda u, x, y: trainer.model(u)
     elif 'gnot' in config['model']['name'].lower():
         trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
+    elif 'deeponet' in config['model']['name'].lower():
+        trainer.apply_model = lambda u, x, y: trainer.model(u, y)
 
     trainer.train(epochs=config['training']['epochs'])
     losses, _ = trainer.evaluate(('train', 'test'))
