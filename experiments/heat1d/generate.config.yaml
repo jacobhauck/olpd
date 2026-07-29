@@ -1,13 +1,13 @@
-dataset_id: 1
 splits:
-  train: 30
-  test: 5
-k: 0.05
+  train: 1000
+  test: 250
+k: 0.005
+seed: 2026
 x0: 0.0
 x1: 1.0
-t_final: 0.8
+t_final: 0.3
 mesh_size: 256
 alpha: 0.2
 beta: 1.0
-gamma: 1.4
-num_modes: 32
+gamma: 1.6
+num_modes: 24

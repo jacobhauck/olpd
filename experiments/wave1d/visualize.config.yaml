@@ -1,4 +1,5 @@
-dataset: data/wave1d/test1.ol.h5
+dataset_id: 2
+split: test
 show: false
 sample:
   random: false
