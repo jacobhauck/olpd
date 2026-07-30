@@ -53,13 +53,13 @@ def generate(config, name, group=None):
                 u_2 = (coef_c_2 * basis_c).sum(dim=1) + (coef_s_2 * basis_s).sum(dim=1)  # (mesh_size,)
                 all_u.append(torch.stack([u_1, u_2], dim=1))  # (mesh_size, 2)
 
-                v_coef_c_1 = coef_c_1 * torch.exp(-k * n[None, :]**2 * pi**2 / size**2 * t)
+                v_coef_c_1 = coef_c_1 * torch.exp(-k * 4 * n[None, :]**2 * pi**2 / size**2 * t)
                 # (1, num_modes + 1)
-                v_coef_c_2 = coef_c_2 * torch.exp(-k * n[None, :]**2 * pi**2 / size**2 * t)
+                v_coef_c_2 = coef_c_2 * torch.exp(-k * 4 * n[None, :]**2 * pi**2 / size**2 * t)
                 # (1, num_modes + 1)
-                v_coef_s_1 = coef_s_1 * torch.exp(-k * n[None, 1:]**2 * pi**2 / size**2 * t)
+                v_coef_s_1 = coef_s_1 * torch.exp(-k * 4 * n[None, 1:]**2 * pi**2 / size**2 * t)
                 # (1, num_modes + 1)
-                v_coef_s_2 = coef_s_2 * torch.exp(-k * n[None, 1:]**2 * pi**2 / size**2 * t)
+                v_coef_s_2 = coef_s_2 * torch.exp(-k * 4 * n[None, 1:]**2 * pi**2 / size**2 * t)
                 # (1, num_modes + 1)
 
                 v_1 = (v_coef_c_1 * basis_c).sum(dim=1) + (v_coef_s_1 * basis_s).sum(dim=1)  # (mesh_size,)
