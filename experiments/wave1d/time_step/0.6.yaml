@@ -1,0 +1,5 @@
+data:
+  train:
+    file_name: data/wave1d/train-4.ol.h5
+  test:
+    file_name: data/wave1d/test-4.ol.h5
