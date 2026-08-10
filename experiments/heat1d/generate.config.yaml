@@ -1,13 +1,13 @@
 splits:
   train: 1000
-  test: 250
-k: 0.00125
+  test: 200
+k: 0.0006
 seed: 2026
 x0: 0.0
 x1: 1.0
 t_final: 1.2
 mesh_size: 256
 alpha: 0.2
-beta: 1.0
+beta: 2.0
 gamma: 1.6
 num_modes: 24
