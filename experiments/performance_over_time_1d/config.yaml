@@ -1,0 +1,6 @@
+wave_runs: wave1d_runs.csv
+heat_runs: heat1d_runs.csv
+figure_size: [10, 4]
+show: false
+format: pdf
+split: train
