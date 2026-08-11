@@ -1,0 +1,9 @@
+parabolic_dataset: data/ad2d/test2.ol.h5
+hyperbolic_dataset: data/ad2d/test1.ol.h5
+
+sample:
+  indices: [0]
+
+figure_size: [12, 4]
+format: pdf
+show: false

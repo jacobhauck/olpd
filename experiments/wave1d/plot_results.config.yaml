@@ -1,3 +1,7 @@
-run_id: 5kqb41ep
-max_plots: 20
+run_id: iut1ub2b
+dataset: test
 show: false
+sample:
+  random: false
+  size: 1
+format: pdf

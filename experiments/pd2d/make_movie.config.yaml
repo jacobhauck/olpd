@@ -1,0 +1,6 @@
+movie_dataset: data/pd2d/movieBump4_tg.ol.h5
+
+xo: 0.0
+xn: 5.0
+yo: 0.0
+yn: 5.0

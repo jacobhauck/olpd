@@ -1,9 +1,9 @@
-dataset: data/pd2d/BumpProp4.ol.h5
+dataset: data/elastic2d/movieClassical_tg.ol.h5
 show: false
-format: pdf
+format: png
 sample:
   random: false
-  size: 1
+  size: 50
 xo: 0.0
 xn: 5.0
 yo: 0.0
