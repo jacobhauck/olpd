@@ -1,7 +1,7 @@
 splits:
-  train: 5
-  test: 5
-k: 625.0e-5
+  train: 3000
+  test: 500
+k: 1.0e-5
 c: [0.4, -0.7]
 seed: 2026
 
