@@ -5,9 +5,21 @@ import torch.utils.data
 
 class Heat1DTrainer(mlx.training.BaseTrainer):
     loss_fn = None
+    apply_model = None
 
     def load_datasets(self, config):
         self.loss_fn = mlx.create_module(config['training']['loss_fn'])
+
+        # Handle model interface compatibility
+        if 'fno' in config['model']['name'].lower():
+            self.apply_model = lambda u, x, y: self.model(u)
+        elif 'gnot' in config['model']['name'].lower():
+            self.apply_model = lambda u, x, y: self.model([(u, x)], y)
+        elif 'deeponet' in config['model']['name'].lower():
+            self.apply_model = lambda u, x, y: self.model(u, y)
+        else:
+            # Default implementation; works for MFEAR
+            self.apply_model = lambda u, x, y: self.model(u, x_in=x, x_out=y)
 
         train_dataset = OLDataset(**config['data']['train'])
         test_dataset = OLDataset(**config['data']['test'])
@@ -25,10 +37,6 @@ class Heat1DTrainer(mlx.training.BaseTrainer):
             {'train': train_dataset, 'test': test_dataset},
             {'train': train_loader, 'test': test_loader}
         )
-
-    def apply_model(self, u, x, y):
-        # Default implementation; works for MFEAR
-        return self.model(u, x_in=x, x_out=y)
 
     def loss(self, data):
         u, x, v, y = data
@@ -48,14 +56,6 @@ def wandb_run(config, run):
         save_interval=save_interval,
         log_interval=log_interval
     )
-
-    # Handle model interface compatibility
-    if 'fno' in config['model']['name'].lower():
-        trainer.apply_model = lambda u, x, y: trainer.model(u)
-    elif 'gnot' in config['model']['name'].lower():
-        trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
-    elif 'deeponet' in config['model']['name'].lower():
-        trainer.apply_model = lambda u, x, y: trainer.model(u, y)
 
     trainer.train(epochs=config['training']['epochs'])
     losses, _ = trainer.evaluate(('train', 'test'))
