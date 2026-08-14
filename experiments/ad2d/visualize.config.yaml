@@ -1,6 +1,6 @@
-dataset_id: 17
+dataset_id: 10
 split: test
 show: false
 sample:
   random: false
-  size: 5
+  size: 1
