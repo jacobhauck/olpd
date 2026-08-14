@@ -1,5 +1,5 @@
 data:
   train:
-    file_name: data/wave1d/train-14.ol.h5
+    file_name: data/wave1d/train-1.ol.h5
   test:
-    file_name: data/wave1d/test-14.ol.h5
+    file_name: data/wave1d/test-1.ol.h5

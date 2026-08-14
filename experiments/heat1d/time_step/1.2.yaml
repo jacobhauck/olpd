@@ -1,5 +1,5 @@
 data:
   train:
-    file_name: data/heat1d/train-19.ol.h5
+    file_name: data/heat1d/train-5.ol.h5
   test:
-    file_name: data/heat1d/test-19.ol.h5
+    file_name: data/heat1d/test-5.ol.h5

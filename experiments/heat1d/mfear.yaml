@@ -7,12 +7,12 @@ model:
     name: mfear.CompactMLPBasis
     d_in: 1
     d_out: 2
-    p: &p 32
+    p: &p 64
     mlp:
       hidden_layers:
-        - 64
-        - 64
-        - 64
+        - 128
+        - 128
+        - 128
       activation:
         name: GELU
     feat_expansion:
@@ -20,7 +20,7 @@ model:
       origin: [ 0 ]  # These depend on the dataset being used
       scale: [ 1 ]
       mode: random
-      features: 64
+      features: 128
       learnable: true
 
   reconstructor_net:
@@ -30,9 +30,9 @@ model:
     p: &q 64
     mlp:
       hidden_layers:
-        - 64
-        - 64
-        - 64
+        - 128
+        - 128
+        - 128
       activation:
         name: GELU
     feat_expansion:

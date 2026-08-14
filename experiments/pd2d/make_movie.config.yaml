@@ -1,4 +1,4 @@
-movie_dataset: data/pd2d/movieBump4_tg.ol.h5
+movie_dataset: data/elastic2d/movieClassical_tg.ol.h5
 
 xo: 0.0
 xn: 5.0
