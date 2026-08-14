@@ -78,10 +78,10 @@ def generate(config, name, group=None):
     if 'seed' in config:
         torch.random.manual_seed(config['seed'])
 
-    x = torch.linspace(config['x0'], config['x1'], config['mesh_size'])
+    x = torch.linspace(config['x0'], config['x1'], config['mesh_size'] + 1)[:-1]
     dx = (x[1] - x[0])
     x += dx / 2
-    y = torch.linspace(config['y0'], config['y1'], config['mesh_size'])
+    y = torch.linspace(config['y0'], config['y1'], config['mesh_size'] + 1)[:-1]
     dy = (y[1] - y[0])
     y += dy / 2
 
@@ -150,7 +150,7 @@ def generate(config, name, group=None):
         output_file = data_lib.dataset_path(split_name, dataset_id)
         print(f'Saving dataset split at {output_file}')
         OLDataset.write(
-            all_u, [x[:, None]], all_v, [x[:, None]],
+            all_u, [xy], all_v, [xy],
             file_name=output_file,
             u_disc=torch.zeros(split_size, dtype=torch.long),
             v_disc=torch.zeros(split_size, dtype=torch.long)

@@ -9,7 +9,7 @@ def generate(config, name, group=None):
     if 'seed' in config:
         torch.random.manual_seed(config['seed'])
     n = torch.arange(0, config['num_modes'] + 1).to(torch.float)  # (num_modes + 1,)
-    x = torch.linspace(config['x0'], config['x1'], config['mesh_size'])  # (mesh_size,)
+    x = torch.linspace(config['x0'], config['x1'], config['mesh_size'] + 1)[:-1]  # (mesh_size,)
     x += (x[1] - x[0]) / 2
     size = config['x1'] - config['x0']
     sq_lam = config['alpha'] / (config['beta'] + n**2) ** (config['gamma'] / 2)
