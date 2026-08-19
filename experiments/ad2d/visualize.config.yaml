@@ -1,5 +1,6 @@
-dataset_id: 10
-split: test
+dataset_id: 1
+split: train
+#resolution: 50
 show: false
 sample:
   random: false

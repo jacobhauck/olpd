@@ -1,0 +1,5 @@
+data:
+  train:
+    file_name: data/ad2d/train-3@50.ol.h5
+  test:
+    file_name: data/ad2d/test-3@50.ol.h5

@@ -8,11 +8,15 @@ import os
 @mlx.experiment
 def visualize(config, name, group=None):
     lib = OLDatasetLibrary('ad2d')
-    path = lib.dataset_path(config['split'], config['dataset_id'])
+    path = lib.dataset_path(config['split'], config['dataset_id'], config.get('resolution'))
     dataset = OLDataset(path, stream_uv=False)
 
     output_dir = os.path.join('results', name, str(config['dataset_id']))
     os.makedirs(output_dir, exist_ok=True)
+
+    suffix = f'.{config.get("format", "png")}'
+    if config.get('resolution') is not None:
+        suffix = f'@{config["resolution"]}{suffix}'
 
     im_kwargs = {
         'cmap': 'seismic',
@@ -33,7 +37,7 @@ def visualize(config, name, group=None):
         axes[1].set_ylabel('$y$')
 
         plt.savefig(
-            os.path.join(output_dir, f'{config["split"]}-{i}.png'),
+            os.path.join(output_dir, f'{config["split"]}-{i}{suffix}'),
             bbox_inches='tight'
         )
 
