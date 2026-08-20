@@ -73,8 +73,9 @@ class AD2DTrainer(mlx.training.BaseTrainer):
         if getattr(self.model.integrator, 'lazy', False):
             self.model.integrator.weights = None
 
-        if getattr(self.loss_fn.integrator, 'lazy', False):
-            self.loss_fn.integrator.weights = None
+        if hasattr(self.loss_fn, 'integrator'):
+            if getattr(self.loss_fn.integrator, 'lazy', False):
+                self.loss_fn.integrator.weights = None
 
 
 @mlx.wandb_experiment
