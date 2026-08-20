@@ -72,8 +72,9 @@ class AD2DTrainer(mlx.training.BaseTrainer):
         return {name: fn(prediction, v) for name, fn in self.metrics_fns.items()}
 
     def on_evaluation_start(self):
-        if getattr(self.model.integrator, 'lazy', False):
-            self.model.integrator.weights = None
+        if hasattr(self.model, 'integrator'):
+            if getattr(self.model.integrator, 'lazy', False):
+                self.model.integrator.weights = None
 
         if hasattr(self.loss_fn, 'integrator'):
             if getattr(self.loss_fn.integrator, 'lazy', False):
