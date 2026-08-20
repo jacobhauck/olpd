@@ -1,9 +1,9 @@
 data:
   train:
-    file_name: data/pd2d/train19_tg_50.ol.h5
+    file_name: data/pd2d/train36_tg_50.ol.h5
     stream_uv: false
   test:
-    file_name: data/pd2d/test19_tg.ol.h5
+    file_name: data/pd2d/test36_tg.ol.h5
     stream_uv: false
 
 optim:

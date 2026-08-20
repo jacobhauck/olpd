@@ -5,42 +5,42 @@ model:
 
   encoder_net:
     name: mfear.CompactMLPBasis
-    d_in: 1
+    d_in: 2
     d_out: 1
-    p: &p 64
+    p: &p 256
     mlp:
       hidden_layers:
-        - 128
-        - 128
-        - 128
+        - 320
+        - 320
+        - 320
       activation:
         name: ReLU
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
-      origin: [ 0 ]  # These depend on the dataset being used
-      scale: [ 1 ]
+      origin: [ 0, 0 ]  # These depend on the dataset being used
+      scale: [ 1, 1 ]
       mode: random
-      features: 128
+      features: 320
       learnable: true
 
   reconstructor_net:
     name: mfear.CompactMLPBasis
-    d_in: 1
+    d_in: 2
     d_out: 1
-    p: &q 64
+    p: &q 256
     mlp:
       hidden_layers:
-        - 128
-        - 128
-        - 128
+        - 320
+        - 320
+        - 320
       activation:
         name: ReLU
     feat_expansion:
       name: deeponet.FourierFeatureExpansion
-      origin: [ 0 ]  # These depend on the dataset being used
-      scale: [ 1 ]
+      origin: [ 0, 0 ]  # These depend on the dataset being used
+      scale: [ 1, 1 ]
       mode: random
-      features: 128
+      features: 320
       learnable: true
 
   approximator_net:

@@ -1,0 +1,9 @@
+model:
+  p: 128
+  mlp:
+    hidden_layers:
+      - 128
+      - 128
+      - 128
+  feat_expansion:
+    features: 128

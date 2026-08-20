@@ -1,7 +1,3 @@
-run_id: kpx1vnh6
+run_id: 1noxwuzc
 additional_datasets:
-  - data/pd2d/test19_tg.ol.h5
-  - data/pd2d/test28_tg.ol.h5
-  - data/pd2d/test29_tg.ol.h5
-  - data/pd2d/test30_tg.ol.h5
-  - data/pd2d/test31_tg.ol.h5
+  - data/pd2d/test19_tg_50.ol.h5
