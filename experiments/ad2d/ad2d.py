@@ -21,6 +21,8 @@ class AD2DTrainer(mlx.training.BaseTrainer):
             self.apply_model = lambda u, x, y: self.model([(u, x)], y)
         elif 'pcanet' in config['model']['name'].lower():
             self.apply_model = lambda u, x, y: self.model(u)
+        elif 'deeponet' in config['model']['name'].lower():
+            self.apply_model = lambda u, x, y: self.model(u, y)
         else:
             self.apply_model = lambda u, x, y: self.model(u, x_in=x, x_out=y)
 
