@@ -88,7 +88,8 @@ def wandb_run(config, run):
     trainer = AD2DTrainer(
         config, run,
         save_interval=save_interval,
-        log_interval=log_interval
+        log_interval=log_interval,
+        initial_step=config.get('initial_step')
     )
 
     # Fit PCA bases if necessary
