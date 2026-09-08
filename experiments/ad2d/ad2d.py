@@ -85,11 +85,12 @@ class AD2DTrainer(mlx.training.BaseTrainer):
 def wandb_run(config, run):
     save_interval = config['training'].get('save_interval', 1200)
     log_interval = config['training'].get('log_interval', 3)
+    resume_data = config.get('resume_data', {})
     trainer = AD2DTrainer(
         config, run,
         save_interval=save_interval,
         log_interval=log_interval,
-        initial_step=config.get('initial_step')
+        initial_step=resume_data.get('initial_step')
     )
 
     # Fit PCA bases if necessary
