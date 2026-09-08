@@ -83,7 +83,7 @@ class AD2DTrainer(mlx.training.BaseTrainer):
 
 @mlx.wandb_experiment
 def wandb_run(config, run):
-    save_interval = config['training'].get('save_interval', 600)
+    save_interval = config['training'].get('save_interval', 1200)
     log_interval = config['training'].get('log_interval', 3)
     trainer = AD2DTrainer(
         config, run,
