@@ -1,7 +1,10 @@
 model:
   name: MFEAR
   integrator:
-    name: mfear.TrapezoidIntegrator
+    name: SplineGridIntegrator
+    n: 3
+    x_min: [0.0, 0.0]
+    x_max: [1.0, 1.0]
 
   encoder_net:
     name: mfear.CompactMLPBasis
