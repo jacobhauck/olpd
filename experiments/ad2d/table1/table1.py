@@ -18,9 +18,9 @@ def make_table(config, name, group=None):
             run = mlx.load_run(run_id)
             _, dataset_id, _ = lib.parse_path(run.config['data']['train']['file_name'])
             trainer = AD2DTrainer(run.config, run)
-            _, metrics = trainer.evaluate([config['split']])
-            metric = metrics[config['split']][config['metric']]
-            row[k_index[dataset_id] + 1] = float(metric.mean())
+            losses, _ = trainer.evaluate([config['split']])
+            loss = losses[config['split']][config['metric']]
+            row[k_index[dataset_id] + 1] = float(loss.mean())
         rows.append(row)
 
     output_file = os.path.join(mlx.results_dir(name), 'table1.csv')
