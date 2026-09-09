@@ -1,0 +1,8 @@
+runs_by_model:
+  FNO: [jgpbz7rm, zrxxu7ih, xbtrba1f, fyjo15g0, yo2nlvrn]
+  DeepONet: [d2qdjs7z, 9vh9oy45, hoinmby1, kobqzvkq, 7ahskryc]
+  Ours: [yvgep76i, sqi4k0xr, xd742p7j, 2i0q168a, cue5ym5h]
+  GNOT: [f8mfdg2l, mod124vd, dwhv2fcg, orf4bz6d, kmyuihlp]
+
+split: test
+metric: objective
