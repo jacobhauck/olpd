@@ -1,0 +1,6 @@
+split: test
+datasets: [1, 2, 3, 4, 5]
+format: pdf
+index: 1
+show: true
+fig_size: 3.5
