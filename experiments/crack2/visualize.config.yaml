@@ -1,0 +1,10 @@
+dataset: data/crack2/velocityKW_tg.ol.h5
+sample:
+  random: false
+  size: 32
+show: false
+format: png
+xo: -0.1
+xn: 0.1
+yo: -0.05
+yn: 0.05
