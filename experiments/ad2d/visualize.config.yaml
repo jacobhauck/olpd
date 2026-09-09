@@ -1,7 +1,8 @@
-dataset_id: 1
+dataset_id: 4
 split: train
 #resolution: 50
 show: false
+format: pdf
 sample:
   random: false
   size: 1

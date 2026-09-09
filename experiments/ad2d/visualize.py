@@ -4,6 +4,8 @@ from operatorlearning.data import OLDataset, OLDatasetLibrary
 import matplotlib.pyplot as plt
 import os
 
+import set_fonts
+
 
 @mlx.experiment
 def visualize(config, name, group=None):
@@ -24,7 +26,7 @@ def visualize(config, name, group=None):
     }
     for i in mlx.utils.subset_indices(config, dataset):
         u, x, v, y = dataset[i]
-        fig, axes = plt.subplots(1, 2, sharey=True, figsize=(16, 6))
+        fig, axes = plt.subplots(1, 2, sharey=True, figsize=(14, 6))
         im_kwargs['vmin'] = -float(u.abs().max())
         im_kwargs['vmax'] = -im_kwargs['vmin']
         axes[0].imshow(u[:, :, 0].T, **im_kwargs)
