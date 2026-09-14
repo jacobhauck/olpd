@@ -32,7 +32,7 @@ def make_plot(config, name, group=None):
         _, _, v, _ = dataset[config['index']]
         axes[i + 1].imshow(v[:, :, 0].T, **im_kwargs)
         axes[i + 1].set_axis_off()
-        axes[i + 1].set_title(f'$k = {int(round(lib[config["datasets"][i]]["k"] / 1e-5)):d}$')
+        axes[i + 1].set_title(f'$k = {int(round(lib[config["datasets"][i]]["k"] / 1e-5)):d}k_0$')
 
     fig.tight_layout()
 
@@ -51,4 +51,4 @@ def make_plot(config, name, group=None):
     if config.get('show', False):
         plt.show()
 
-    mlx.show_and_save(fig, 'figure_6', config, name)
+    mlx.show_and_save(fig, 'sample_solutions', config, name)
