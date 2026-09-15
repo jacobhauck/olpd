@@ -20,7 +20,7 @@ def generate(config, name, group=None):
     pi = torch.pi
 
     basis_c = sq_lam[None] * torch.cos(n[None] * x[:, None] * 2 * pi / size) * (2/size)**.5
-    basis_c[:, 0] /= 2**.5
+    basis_c[:, 0] /= size**.5
     # (mesh_size, num_modes + 1)
     basis_s = sq_lam[None, 1:] * torch.sin(n[None, 1:] * x[:, None] * 2 * pi / size) * (2/size)**.5
     # (mesh_size, num_modes)
