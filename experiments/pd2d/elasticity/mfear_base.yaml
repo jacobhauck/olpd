@@ -50,5 +50,6 @@ model:
     name: MLP
     d_in: *p
     d_out: *q
+    hidden_layers: []
     activation:
       name: Identity
