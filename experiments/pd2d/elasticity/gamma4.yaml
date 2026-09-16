@@ -1,5 +1,5 @@
 data:
   train:
-    file_name: data/elasticity2d/train-4@50.ol.h5
+    file_name: data/elastic2d/train-4@50.ol.h5
   test:
-    file_name: data/elasticity2d/test-4@50.ol.h5
+    file_name: data/elastic2d/test-4@50.ol.h5
