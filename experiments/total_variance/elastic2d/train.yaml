@@ -1,0 +1,4 @@
+library: elastic2d
+split: train
+volume: 25
+resolution: 50

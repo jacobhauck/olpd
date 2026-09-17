@@ -1,0 +1,4 @@
+library: elastic2d
+split: test
+volume: 25
+resolution: 50
