@@ -86,10 +86,29 @@ def compute_variance_ad2d(config):
     return sqrt_lam**2
 
 
+def compute_variance_elastic2d(config):
+    basis = FullFourierBasis2d(
+        num_modes=config['num_modes'],
+        x_min=(config['Xo'], config['Yo']),
+        x_max=(2 * config['Xn'] - config['Xo'], 2 * config['Yn'] - config['Yo'])
+    )
+
+    gx = basis.kx() / (2 * torch.pi)  # (d)
+    gy = basis.ky() / (2 * torch.pi)  # (d)
+    is_d = (torch.arange(len(gx)) >= basis.d_offset())
+    sqrt_lam_norm = is_d / (config['beta'] + gx**2 + gy**2) ** (config['gamma'] / 2)
+    total_var = torch.sum(sqrt_lam_norm**2)
+    area = 4 * (config['Xn'] - config['Xo']) * (config['Yn'] - config['Yo'])
+    alpha = (area * config['scale'] ** 2 / total_var) ** .5
+    sqrt_lam = is_d * alpha / (config['beta'] + gx**2 + gy**2) ** (config['gamma'] / 2)
+
+    return sqrt_lam**2 / 4 * 2
+
+
 @mlx.experiment
 def compute_variance(config, name, group=None):
     lib = OLDatasetLibrary(config['library'])
-    dataset = OLDataset(lib.dataset_path(config['split'], config['dataset_id']))
+    dataset = OLDataset(lib.dataset_path(config['split'], config['dataset_id'], config.get('resolution')))
     meta = lib[config['dataset_id']]
 
     num_data = len(dataset)
@@ -97,11 +116,13 @@ def compute_variance(config, name, group=None):
     v_gram = torch.empty((num_data, num_data))
     for i, (u_i, _, v_i, _) in tqdm.tqdm(enumerate(dataset), total=num_data, unit='sample'):
         for j, (u_j, _, v_j, _) in enumerate(dataset):
-            u_gram[i, j] = torch.mean((u_i * u_j).sum(dim=-1))
-            v_gram[i, j] = torch.mean((v_i * v_j).sum(dim=-1))
+            u_gram[i, j] = config['volume'] * torch.mean((u_i * u_j).sum(dim=-1))
+            v_gram[i, j] = config['volume'] * torch.mean((v_i * v_j).sum(dim=-1))
 
-    u_vals = torch.linalg.eigvalsh(u_gram / num_data)
-    v_vals = torch.linalg.eigvalsh(v_gram / num_data)
+    u_vals = torch.maximum(torch.linalg.eigvalsh(u_gram) / num_data, torch.zeros(num_data))
+    u_vals = torch.sort(u_vals, descending=True).values
+    v_vals = torch.maximum(torch.linalg.eigvalsh(v_gram) / num_data, torch.zeros(num_data))
+    v_vals = torch.sort(v_vals, descending=True).values
 
     output = {'u_vals': u_vals, 'v_vals': v_vals}
 
@@ -115,6 +136,9 @@ def compute_variance(config, name, group=None):
         output['v_vals_true'] = v_vals_true
     elif config['library'] == 'ad2d':
         u_vals_true = compute_variance_ad2d(meta)
+        output['u_vals_true'] = u_vals_true
+    elif config['library'] == 'elastic2d':
+        u_vals_true = compute_variance_elastic2d(meta)
         output['u_vals_true'] = u_vals_true
 
     output_file = os.path.join(

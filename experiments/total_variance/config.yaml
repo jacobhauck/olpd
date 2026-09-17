@@ -1,3 +1,5 @@
-library: ad2d
-dataset_id: 5
-split: train
+library: elastic2d
+dataset_id: 1
+resolution: ~
+split: test
+volume: 25

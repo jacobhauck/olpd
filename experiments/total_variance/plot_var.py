@@ -13,6 +13,7 @@ def plot_variance(config, name, group=None):
 
     max_dim = len(data['u_vals'])
     if 'u_vals_true' in data:
+        data['u_vals_true'] = data['u_vals_true'][data['u_vals_true'] > 0]
         max_dim = len(data['u_vals_true'])
 
     u_vals = data['u_vals'][:max_dim]
