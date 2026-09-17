@@ -1,0 +1,17 @@
+optim:
+  name: Adam
+  lr: 0.0002
+
+training:
+  normalize: false
+  loss_fn:
+    name: FunctionalL2Loss
+    relative: true
+    squared: false
+    integrator:
+      name: SplineGridIntegrator
+      n: 3
+      x_min: [0.0, 0.0]
+      x_max: [5.0, 5.0]
+  batch_size: 128
+  epochs: 3000
