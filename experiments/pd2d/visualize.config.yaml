@@ -1,9 +1,9 @@
-dataset: data/elastic2d/movieClassical_tg.ol.h5
+dataset: data/elastic2d/test-4.ol.h5
 show: false
 format: png
 sample:
+  size: 5
   random: false
-  size: 50
 xo: 0.0
 xn: 5.0
 yo: 0.0

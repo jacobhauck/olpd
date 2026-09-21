@@ -1,2 +1,2 @@
-var_data_file: results/total_variance/wave1d/2-train.pt
-show: true
+var_data_file: results/total_variance/heat1d/5-train.pt
+show: false

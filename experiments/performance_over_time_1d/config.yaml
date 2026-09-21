@@ -3,4 +3,4 @@ heat_runs: heat1d_runs.csv
 figure_size: [10, 4]
 show: false
 format: pdf
-split: train
+split: test

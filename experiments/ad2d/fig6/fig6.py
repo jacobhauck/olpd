@@ -1,5 +1,8 @@
 import mlx
 import matplotlib.pyplot as plt
+import torch
+import os
+from math import log
 from operatorlearning.data import OLDatasetLibrary, OLDataset
 import set_fonts
 
@@ -24,15 +27,38 @@ def make_plot(config, name, group=None):
         'cmap': 'seismic'
     }
 
+    var_dir = mlx.results_dir('total_variance', 'ad2d')
+    var_data = torch.load(os.path.join(var_dir, f'{1}-train.pt'))
+    max_dim = len(var_data['u_vals'])
+    if 'u_vals_true' in var_data:
+        var_data['u_vals_true'] = var_data['u_vals_true'][var_data['u_vals_true'] > 0]
+        max_dim = len(var_data['u_vals_true'])
+
+    u_vals = var_data['u_vals_true'][:max_dim]
+
+    u_var = u_vals.sum()
+    u_ent = max_dim * log(2 * torch.pi * torch.e) / 2 + torch.log(u_vals).sum() / 2
+
     axes[0].imshow(u[:, :, 0].T, **im_kwargs)
     axes[0].set_axis_off()
-    axes[0].set_title('Initial condition')
+    axes[0].set_title(f'Initial condition\n$V={u_var.item():.03g}$\n$H={round(u_ent.item()/10)*10:g}$')
 
     for i, dataset in enumerate(datasets):
         _, _, v, _ = dataset[config['index']]
+        var_data = torch.load(os.path.join(var_dir, f'{i+1}-train.pt'))
+        max_dim = len(var_data['u_vals'])
+        if 'u_vals_true' in var_data:
+            var_data['u_vals_true'] = var_data['u_vals_true'][var_data['u_vals_true'] > 0]
+            max_dim = len(var_data['u_vals_true'])
+
+        v_vals = var_data['v_vals'][:max_dim]
+
+        v_var = v_vals.sum()
+        v_ent = max_dim * log(2*torch.pi*torch.e) / 2 + torch.log(v_vals).sum() / 2
+
         axes[i + 1].imshow(v[:, :, 0].T, **im_kwargs)
         axes[i + 1].set_axis_off()
-        axes[i + 1].set_title(f'$k = {int(round(lib[config["datasets"][i]]["k"] / 1e-5)):d}k_0$')
+        axes[i + 1].set_title(f'$k = {int(round(lib[config["datasets"][i]]["k"] / 1e-5)):d}k_0$\n$V={v_var.item():.03g}$\n$H={round(v_ent.item()/10)*10:g}$')
 
     fig.tight_layout()
 
