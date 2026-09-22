@@ -19,5 +19,6 @@ def plot(config, name, group=None):
         data = torch.load(os.path.join('results', 'total_variance', 'elastic2d', f'{i}-train.pt'))
         ax.plot(torch.sort(data['u_vals_true'], descending=True).values[:config['max_dim']], label=f'$\gamma = {meta["gamma"]:.1f}$')
     ax.legend()
+    ax.set_yscale('log')
 
     mlx.show_and_save(fig, 'eigenvalues', config, name)
