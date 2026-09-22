@@ -11,8 +11,6 @@ def plot(config, name, group=None):
     fig, axes = plt.subplots(1, 4, figsize=(4 * config['im_size'], config['im_size']))
 
     lib = OLDatasetLibrary('elastic2d')
-    data = OLDataset(lib.dataset_path('test', 1))
-    u, _, _, _ = data[config['sample_id']]
     im_kwargs = {
         'cmap': 'seismic',
         'origin': 'lower'
