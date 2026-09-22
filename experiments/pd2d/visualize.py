@@ -5,66 +5,51 @@ import os
 import set_fonts
 
 
-class VisualizePD2DDataset(mlx.Experiment):
-    def run(self, config, name, group=None):
-        dataset = OLDataset(config['dataset'], stream_uv=True)
+@mlx.experiment
+def visualize(self, config, name, group=None):
+    dataset = OLDataset(config['dataset'], stream_uv=True)
+    sub_path = os.path.relpath(config['dataset'], 'data')[:-len('.ol.h5')]
 
-        output_dir = os.path.join('results', name, config['dataset'])
-        os.makedirs(output_dir, exist_ok=True)
-        file_format = config.get('format', 'png')
+    for i in mlx.subset_indices(config, dataset):
+        u, x, v, y = dataset[i]
 
-        generated = 0
-        for i in mlx.subset_indices(config, dataset):
-            u, x, v, y = dataset[i]
+        v_min = min(float(u.min()), float(v.min()))
+        v_max = max(float(u.max()), float(v.max()))
+        im_kwargs = {
+            'vmin': v_min,
+            'vmax': v_max,
+            'cmap': 'seismic',
+            'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
+            'origin': 'lower'
+        }
 
-            v_min = min(float(u.min()), float(v.min()))
-            v_max = max(float(u.max()), float(v.max()))
-            im_kwargs = {
-                'vmin': v_min,
-                'vmax': v_max,
-                'cmap': 'seismic',
-                'extent': (config['xo'], config['xn'], config['yo'], config['yn']),
-                'origin': 'lower'
-            }
+        fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
+        axes[0][0].imshow(u[:, :, 0].T, **im_kwargs)
+        axes[0][0].set_title(f'Initial $x$ displacement (m) id={i}')
+        axes[0][0].set_xlabel('$x$')
+        axes[0][0].set_ylabel('$y$')
+        axes[0][0].set_aspect('equal')
 
-            fig, axes = plt.subplots(2, 2, sharey=True, sharex=True, figsize=(10, 8))
-            axes[0][0].imshow(u[:, :, 0].T, **im_kwargs)
-            axes[0][0].set_title(f'Initial $x$ displacement (m) id={i}')
-            axes[0][0].set_xlabel('$x$')
-            axes[0][0].set_ylabel('$y$')
-            axes[0][0].set_aspect('equal')
+        axes[0][1].imshow(u[:, :, 1].T, **im_kwargs)
+        axes[0][1].set_title(f'Initial $y$ displacement (m) id={i}')
+        axes[0][1].set_xlabel('$x$')
+        axes[0][1].set_ylabel('$y$')
+        axes[0][1].set_aspect('equal')
 
-            axes[0][1].imshow(u[:, :, 1].T, **im_kwargs)
-            axes[0][1].set_title(f'Initial $y$ displacement (m) id={i}')
-            axes[0][1].set_xlabel('$x$')
-            axes[0][1].set_ylabel('$y$')
-            axes[0][1].set_aspect('equal')
+        axes[1][0].imshow(v[:, :, 0].T, **im_kwargs)
+        axes[1][0].set_title(f'Final $x$ displacement (m) id={i}')
+        axes[1][0].set_xlabel('$x$')
+        axes[1][0].set_ylabel('$y$')
+        axes[1][0].set_aspect('equal')
 
-            axes[1][0].imshow(v[:, :, 0].T, **im_kwargs)
-            axes[1][0].set_title(f'Final $x$ displacement (m) id={i}')
-            axes[1][0].set_xlabel('$x$')
-            axes[1][0].set_ylabel('$y$')
-            axes[1][0].set_aspect('equal')
+        last = axes[1][1].imshow(v[:, :, 1].T, **im_kwargs)
+        axes[1][1].set_title(f'Final $y$ displacement (m) id={i}')
+        axes[1][1].set_xlabel('$x$')
+        axes[1][1].set_ylabel('$y$')
+        axes[1][1].set_aspect('equal')
 
-            last = axes[1][1].imshow(v[:, :, 1].T, **im_kwargs)
-            axes[1][1].set_title(f'Final $y$ displacement (m) id={i}')
-            axes[1][1].set_xlabel('$x$')
-            axes[1][1].set_ylabel('$y$')
-            axes[1][1].set_aspect('equal')
+        fig.subplots_adjust(right=0.8)
+        cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
+        fig.colorbar(last, cax=cbar_ax, label='Displacement (m)')
 
-            fig.subplots_adjust(right=0.8)
-            cbar_ax = fig.add_axes((0.85, 0.15, 0.05, 0.7))
-            fig.colorbar(last, cax=cbar_ax, label='Displacement (m)')
-
-            plt.savefig(
-                os.path.join(output_dir, str(i) + '.' + file_format),
-                bbox_inches='tight'
-            )
-
-            if config['show']:
-                plt.show()
-
-            plt.close(fig)
-            generated += 1
-
-        print(f'Generated {generated} visualizations in {output_dir}')
+        mlx.show_and_save(fig, str(i), config, name, sub_path)
