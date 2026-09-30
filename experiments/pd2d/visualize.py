@@ -6,7 +6,7 @@ import set_fonts
 
 
 @mlx.experiment
-def visualize(self, config, name, group=None):
+def visualize(config, name, group=None):
     dataset = OLDataset(config['dataset'], stream_uv=True)
     sub_path = os.path.relpath(config['dataset'], 'data')[:-len('.ol.h5')]
 
