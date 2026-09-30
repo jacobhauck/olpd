@@ -1,8 +1,8 @@
-dataset_id: 4
+dataset_id: 41
 split: train
 #resolution: 50
 show: false
-format: pdf
+format: png
 sample:
   random: false
   size: 5

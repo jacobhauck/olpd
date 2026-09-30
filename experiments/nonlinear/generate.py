@@ -6,6 +6,27 @@ from operatorlearning.modules.basis import FullFourierBasis2d
 from operatorlearning.data import OLDatasetLibrary, OLDataset
 
 
+def make_movie_callback(u):
+    import matplotlib.pyplot as plt
+
+    plt.ion()
+    im = plt.imshow(
+        u.T,
+        cmap='seismic',
+        vmin=-u.abs().max().item() * 1.2,
+        vmax=u.abs().max().item() * 1.2
+    )
+    plt.colorbar(im)
+    plt.pause(0.5)
+
+    def callback(psi, n, t):
+        im.set_data(psi.cpu().T)
+        plt.title(f'n = {n}, t = {t:.02g}')
+        plt.pause(0.01)
+
+    return callback
+
+
 @mlx.experiment
 def generate(config, name, group=None):
     torch.set_default_dtype(torch.double)
@@ -39,6 +60,7 @@ def generate(config, name, group=None):
     data_lib = OLDatasetLibrary('nonlinear')
     dataset_id = data_lib.create_dataset(
         c=config['c'],
+        a=config['a'],
         t_final=config['t_final'],
         alpha=config['alpha'],
         beta=config['beta'],
@@ -61,7 +83,13 @@ def generate(config, name, group=None):
             u = (coef * basis_val).sum(dim=0)  # (m, m)
             all_u.append(u[..., None].to(torch.float32))
             if method == 'explicit':
-                v = solve_equation_explicit(u, dx, dy, config)
+                cbf = None
+                if config.get('make_movie', False):
+                    cbf = make_movie_callback(u)
+                v = solve_equation_explicit(u, lambda psi, *_: -config['a'] * psi**3, xy, dx, dy, config, callback=cbf)
+                if config.get('make_movie', False):
+                    import matplotlib.pyplot as plt
+                    plt.close()
             else:
                 raise ValueError('Invalid method')
             all_v.append(v[..., None].to(torch.float32))
@@ -86,14 +114,20 @@ def laplace(psi, psi_xx, psi_yy, dx, dy):
     psi_yy[:, -1] = (psi[:, -2] - 2 * psi[:, -1] + psi[:, 0]) / (dy ** 2)
 
 
-def solve_equation_explicit(u, dx, dy, config):
+def solve_equation_explicit(u, f, xy, dx, dy, config, velocity=None, callback=None):
     """
     :param u: (size, size) initial condition
+    :param f: forcing function mapping (psi, x, y) -> f(psi, x, y)
+    :param xy: (size, size, 2) x and y coordinates
     :param dx: x step size
     :param dy: y step size
     :param config: run configuration
+    :param velocity: Optional initial velocity. Zero is used if not provided
+    :param callback: Callback function called on each step
     :return:
     """
+    x = xy[:, :, 0]
+    y = xy[:, :, 1]
     u = u.to(config['device'])
     c2 = config['c'] ** 2
     dt = config['dt']
@@ -105,16 +139,31 @@ def solve_equation_explicit(u, dx, dy, config):
 
     # First step
     n = 0
+    t = 0
+    if callback is not None:
+        callback(psi, n, t)
     laplace(psi, psi_xx, psi_yy, dx, dy)
     psi_last = psi.clone()
-    psi += dt**2/2 * (c2 * (psi_xx + psi_yy) - psi**3)
+    f_val = f(psi, x, y, t)
+    if velocity is None:
+        velocity = torch.zeros_like(psi)
+    else:
+        velocity = velocity.to(psi.device)
+    psi += velocity * dt + dt**2/2 * (c2 * (psi_xx + psi_yy) + f_val)
     n += 1
+    t += dt
+    if callback is not None:
+        callback(psi, n, t)
 
     while n <= num_steps:
         temp = psi.clone()
         laplace(psi, psi_xx, psi_yy, dx, dy)
-        psi = 2*psi - psi_last + dt**2 * (c2 * (psi_xx + psi_yy) - psi**3)
+        f_val = f(psi, x, y, t)
+        psi = 2*psi - psi_last + dt**2 * (c2 * (psi_xx + psi_yy) + f_val)
         psi_last = temp
         n += 1
+        t += dt
+        if callback is not None:
+            callback(psi, n, t)
 
     return psi.cpu()
