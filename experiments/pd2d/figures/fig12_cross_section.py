@@ -13,16 +13,10 @@ def fig13(config, name, group=None):
     lib = OLDatasetLibrary('elastic2d')
     u, x, v, y = dataset[config['sample']]
 
-    im_kwargs = {
-        'cmap': 'seismic',
-        'origin': 'lower',
-        'vmin': -v[..., 0].abs().max().item(),
-        'vmax': v[..., 0].abs().max().item()
-    }
-
-    axes[0].imshow(v[:, :, 0].T, **im_kwargs)
+    axes[0].plot(y[:, config['y_index'], 0], v[:, config['y_index'], 0])
     axes[0].set_title('Ground truth')
-    axes[0].set_axis_off()
+    axes[0].set_xlabel('$x$')
+    axes[0].set_ylabel('$v(x, L/2)$')
 
     for i, run_id in enumerate(config['runs']):
         run = mlx.load_run(run_id)
@@ -34,9 +28,10 @@ def fig13(config, name, group=None):
         with torch.no_grad():
             v_pred = trainer.apply_model(u[None].to(d), x[None].to(d), y[None].to(d))[0].cpu()
 
-        axes[i + 1].imshow(v_pred[:, :, 0].T, **im_kwargs)
+        axes[i + 1].plot(y[:, config['y_index'], 0], v_pred[:, config['y_index'], 0])
+        axes[i + 1].set_xlabel('$x$')
         axes[i + 1].set_title(f'$\\gamma = {gamma}$')
-        axes[i + 1].set_axis_off()
+        axes[i + 1].set_yticks([])
 
     fig.tight_layout()
 
@@ -52,4 +47,4 @@ def fig13(config, name, group=None):
     )
     fig.add_artist(line)
 
-    mlx.show_and_save(fig, 'generalization-sample', config, name)
+    mlx.show_and_save(fig, 'generalization-cross-section', config, name)
