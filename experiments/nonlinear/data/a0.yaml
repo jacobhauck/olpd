@@ -1,0 +1,5 @@
+data:
+  train:
+    file_name: data/nonlinear/train-2@50.ol.h5
+  test:
+    file_name: data/nonlinear/test-2@50.ol.h5
