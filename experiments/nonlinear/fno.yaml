@@ -1,7 +1,7 @@
 model:
   name: FNO
-  n_modes: [8, 8]
+  n_modes: [4, 4]
   u_d_out: 1
   v_d_out: 1
-  d_model: 128
+  d_model: 64
   num_layers: 3

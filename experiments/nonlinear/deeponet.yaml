@@ -3,24 +3,24 @@ model:
   branch_config:
     name: MLPBranchNet
     num_sensors: 2500
-    num_branches: 256
+    num_branches: 64
     mlp_config:
       hidden_layers:
-        - 320
-        - 320
-        - 320
+        - 80
+        - 80
+        - 80
       activation:
         name: GELU
   trunk_config:
     name: MLPTrunkNet
-    num_branches: 256
+    num_branches: 64
     v_d_in: 2
     v_d_out: 1
     mlp_config:
       hidden_layers:
-        - 320
-        - 320
-        - 320
+        - 80
+        - 80
+        - 80
       activation:
         name: GELU
     feat_expansion:
@@ -28,7 +28,7 @@ model:
       origin: [ 0, 0 ]
       scale: [ 1, 1 ]
       mode: random
-      features: 320
+      features: 80
       learnable: true
   scale: sqrt
   bias: true

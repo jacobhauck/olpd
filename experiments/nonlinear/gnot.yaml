@@ -1,17 +1,17 @@
 model:
   name: gnot.GNOT
-  d_model: &d_model 128
+  d_model: &d_model 64
   v_d_in: 2
   v_d_out: 1
   query_mlp_config:
     hidden_layers:
-      - 256
-      - 256
+      - 128
+      - 128
     activation:
       name: GELU
   output_mlp_config:
     hidden_layers:
-      - 256
+      - 128
     activation:
       name: GELU
   input_encoders:
@@ -21,14 +21,14 @@ model:
       d_model: *d_model
       mlp_config:
         hidden_layers:
-          - 256
-          - 256
+          - 128
+          - 128
         activation:
           name: GELU
   num_layers: 3
   layer_config:
     d_model: *d_model
-    d_hidden: 256
+    d_hidden: 128
     num_heads: 8
     activation:
       name: GELU
