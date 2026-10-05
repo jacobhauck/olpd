@@ -50,6 +50,6 @@ model:
     name: MLP
     d_in: *p
     d_out: *q
-    hidden_layers: []
+    hidden_layers: [120, 120, 120]
     activation:
-      name: Identity
+      name: GELU
