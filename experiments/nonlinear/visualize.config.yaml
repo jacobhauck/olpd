@@ -1,6 +1,6 @@
-dataset_id: 2
+dataset_id: 4
 split: train
-#resolution: 50
+resolution: 50
 show: false
 format: png
 sample:

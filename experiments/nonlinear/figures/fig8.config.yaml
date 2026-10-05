@@ -1,6 +1,6 @@
 linear_id: 2
-nonlinear_id: 1
+nonlinear_ids: [3, 1, 4]
 split: test
 sample: 4
-figure_size: [9, 3]
+figure_size: [10, 3]
 format: pdf

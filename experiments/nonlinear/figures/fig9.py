@@ -30,7 +30,7 @@ def plot_var(config, name, group=None):
         if dataset_id == config['dataset_ids'][0]:
             axes.plot(torch.sort(u_vals, descending=True).values, label='$u$ (input)', linestyle='--', color='black')
 
-        axes.plot(torch.sort(v_vals, descending=True).values, label=f'$v$, $a = {lib[dataset_id]["a"]}$')
+        axes.plot(torch.sort(v_vals, descending=True).values, label=f'$v$, $a = {int(lib[dataset_id]["a"])}$')
 
     axes.set_xlabel('Eigenvalue ordinal')
     axes.set_ylabel('Variance')
