@@ -1,0 +1,4 @@
+dataset_ids: [2, 3, 1, 4]
+split: train
+max_dim: 500
+format: pdf
