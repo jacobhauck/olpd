@@ -1,0 +1,34 @@
+model:
+  name: DeepONet
+  branch_config:
+    name: MLPBranchNet
+    num_sensors: 2500
+    num_branches: 256
+    mlp_config:
+      hidden_layers:
+        - 320
+        - 320
+        - 320
+      activation:
+        name: GELU
+  trunk_config:
+    name: MLPTrunkNet
+    num_branches: 256
+    v_d_in: 2
+    v_d_out: 1
+    mlp_config:
+      hidden_layers:
+        - 320
+        - 320
+        - 320
+      activation:
+        name: GELU
+    feat_expansion:
+      name: FourierFeatureExpansion
+      origin: [ 0, 0 ]
+      scale: [ 1, 1 ]
+      mode: random
+      features: 320
+      learnable: true
+  scale: sqrt
+  bias: true

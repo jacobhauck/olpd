@@ -1,0 +1,21 @@
+data:
+  train:
+    file_name: data/nonlinear/train-1@50.ol.h5
+    stream_uv: false
+  test:
+    file_name: data/nonlinear/test-1@50.ol.h5
+    stream_uv: false
+
+optim:
+  name: Adam
+  lr: 0.0002
+
+training:
+  loss_fn:
+    name: FunctionalL2Loss
+    squared: false
+    relative: true
+  batch_size: 32
+  epochs: 1000
+  log_interval: 0.2
+  save_interval: 300
