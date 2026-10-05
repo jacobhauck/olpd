@@ -1,17 +1,18 @@
+import os
+
+import matplotlib.pyplot as plt
 import mlx
 import torch.utils.data
-import matplotlib.pyplot as plt
-import os
-import set_fonts
+from operatorlearning.data import OLDataset
+from operatorlearning.modules import FunctionalL2Loss
 
 from modules.data import NormalizedOLDataset
 from .pd2d import PD2DTrainer
-from operatorlearning.modules import FunctionalL2Loss
-from operatorlearning.data import OLDataset
 
 
 @mlx.experiment
-def plot_result(config, name, group=None):
+def plot_result(config, name):
+    mlx.configure_plotting(config)
     run = mlx.load_run(config['run_id'])
     run.config['device'] = config['device']
     trainer = PD2DTrainer(run.config, run)

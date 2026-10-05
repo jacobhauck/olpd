@@ -1,12 +1,13 @@
-import mlx
-import matplotlib.pyplot as plt
-import set_fonts
 import os
+
+import matplotlib.pyplot as plt
+import mlx
 from operatorlearning.data import OLDataset
 
 
 @mlx.experiment
-def compare(config, name, group=None):
+def compare(config, name):
+    mlx.configure_plotting(config)
     parabolic = OLDataset(config['parabolic_dataset'])
     hyperbolic = OLDataset(config['hyperbolic_dataset'])
 

@@ -3,11 +3,11 @@ import torch
 import os
 import matplotlib.pyplot as plt
 from operatorlearning.data import OLDatasetLibrary, OLDataset
-import set_fonts
 
 
 @mlx.experiment
-def plot(config, name, group=None):
+def plot(config, name):
+    mlx.configure_plotting(config)
     fig, axes = plt.subplots(1, 4, figsize=(4 * config['im_size'], config['im_size']))
 
     lib = OLDatasetLibrary('elastic2d')

@@ -3,11 +3,11 @@ import torch
 import os
 import matplotlib.pyplot as plt
 from operatorlearning.data import OLDatasetLibrary
-import set_fonts
 
 
 @mlx.experiment
-def plot(config, name, group=None):
+def plot(config, name):
+    mlx.configure_plotting(config)
     fig, ax = plt.subplots(figsize=config['figure_size'])
 
     ax.set_xlabel('Eigenvalue ordinal')

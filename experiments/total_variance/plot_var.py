@@ -12,6 +12,9 @@ def plot_variance(config, name, group=None):
     data = torch.load(config['var_data_file'])
 
     max_dim = len(data['u_vals'])
+    if 'max_dim' in config:
+        max_dim = config['max_dim']
+
     if 'u_vals_true' in data:
         data['u_vals_true'] = data['u_vals_true'][data['u_vals_true'] > 0]
         max_dim = len(data['u_vals_true'])
@@ -43,6 +46,10 @@ def plot_variance(config, name, group=None):
         print(f'Output (v) computed total variance: {float(v_vals_true.sum()):.05g}')
         print(f'Output (v) computed total entropy: {float(v_ent_true):.05g}')
 
+    axes.set_xlabel('Eigenvalue ordinal')
+    axes.set_ylabel('Variance')
+    if config.get('scale', 'log') != 'linear':
+        axes.set_yscale('log')
     axes.legend()
 
     mlx.show_and_save(fig, 'total_variance', config, name)

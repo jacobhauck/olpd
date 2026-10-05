@@ -1,16 +1,16 @@
-import mlx
-import os
-import matplotlib.pyplot as plt
-import torch
-from math import log
-from operatorlearning import OLDatasetLibrary
-
-import set_fonts
 import csv
+import os
+from math import log
+
+import matplotlib.pyplot as plt
+import mlx
+import torch
+from operatorlearning import OLDatasetLibrary
 
 
 @mlx.experiment
-def make_plots(config, name, group=None):
+def make_plots(config, name):
+    mlx.configure_plotting(config)
     error_col = 4 if config['split'] == 'train' else 6
 
     output_dir = os.path.join('results', name)

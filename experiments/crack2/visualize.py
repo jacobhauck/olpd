@@ -2,11 +2,11 @@ import mlx
 from operatorlearning.data import OLDataset
 import matplotlib.pyplot as plt
 import os
-import set_fonts
 
 
 @mlx.experiment
-def experiment(config, name, group=None):
+def experiment(config, name):
+    mlx.configure_plotting(config)
     dataset = OLDataset(config['dataset'])
     file_format = config.get('format', 'png')
 

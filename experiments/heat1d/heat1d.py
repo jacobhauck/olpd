@@ -1,6 +1,6 @@
 import mlx
-from operatorlearning.data import OLDataset
 import torch.utils.data
+from operatorlearning.data import OLDataset
 
 
 class Heat1DTrainer(mlx.training.BaseTrainer):

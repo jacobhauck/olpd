@@ -3,11 +3,11 @@ import os
 import torch
 import matplotlib.pyplot as plt
 from operatorlearning.data import OLDatasetLibrary
-import set_fonts
 
 
 @mlx.experiment
-def plot(config, name, group=None):
+def plot(config, name):
+    mlx.configure_plotting(config)
     fig, ax = plt.subplots()
 
     var_dir = mlx.results_dir('total_variance', 'ad2d')

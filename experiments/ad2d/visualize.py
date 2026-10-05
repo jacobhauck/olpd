@@ -1,14 +1,14 @@
+import os
+
+import matplotlib.pyplot as plt
 import mlx
 import mlx.utils
 from operatorlearning.data import OLDataset, OLDatasetLibrary
-import matplotlib.pyplot as plt
-import os
-
-import set_fonts
 
 
 @mlx.experiment
-def visualize(config, name, group=None):
+def visualize(config, name):
+    mlx.configure_plotting(config)
     lib = OLDatasetLibrary('ad2d')
     path = lib.dataset_path(config['split'], config['dataset_id'], config.get('resolution'))
     dataset = OLDataset(path, stream_uv=False)

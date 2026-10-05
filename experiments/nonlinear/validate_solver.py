@@ -1,6 +1,7 @@
+import matplotlib.pyplot as plt
 import mlx
 import torch
-import matplotlib.pyplot as plt
+
 from .generate import solve_equation_explicit
 
 
@@ -9,7 +10,7 @@ def psi_true(x, y, t):
 
 
 @mlx.experiment
-def validate(config, name, group=None):
+def validate(config, _):
     torch.set_default_dtype(torch.double)
     x = torch.linspace(config['x0'], config['x1'], config['mesh_size'] + 1)[:-1]
     dx = (x[1] - x[0])

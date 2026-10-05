@@ -1,6 +1,6 @@
 import mlx
-from operatorlearning.data import OLDataset
 import torch.utils.data
+from operatorlearning.data import OLDataset
 
 from modules.data import NormalizedOLDataset
 
@@ -69,48 +69,48 @@ class PD2DTrainer(mlx.training.BaseTrainer):
             self.loss_fn.integrator.weights = None
 
 
-class PD2DTraining(mlx.WandBExperiment):
-    def wandb_run(self, config, run):
-        save_interval = config['training'].get('save_interval', 600)
-        log_interval = config['training'].get('log_interval', 3)
-        trainer = PD2DTrainer(
-            config, run,
-            save_interval=save_interval,
-            log_interval=log_interval
-        )
+@mlx.wandb_experiment
+def wandb_run(config, run):
+    save_interval = config['training'].get('save_interval', 600)
+    log_interval = config['training'].get('log_interval', 3)
+    trainer = PD2DTrainer(
+        config, run,
+        save_interval=save_interval,
+        log_interval=log_interval
+    )
 
-        # Fit PCA bases if necessary
-        if 'pcanet' in config['model']['name'].lower() and (run.step is None or run.step == 0):
-            # sample = (u, x, v, y)
-            # noinspection PyTypeChecker
-            uv_map = map(lambda sample: (sample[0], sample[2]), trainer.datasets['train'])
-            _, _x, _, _y = trainer.datasets['train'][0]
-            print('Fitting PCA bases')
-            trainer.model.fit_pca(uv_map, _x, _y)
+    # Fit PCA bases if necessary
+    if 'pcanet' in config['model']['name'].lower() and (run.step is None or run.step == 0):
+        # sample = (u, x, v, y)
+        # noinspection PyTypeChecker
+        uv_map = map(lambda sample: (sample[0], sample[2]), trainer.datasets['train'])
+        _, _x, _, _y = trainer.datasets['train'][0]
+        print('Fitting PCA bases')
+        trainer.model.fit_pca(uv_map, _x, _y)
 
-        # Handle model interface compatibility
-        if 'fno' in config['model']['name'].lower():
-            trainer.apply_model = lambda u, x, y: trainer.model(u)
-        elif 'gnot' in config['model']['name'].lower():
-            trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
-        elif 'pcanet' in config['model']['name'].lower():
-            trainer.apply_model = lambda u, x, y: trainer.model(u)
+    # Handle model interface compatibility
+    if 'fno' in config['model']['name'].lower():
+        trainer.apply_model = lambda u, x, y: trainer.model(u)
+    elif 'gnot' in config['model']['name'].lower():
+        trainer.apply_model = lambda u, x, y: trainer.model([(u, x)], y)
+    elif 'pcanet' in config['model']['name'].lower():
+        trainer.apply_model = lambda u, x, y: trainer.model(u)
 
-        trainer.train(epochs=config['training']['epochs'])
-        losses, metrics = trainer.evaluate(('train', 'test'))
+    trainer.train(epochs=config['training']['epochs'])
+    losses, metrics = trainer.evaluate(('train', 'test'))
 
-        for dataset, dataset_losses in losses.items():
-            print(f'===== Loss for dataset: "{dataset}" =====')
-            for loss_name, loss in dataset_losses.items():
-                print(f'    === Loss: {loss_name} ===')
-                print(f'    Mean: {loss.mean().item():.05f}')
-                print(f'    Median: {loss.median().item():.05f}')
-                print(f'    Std.: {loss.std().item():.05f}')
+    for dataset, dataset_losses in losses.items():
+        print(f'===== Loss for dataset: "{dataset}" =====')
+        for loss_name, loss in dataset_losses.items():
+            print(f'    === Loss: {loss_name} ===')
+            print(f'    Mean: {loss.mean().item():.05f}')
+            print(f'    Median: {loss.median().item():.05f}')
+            print(f'    Std.: {loss.std().item():.05f}')
 
-        for dataset, dataset_metrics in metrics.items():
-            print(f'===== Metric for dataset: "{dataset}" =====')
-            for metric_name, metric in dataset_metrics.items():
-                print(f'    === Loss: {metric_name} ===')
-                print(f'    Mean: {metric.mean().item():.05f}')
-                print(f'    Median: {metric.median().item():.05f}')
-                print(f'    Std.: {metric.std().item():.05f}')
+    for dataset, dataset_metrics in metrics.items():
+        print(f'===== Metric for dataset: "{dataset}" =====')
+        for metric_name, metric in dataset_metrics.items():
+            print(f'    === Loss: {metric_name} ===')
+            print(f'    Mean: {metric.mean().item():.05f}')
+            print(f'    Median: {metric.median().item():.05f}')
+            print(f'    Std.: {metric.std().item():.05f}')

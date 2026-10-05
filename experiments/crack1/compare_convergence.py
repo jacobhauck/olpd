@@ -7,6 +7,7 @@ from operatorlearning.modules import FunctionalL2Loss
 
 @mlx.experiment
 def run_experiment(config, name, group=None):
+    mlx.configure_plotting(config)
     l2_loss = FunctionalL2Loss(relative=False, squared=False)
 
     dt = config['settings']['dt over dt_0']

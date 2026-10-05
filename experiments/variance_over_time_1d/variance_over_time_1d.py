@@ -1,13 +1,14 @@
-import mlx
 import os
-import torch
+
 import matplotlib.pyplot as plt
-import set_fonts
+import mlx
+import torch
 from operatorlearning.data import OLDatasetLibrary
 
 
 @mlx.experiment
-def make_plots(config, name, group=None):
+def make_plots(config, name):
+    mlx.configure_plotting(config)
     output_dir = os.path.join('results', name)
 
     fig, axes = plt.subplots(1, 2, figsize=config['figure_size'], sharey=True)

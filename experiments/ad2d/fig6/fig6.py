@@ -4,11 +4,11 @@ import torch
 import os
 from math import log
 from operatorlearning.data import OLDatasetLibrary, OLDataset
-import set_fonts
 
 
 @mlx.experiment
-def make_plot(config, name, group=None):
+def make_plot(config, name):
+    mlx.configure_plotting(config)
     lib = OLDatasetLibrary('ad2d')
     datasets = [
         OLDataset(lib.dataset_path(config['split'], dataset_id, config.get('resolution')))
@@ -62,6 +62,7 @@ def make_plot(config, name, group=None):
 
     fig.tight_layout()
 
+    # noinspection PyUnresolvedReferences
     r = fig.canvas.get_renderer()
     get_bbox = lambda ax: ax.get_tightbbox(r).transformed(fig.transFigure.inverted())
     bbox0 = get_bbox(axes[0])

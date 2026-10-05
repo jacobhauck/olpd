@@ -1,11 +1,11 @@
 import mlx
 import matplotlib.pyplot as plt
 from operatorlearning.data import OLDataset, OLDatasetLibrary
-import set_fonts
 
 
 @mlx.experiment
 def plot_figure(config, name, group=None):
+    mlx.configure_plotting(config)
     fig, axes = plt.subplots(1, 3, figsize=config['figure_size'])
 
     lib = OLDatasetLibrary('nonlinear')

@@ -1,6 +1,7 @@
+import os
+
 import mlx
 import torch
-import os
 import tqdm
 from operatorlearning.data import OLDatasetLibrary, OLDataset
 from operatorlearning.modules.basis import FullFourierBasis2d
@@ -106,7 +107,7 @@ def compute_variance_elastic2d(config):
 
 
 @mlx.experiment
-def compute_variance(config, name, group=None):
+def compute_variance(config, name):
     lib = OLDatasetLibrary(config['library'])
     dataset = OLDataset(lib.dataset_path(config['split'], config['dataset_id'], config.get('resolution')))
     meta = lib[config['dataset_id']]

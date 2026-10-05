@@ -1,6 +1,6 @@
 import mlx
-from operatorlearning.data import OLDataset
 import torch.utils.data
+from operatorlearning.data import OLDataset
 
 from modules.data import NormalizedOLDataset
 

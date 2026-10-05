@@ -2,14 +2,14 @@ import mlx
 import torch.utils.data
 import matplotlib.pyplot as plt
 import os
-import set_fonts
 from operatorlearning import OLDataset
 
 from .heat1d import Heat1DTrainer
 
 
 @mlx.experiment
-def plot_results(config, name, group=None):
+def plot_results(config, name):
+    mlx.configure_plotting(config)
     run = mlx.load_run(config['run_id'])
     run.config['device'] = config['device']
     trainer = Heat1DTrainer(run.config, run)

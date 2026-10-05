@@ -1,9 +1,10 @@
 import mlx
+
 from .wave1d import Wave1DTrainer
 
 
 @mlx.experiment
-def run_test(config, *_, **__):
+def run_test(config, _):
     run = mlx.load_run(config['run_id'])
     trainer = Wave1DTrainer(run.config, run)
 

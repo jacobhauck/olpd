@@ -1,18 +1,20 @@
+from math import ceil
+
+import matplotlib.pyplot as plt
 import mlx
 import torch
 from scipy.sparse.linalg import splu
+
 from .generate import (
     build_matrix,
     solve_equation,
     solve_equation_implicit1,
     solve_equation_implicit2
 )
-from math import ceil
-import matplotlib.pyplot as plt
 
 
 @mlx.experiment
-def run_experiment(config, name, group=None):
+def run_experiment(config, _):
     torch.set_default_dtype(torch.double)
 
     x = torch.linspace(config['x0'], config['x1'], config['mesh_size'] + 1)[:-1]

@@ -7,7 +7,7 @@ from operatorlearning.data import OLDatasetLibrary
 
 
 @mlx.experiment
-def make_table(config, name, group=None):
+def make_table(config, name):
     lib = OLDatasetLibrary('ad2d')
     k_index = {1: 0, 2: 1, 3: 2, 4: 3, 5: 4}
     rows = [['Model', 1, 5, 25, 125, 625]]

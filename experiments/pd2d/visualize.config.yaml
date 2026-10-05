@@ -1,4 +1,4 @@
-dataset: data/elastic2d/bumps.ol.h5
+dataset: data/elastic2d/test-1.ol.h5
 show: false
 format: png
 sample:

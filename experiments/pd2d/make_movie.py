@@ -1,13 +1,14 @@
-import mlx
 import os
-import matplotlib.pyplot as plt
+
 import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+import mlx
 from operatorlearning.data import OLDataset
-import set_fonts
 
 
 @mlx.experiment
-def make_movie(config, name, group=None):
+def make_movie(config, name):
+    mlx.configure_plotting(config)
     dataset = OLDataset(config['movie_dataset'])
 
     fig, ax = plt.subplots()

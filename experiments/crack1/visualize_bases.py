@@ -9,7 +9,8 @@ from .crack1 import Crack1Trainer
 
 
 @mlx.experiment
-def run_experiment(config, name, group=None):
+def run_experiment(config, name):
+    mlx.configure_plotting(config)
     run = mlx.load_run(config['run_id'])
     run.config['device'] = config['device']
     trainer = Crack1Trainer(run.config, run, no_data=True)

@@ -5,7 +5,7 @@ from operatorlearning.data import OLDataset, OLDatasetLibrary
 
 
 @mlx.experiment
-def generate(config, name, group=None):
+def generate(config, _):
     if 'seed' in config:
         torch.random.manual_seed(config['seed'])
     n = torch.arange(0, config['num_modes'] + 1).to(torch.float)  # (num_modes + 1,)

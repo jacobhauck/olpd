@@ -14,7 +14,7 @@ def print_recursive(flop_counts, depth=0):
 
 
 @mlx.experiment
-def count_flops(config, name, group=None):
+def count_flops(config, _):
     model = mlx.create_module(config['model'])
     x = [torch.randn(shape) for shape in config['inputs']]
     with FlopTensorDispatchMode(model) as counter:

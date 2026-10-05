@@ -1,9 +1,10 @@
+from math import ceil
+
 import mlx
 import torch
 import tqdm
-from math import ceil
-from operatorlearning.modules.basis import FullFourierBasis2d
 from operatorlearning.data import OLDatasetLibrary, OLDataset
+from operatorlearning.modules.basis import FullFourierBasis2d
 
 
 def make_movie_callback(u):
@@ -28,7 +29,7 @@ def make_movie_callback(u):
 
 
 @mlx.experiment
-def generate(config, name, group=None):
+def generate(config, _):
     torch.set_default_dtype(torch.double)
     if 'seed' in config:
         torch.random.manual_seed(config['seed'])

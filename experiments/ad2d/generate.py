@@ -1,12 +1,13 @@
+from math import ceil
+
 import mlx
+import numpy as np
 import torch
 import tqdm
 from operatorlearning.data import OLDataset, OLDatasetLibrary
 from operatorlearning.modules.basis import FullFourierBasis2d
-from math import ceil
 from scipy.sparse import coo_array
 from scipy.sparse.linalg import splu
-import numpy as np
 
 
 class COOBuilder:
@@ -73,7 +74,7 @@ def build_matrix(c, k, shape, dx, dy, dt):
 
 
 @mlx.experiment
-def generate(config, name, group=None):
+def generate(config, _):
     torch.set_default_dtype(torch.double)
     if 'seed' in config:
         torch.random.manual_seed(config['seed'])

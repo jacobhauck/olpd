@@ -1,12 +1,13 @@
+import os
+
+import matplotlib.pyplot as plt
 import mlx
 from operatorlearning.data import OLDataset
-import matplotlib.pyplot as plt
-import os
-import set_fonts
 
 
 @mlx.experiment
-def visualize(config, name, group=None):
+def visualize(config, name):
+    mlx.configure_plotting(config)
     dataset = OLDataset(config['dataset'], stream_uv=True)
     sub_path = os.path.relpath(config['dataset'], 'data')[:-len('.ol.h5')]
 

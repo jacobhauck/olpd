@@ -6,7 +6,7 @@ from ..pd2d import PD2DTrainer
 
 
 @mlx.experiment
-def calc_error(config, name, group=None):
+def calc_error(config, name):
     lib = OLDatasetLibrary('elastic2d')
     error = {}
 

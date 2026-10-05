@@ -1,2 +1,5 @@
-var_data_file: results/total_variance/heat1d/5-train.pt
-show: false
+var_data_file: results/total_variance/nonlinear/1-train.pt
+show: true
+scale: log
+max_dim: 500
+format: pdf

@@ -1,13 +1,13 @@
 import mlx
 import matplotlib.pyplot as plt
 from operatorlearning.data import OLDataset, OLDatasetLibrary
-import set_fonts
 import torch
 from ..pd2d import PD2DTrainer
 
 
 @mlx.experiment
-def fig13(config, name, group=None):
+def fig13(config, name):
+    mlx.configure_plotting(config)
     fig, axes = plt.subplots(1, 5, figsize=config['figure_size'])
     dataset = OLDataset(config['dataset'])
     lib = OLDatasetLibrary('elastic2d')

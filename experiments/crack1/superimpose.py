@@ -3,13 +3,13 @@ import os
 import matplotlib.pyplot as plt
 import mlx
 import torch.utils.data
-import set_fonts
 
 from .crack1 import Crack1Trainer
 
 
 @mlx.experiment
-def superimpose(config, name, group=None):
+def superimpose(config, name):
+    mlx.configure_plotting(config)
     run = mlx.load_run(config['run_id'])
     run.config['device'] = config['device']
     trainer = Crack1Trainer(run.config, run)

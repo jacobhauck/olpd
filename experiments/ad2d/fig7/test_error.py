@@ -6,7 +6,7 @@ from ..ad2d import AD2DTrainer
 
 
 @mlx.experiment
-def test_error(config, name, group=None):
+def test_error(config, name):
     lib = OLDatasetLibrary('ad2d')
     ps = {1: [], 5: [], 25: [], 125: [], 625: []}
     errors = {1: [], 5: [], 25: [], 125: [], 625: []}

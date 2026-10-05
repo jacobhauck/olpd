@@ -2,11 +2,11 @@ import mlx
 import matplotlib.pyplot as plt
 import json
 import os
-import set_fonts
 
 
 @mlx.experiment
-def plot(config, name, group=None):
+def plot(config, name):
+    mlx.configure_plotting(config)
     fig, ax = plt.subplots(figsize=config['figure_size'])
 
     with open(os.path.join(mlx.results_dir('pd2d/figures/fig13_test_error'), 'error.json'), 'r') as f:

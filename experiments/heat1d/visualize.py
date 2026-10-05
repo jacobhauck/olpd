@@ -6,7 +6,8 @@ import os
 
 
 @mlx.experiment
-def visualize(config, name, group=None):
+def visualize(config, name):
+    mlx.configure_plotting(config)
     data_lib = OLDatasetLibrary('heat1d')
     dataset = OLDataset(data_lib.dataset_path(config['split'], config['dataset_id']), stream_uv=False)
 

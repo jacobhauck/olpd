@@ -1,12 +1,14 @@
+import os
+
+import matplotlib.pyplot as plt
 import mlx
 import mlx.utils
 from operatorlearning.data import OLDataset, OLDatasetLibrary
-import matplotlib.pyplot as plt
-import os
 
 
 @mlx.experiment
-def visualize(config, name, group=None):
+def visualize(config, name):
+    mlx.configure_plotting(config)
     data_lib = OLDatasetLibrary('wave1d')
     dataset = OLDataset(data_lib.dataset_path(config['split'], config['dataset_id']), stream_uv=False)
 

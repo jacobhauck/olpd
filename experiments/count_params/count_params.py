@@ -2,7 +2,7 @@ import mlx
 
 
 @mlx.experiment
-def count_params(config, name, group=None):
+def count_params(config, _):
     if 'run_id' in config:
         model = mlx.create_module(mlx.load_run(config['run_id']).config['model'])
     else:

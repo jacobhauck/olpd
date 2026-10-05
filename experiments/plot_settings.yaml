@@ -1,0 +1,10 @@
+fonts:
+  size: 14                # controls default text size
+  axis_title_size: 14     # font size of the axes title
+  axis_label_size: 14     # font size of the x and y labels
+  xtick_size: 14          # font size of the x tick labels
+  ytick_size: 14          # font size of the y tick labels
+  legend_size: 12         # legend font size
+  fig_title_size: 14      # font size of the figure title
+  family: serif
+  use_tex: true

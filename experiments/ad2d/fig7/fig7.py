@@ -2,11 +2,12 @@ import mlx
 import os
 import json
 import matplotlib.pyplot as plt
-import set_fonts
 
 
 @mlx.experiment
-def plot_figure(config, name, group=None):
+def plot_figure(config, name):
+    mlx.configure_plotting(config)
+
     with open(os.path.join(mlx.results_dir(name), 'test_error', 'error.json'), 'r') as f:
         error = json.load(f)
 

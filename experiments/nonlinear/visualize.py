@@ -4,10 +4,10 @@ from operatorlearning.data import OLDataset, OLDatasetLibrary
 import matplotlib.pyplot as plt
 import os
 
-import set_fonts
 
 @mlx.experiment
 def visualize(config, name, group=None):
+    mlx.configure_plotting(config)
     lib = OLDatasetLibrary('nonlinear')
     path = lib.dataset_path(config['split'], config['dataset_id'], config.get('resolution'))
     dataset = OLDataset(path, stream_uv=False)

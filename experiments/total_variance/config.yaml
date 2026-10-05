@@ -1,5 +1,5 @@
-library: elastic2d
-dataset_id: 1
+library: nonlinear
+dataset_id: 26
 resolution: ~
-split: test
-volume: 25
+split: train
+volume: 1
